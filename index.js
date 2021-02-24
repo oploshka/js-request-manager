@@ -1,4 +1,3 @@
-import RequestManager from './src/RequestManager';
-import SendRequest    from './src/SendRequest';
+import RequestManager from '@requestManager/RequestManager';
 
-global.RequestManager = RequestManager(SendRequest);
+global.RequestManager = RequestManager();
