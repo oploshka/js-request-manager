@@ -1,43 +1,41 @@
 
 class RequestClass {
 
-  #name             = null;
-  #type             = null;
-  #url              = null;
-  #params           = null;
-  #responsePrepare  = null;
-  //
-  #cache            = null;
-  #errorMessage     = null;
-  // TODO: delete?
-  #fileName         = null;
-
+  #field;
 
   constructor(option = {}) {
-    this.#name            = option.name             || '';
-    this.#type            = option.type;
-    this.#url             = option.url; // RequestLinkClass(option.url);
-    this.#params          = option.params;
-    this.#responsePrepare = option.responsePrepare  || null;
-    //
-    this.#cache           = option.cache            || false;
-    this.#errorMessage    = option.errorMessage     || '';
-    // TODO: delete?
-    this.#fileName        = option.fileName  || '';
+    this.#field = {
+      name            : option.name             || '',
+      type            : option.type,
+      url             : option.url, // RequestLinkClass(option.url);
+      params          : option.params,
+      responsePrepare : option.responsePrepare  || null,
+      //
+      cache           : option.cache            || false,
+      errorMessage    : option.errorMessage     || '',
+      // TODO: delete?
+      fileName        : option.fileName  || '',
+    };
 
   }
 
-  getName            () { return this.#name;   }
-  getType            () { return this.#type;   }
-  getUrl             () { return this.#url;    }
-  getParams          () { return this.#params; }
-  getResponsePrepare () { return this.#responsePrepare; }
+  getName            () { return this.#field.name;   }
+  getType            () { return this.#field.type;   }
+  getUrl             () { return this.#field.url;    }
+  getParams          () { return this.#field.params; }
+  getResponsePrepare () { return this.#field.responsePrepare; }
   //
-  getCache           () { return this.#cache;  }
-  getErrorMessage    () { return this.#errorMessage; }
+  getCache           () { return this.#field.cache;  }
+  getErrorMessage    () { return this.#field.errorMessage; }
   // TODO: delete?
-  getFileName        () { return this.#fileName; }
+  getFileName        () { return this.#field.fileName; }
 
+
+  toObject() {
+    return Object.assign({}, this.#field);
+  }
+  // system
+  toJSON  () { return this.toObject(); } // JSON.stringify
 }
 
 

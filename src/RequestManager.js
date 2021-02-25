@@ -17,49 +17,53 @@ const RequestManager = () => {
         //
         const func = request[key];
 
-        request[key] = function (data, options = { cache:null, errorMessage:null }) {
+        request[key] = function (data, options = { fileName: null, cache:null, errorMessage:null }) {
 
           const requestClass = func(data);
-          let   errorMessage  = (options.errorMessage !== null) ? options.errorMessage  : requestClass.getErrorMessage();
-          let   cache         = (options.cache !== null)        ? options.cache         : requestClass.getCache();
-
-          let errorMessageFun = false;
-          let cacheFun        = false;
+          //
+          const settings = requestClass.toObject();
+          for (var key in settings) {
+            if (options[key]) settings[key] = options[key];
+          }
 
           // fix error message
           switch (true) {
-            case isString(errorMessage):
-              if(errorMessage === '') {
-                errorMessageFun = (e) => { return e.toString(); };
+            case isString(settings.errorMessage):
+              if(settings.errorMessage === '') {
+                settings.errorMessageFunction = (e) => { return e.message; /*toString();*/ };
               } else {
-                errorMessageFun = (e) => { return errorMessage + "\n\nДетали по ошибке:\n" + e.toString(); };
+                settings.errorMessageFunction = (e) => { return settings.errorMessage + "\n\nДетали по ошибке:\n" + e.message /*toString();*/; };
               }
               break;
-            case isFunction(errorMessage):
-              errorMessageFun = errorMessage;
+            case isFunction(settings.errorMessage):
+              settings.errorMessageFunction = settings.errorMessage;
               break;
           }
 
           // fix cache
           switch (true) {
-            case isString(cache):
-              cacheFun = (data, user) => { return cache.toString(); };
+            case isString(settings.cache):
+              settings.cacheFunction = (data, user) => { return settings.cache.toString(); };
               break;
-            case isFunction(cache):
-              cacheFun = cache;
+            case isFunction(settings.cache):
+              settings.cacheFunction = settings.cache;
               break;
           }
 
+          /*
           return SendRequest({
             type            : requestClass.getType(),
             url             : requestClass.getUrl(),
             params          : requestClass.getParams(),
             responsePrepare : requestClass.getResponsePrepare(),
-            fileName        : requestClass.getFileName(),
+            fileName        : options.fileName ? options.fileName : requestClass.getFileName(),
             //
             cacheFunction        : cacheFun,
             errorMessageFunction : errorMessageFun,
           });
+           */
+
+          return SendRequest(settings);
 
         };
       }

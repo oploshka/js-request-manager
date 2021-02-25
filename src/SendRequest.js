@@ -65,45 +65,88 @@ const SendRequest = async ({
       request = axios(axiosObject);
       let response = await request;
 
-      const content = response.headers['content-type'].split(';')[0];
+      let contentType = response.headers['content-type'].split(';')[0];
       // const content = response.data.type;
 
-      switch (content) {
-        case 'application/json':
-          var responseJson = null;
-          // fix file load
-          if (fileName) {
-            responseJson = response.request.response.text().then(text => JSON.parse(text));
-          } else {
-            responseJson = Promise.resolve(response.data);
-          }
-          responseJson
-            .then(apiResponsePrepare)
-            .then(userResponseDataPrepare)
-            .then((data) => {
-              promiseResolve(data);
-            });
-          return;
-
-        case 'application/pdf':
-          if (response.data.type !== 'application/pdf') {
-            throw new RequestManagerException('IS_NOT_FILE', 'Не удалось скачать файл', response);
-          }
-          fileDownload(response.data, fileName, content);
-          promiseResolve({}); // TODO test and add data
-          return;
-
-        default:
-          console.error('UNDEFINED_CONTENT_TYPE', content, response);
-          throw new RequestManagerException('UNDEFINED_CONTENT_TYPE', 'Undefined content type', response);
+      let responseJson = null;
+      if(contentType === 'application/json') {
+        responseJson = Promise.resolve(response.data);
       }
+      // Пытались получить файл, а в ответ пришел json
+      else if(response.data instanceof Blob && response.data.type === 'application/json') {
+        responseJson = response.request.response.text().then(text => JSON.parse(text));
+      }
+      if(responseJson) {
+        responseJson
+          .then(apiResponsePrepare)
+          .then(userResponseDataPrepare)
+          .then((data) => {
+            promiseResolve(data);
+          });
+        return;
+      }
+
+      /**
+       * In case of CORS requests, browsers can only access the following response headers by default:
+       * - Cache-Control
+       * - Content-Language
+       * - Content-Type
+       * - Expires
+       * - Last-Modified
+       * - Pragma
+       *
+       * If you would like your client app to be able to access other headers,
+       * you need to set the Access-Control-Expose-Headers header on the server:
+       * Access-Control-Expose-Headers: Access-Token, Uid
+       *
+       * источник
+       * https://stackoverflow.com/questions/37897523/axios-get-access-to-response-header-fields
+       */
+      if(response.data instanceof Blob) {
+        contentType = response.data.type;
+        fileDownload(response.data, fileName, contentType);
+        promiseResolve({}); // TODO test and add data
+        return;
+      }
+
+      // switch (contentType){
+      //   case 'application/pdf':
+      //     if (response.data.type !== 'application/pdf') {
+      //       throw new RequestManagerException('IS_NOT_FILE', 'Не удалось скачать файл', response);
+      //     }
+      //     fileDownload(response.data, fileName, contentType);
+      //     promiseResolve({});
+      //     return;
+      //
+      //   case 'text/csv':
+      //     fileDownload(response.data, fileName, contentType);
+      //     promiseResolve({});
+      //     return;
+      // }
+
+      console.error('UNDEFINED_CONTENT_TYPE', contentType, response);
+      throw new RequestManagerException('UNDEFINED_CONTENT_TYPE', 'Undefined content type', response);
 
     } catch (error) {
 
       let returnError = error;
       if( error.isAxiosError ) {
-        // TODO: test and fix  -> error.response.data.error OR error.getMessage()
-        returnError = new RequestManagerException('AXIOS_REQUEST_ERROR', error.response.data.error , {axiosErrorObject: error});
+        let data = error.response.data;
+
+        if(error.response.data instanceof Blob && error.response.data.type === 'application/json'){
+          data = await error.response.data.text().then(text => JSON.parse(text));
+        }
+
+        let message = '';
+        if(data.message) {
+          // 500 ошибка
+          message = data.message;
+        }
+        if(data.error) {
+          message = data.error;
+        }
+
+        returnError = new RequestManagerException('AXIOS_REQUEST_ERROR', message, {axiosErrorObject: error});
       }
       else if( !(error instanceof RequestManagerException) ) {
         returnError = new RequestManagerException('UNDEFINED_ERROR', '', error);
@@ -124,8 +167,9 @@ const SendRequest = async ({
     request && request.abort && request.abort();
   };
 
+  // TODO: fix
   if(window.VueApp) {
-    window.VueApp.$store.dispatch('addRequest', request);
+    window.VueApp.$store.dispatch('loading/addRequest', request);
   }
   return promise;
 };
