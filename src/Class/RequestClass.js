@@ -5,9 +5,11 @@ class RequestClass {
   #type             = null;
   #url              = null;
   #params           = null;
+  #responsePrepare  = null;
+  //
   #cache            = null;
   #errorMessage     = null;
-  #responsePrepare  = null;
+  // TODO: delete?
   #fileName         = null;
 
 
@@ -16,9 +18,11 @@ class RequestClass {
     this.#type            = option.type;
     this.#url             = option.url; // RequestLinkClass(option.url);
     this.#params          = option.params;
+    this.#responsePrepare = option.responsePrepare  || null;
+    //
     this.#cache           = option.cache            || false;
     this.#errorMessage    = option.errorMessage     || '';
-    this.#responsePrepare = option.responsePrepare  || null;
+    // TODO: delete?
     this.#fileName        = option.fileName  || '';
 
   }
@@ -27,9 +31,11 @@ class RequestClass {
   getType            () { return this.#type;   }
   getUrl             () { return this.#url;    }
   getParams          () { return this.#params; }
+  getResponsePrepare () { return this.#responsePrepare; }
+  //
   getCache           () { return this.#cache;  }
   getErrorMessage    () { return this.#errorMessage; }
-  getResponsePrepare () { return this.#responsePrepare; }
+  // TODO: delete?
   getFileName        () { return this.#fileName; }
 
 }

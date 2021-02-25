@@ -7,6 +7,11 @@ import RequestLinkClass   from "@requestManager/Class/RequestLinkClass";
 import RequestTypePrepare from "@requestManager/Prepare/RequestTypePrepare";
 import RequestUrlPrepare  from "@requestManager/Prepare/RequestUrlPrepare";
 import RequestDataPrepare from "@requestManager/Prepare/RequestDataPrepare";
+//
+import apiResponsePrepare from "@requestManager/Prepare/ResponsePrepare";
+import ShowErrorMessage   from '@requestManager/User/ShowErrorMessage';
+
+import {isEmpty} from '@requestManager/Helper';
 
 /**
  * @param type {String}
@@ -16,30 +21,21 @@ import RequestDataPrepare from "@requestManager/Prepare/RequestDataPrepare";
  * @return {Promise<unknown>}
  * @constructor
  */
-const SendRequest = (
-  type,
-  url,
-  params,
-  userResponseDataPrepare = (d) => d,
-  fileName = ''
+const SendRequest = async ({
+    type,
+    url,
+    params,
+    userResponseDataPrepare, //  = (d) => d
+    fileName, // = ''
+    errorMessageFunction,//  = null
+}
 ) => {
 
   let urlClass = new RequestLinkClass(url);
 
-
   const _requestType  = RequestTypePrepare(type, urlClass, params);
   const _requestUrl   = RequestUrlPrepare (type, urlClass, params);
   const _requestData  = RequestDataPrepare(type, urlClass, params);
-
-  // TODO: use getApiResponsePrepare
-  const apiResponsePrepare = (responseData) => {
-    // TODO: fix
-    if (!responseData.success || responseData.success === false) {
-      throw new RequestManagerException('BACKEND_ERROR', responseData.error, responseData);
-    }
-    return responseData.data;
-  }
-
 
   const axiosObject = {
     method: _requestType,
@@ -48,61 +44,62 @@ const SendRequest = (
   };
 
   if(fileName){
-    axiosObject.responseType = 'blob'
+    axiosObject.responseType = 'blob';
   }
 
   let token = localStorage.getItem('token');
   axiosObject.headers['Authorization'] = `Bearer ${token}`;
 
-  function isEmpty(value) {
-    return Boolean(value && typeof value === 'object') && !Object.keys(value).length;
-  }
-
   if(!isEmpty(_requestData.get)){
-    // console.log(_requestData.get);
     axiosObject.params  = _requestData.get;
   }
   if(!isEmpty(_requestData.post)){
-    // console.log(_requestData.post);
     axiosObject.data    = _requestData.post;
   }
 
-  let request = axios(axiosObject)
-    .then( (response) => {
+  let request = null;
+
+  // eslint-disable-next-line no-async-promise-executor
+  let promise = new Promise(async function(promiseResolve, promiseReject) {
+    try {
+      request = axios(axiosObject);
+      let response = await request;
+
       const content = response.headers['content-type'].split(';')[0];
       // const content = response.data.type;
 
       switch (content) {
         case 'application/json':
-
+          var responseJson = null;
           // fix file load
-          if(fileName){
-            // console.log('response', response)
-            return response.request.response.text()
-              .then(text => JSON.parse(text))
-              .then(apiResponsePrepare)
-              .then(userResponseDataPrepare);
+          if (fileName) {
+            responseJson = response.request.response.text().then(text => JSON.parse(text));
+          } else {
+            responseJson = Promise.resolve(response.data);
           }
-          return Promise.resolve(response.data)
+          responseJson
             .then(apiResponsePrepare)
-            .then(userResponseDataPrepare);
+            .then(userResponseDataPrepare)
+            .then((data) => {
+              promiseResolve(data);
+            });
+          return;
 
         case 'application/pdf':
-          // TODO: delete
-          // console.log('response', response)
-          if(response.data.type !== 'application/pdf'){
+          if (response.data.type !== 'application/pdf') {
             throw new RequestManagerException('IS_NOT_FILE', 'Не удалось скачать файл', response);
           }
           fileDownload(response.data, fileName, content);
+          promiseResolve({}); // TODO test and add data
           return;
 
         default:
-          console.error('UNDEFINED_CONTENT_TYPE', content, response)
+          console.error('UNDEFINED_CONTENT_TYPE', content, response);
           throw new RequestManagerException('UNDEFINED_CONTENT_TYPE', 'Undefined content type', response);
       }
 
-    })
-    .catch( (error) => {
+    } catch (error) {
+
       let returnError = error;
       if( error.isAxiosError ) {
         // TODO: test and fix  -> error.response.data.error OR error.getMessage()
@@ -112,13 +109,25 @@ const SendRequest = (
         returnError = new RequestManagerException('UNDEFINED_ERROR', '', error);
       }
 
-      return Promise.reject(returnError)
-    });
+      promiseReject(returnError);
+
+      // errorMessageRun
+      if(errorMessageFunction) {
+        ShowErrorMessage(errorMessageFunction(returnError));
+      }
+
+    }
+  });
+
+  promise.abort = function(){
+    // TODO: fix message notification
+    request && request.abort && request.abort();
+  };
 
   if(window.VueApp) {
     window.VueApp.$store.dispatch('addRequest', request);
   }
-  return request;
+  return promise;
 };
 
 export default SendRequest;
