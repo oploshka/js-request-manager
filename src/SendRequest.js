@@ -9,7 +9,6 @@ import RequestUrlPrepare  from "@requestManager/Prepare/RequestUrlPrepare";
 import RequestDataPrepare from "@requestManager/Prepare/RequestDataPrepare";
 //
 import apiResponsePrepare from "@requestManager/Prepare/ResponsePrepare";
-import ShowErrorMessage   from '@requestManager/User/ShowErrorMessage';
 
 import {isEmpty} from '@requestManager/Helper';
 
@@ -22,14 +21,12 @@ import {isEmpty} from '@requestManager/Helper';
  * @constructor
  */
 const SendRequest = async ({
-    type,
-    url,
-    params,
-    userResponseDataPrepare, //  = (d) => d
-    fileName, // = ''
-    errorMessageFunction,//  = null
-}
-) => {
+  type,
+  url,
+  params,
+  userResponseDataPrepare, //  = (d) => d
+  fileName, // = ''
+}) => {
 
   let urlClass = new RequestLinkClass(url);
 
@@ -47,7 +44,7 @@ const SendRequest = async ({
     axiosObject.responseType = 'blob';
   }
 
-  let token = localStorage.getItem('token');
+  let token = localStorage.getItem('user-token');
   axiosObject.headers['Authorization'] = `Bearer ${token}`;
 
   if(!isEmpty(_requestData.get)){
@@ -86,22 +83,6 @@ const SendRequest = async ({
         return;
       }
 
-      /**
-       * In case of CORS requests, browsers can only access the following response headers by default:
-       * - Cache-Control
-       * - Content-Language
-       * - Content-Type
-       * - Expires
-       * - Last-Modified
-       * - Pragma
-       *
-       * If you would like your client app to be able to access other headers,
-       * you need to set the Access-Control-Expose-Headers header on the server:
-       * Access-Control-Expose-Headers: Access-Token, Uid
-       *
-       * источник
-       * https://stackoverflow.com/questions/37897523/axios-get-access-to-response-header-fields
-       */
       if(response.data instanceof Blob) {
         contentType = response.data.type;
         fileDownload(response.data, fileName, contentType);
@@ -153,12 +134,6 @@ const SendRequest = async ({
       }
 
       promiseReject(returnError);
-
-      // errorMessageRun
-      if(errorMessageFunction) {
-        ShowErrorMessage(errorMessageFunction(returnError));
-      }
-
     }
   });
 
@@ -167,10 +142,6 @@ const SendRequest = async ({
     request && request.abort && request.abort();
   };
 
-  // TODO: fix
-  if(window.VueApp) {
-    window.VueApp.$store.dispatch('loading/addRequest', request);
-  }
   return promise;
 };
 

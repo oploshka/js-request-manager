@@ -3,6 +3,11 @@ import RequestSchema  from "@requestManager/Configuration/RequestSchema";
 import SendRequest    from '@requestManager/SendRequest';
 //
 import {isString, isFunction, isLiteralObject} from '@requestManager/Helper';
+//
+import ShowErrorMessage   from '@requestManager/User/ShowErrorMessage';
+import GetErrorMessage    from "@requestManager/User/GetErrorMessage";
+
+const cache = {};
 
 const RequestManager = () => {
 
@@ -26,45 +31,47 @@ const RequestManager = () => {
             if (options[key]) settings[key] = options[key];
           }
 
-          // fix error message
-          switch (true) {
-            case isString(settings.errorMessage):
-              if(settings.errorMessage === '') {
-                settings.errorMessageFunction = (e) => { return e.message; /*toString();*/ };
-              } else {
-                settings.errorMessageFunction = (e) => { return settings.errorMessage + "\n\nДетали по ошибке:\n" + e.message /*toString();*/; };
-              }
-              break;
-            case isFunction(settings.errorMessage):
-              settings.errorMessageFunction = settings.errorMessage;
-              break;
-          }
-
-          // fix cache
+          // cache get
+          let cacheKey = false;
           switch (true) {
             case isString(settings.cache):
-              settings.cacheFunction = (data, user) => { return settings.cache.toString(); };
+              cacheKey = settings.cache;
               break;
             case isFunction(settings.cache):
-              settings.cacheFunction = settings.cache;
+              cacheKey = settings.cache(data);
               break;
           }
+          if(cacheKey && cache[cacheKey]) {
+            let promise = new Promise(function(promiseResolve, promiseReject) {
+              // WARNING - не менять данный объект
+              promiseResolve(cache[cacheKey]);
+            });
+            promise.abort = function(){};
+            return promise;
+          }
 
-          /*
-          return SendRequest({
-            type            : requestClass.getType(),
-            url             : requestClass.getUrl(),
-            params          : requestClass.getParams(),
-            responsePrepare : requestClass.getResponsePrepare(),
-            fileName        : options.fileName ? options.fileName : requestClass.getFileName(),
-            //
-            cacheFunction        : cacheFun,
-            errorMessageFunction : errorMessageFun,
-          });
-           */
+          // send request
+          const requestPromise = SendRequest(settings);
 
-          return SendRequest(settings);
+          // TODO: fix
+          if(window.VueApp) {
+            window.VueApp.$store.dispatch('loading/addRequest', requestPromise);
+          }
 
+          requestPromise.then(
+            (result) => {
+              // cache save
+              if(cacheKey) {
+                cache[cacheKey] = result;
+              }
+            },
+            (error) => {
+              // error message
+              let message = GetErrorMessage(settings.errorMessage, error);
+              message && ShowErrorMessage(message);
+            });
+
+          return requestPromise;
         };
       }
 
