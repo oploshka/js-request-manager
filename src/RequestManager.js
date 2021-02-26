@@ -1,87 +1,90 @@
 
-// import HostSchema     from "@requestManager/Configuration/HostSchema";
 import RequestSchema  from "@requestManager/Configuration/RequestSchema";
-
 import SendRequest    from '@requestManager/SendRequest';
+//
+import {isString, isFunction, isLiteralObject} from '@requestManager/Helper';
+//
+import ShowErrorMessage   from '@requestManager/User/ShowErrorMessage';
+import GetErrorMessage    from "@requestManager/User/GetErrorMessage";
+
+const cache = {};
 
 const RequestManager = () => {
 
-  /*
-  const isArray = function(a) {
-    return (!!a) && (a.constructor === Array);
-  };
-  */
-  const isString = function(f) {
-    return typeof f === 'string';
-  };
-  const isFunction = function(f) {
-    return typeof f === 'function';
-  };
-  const isLiteralObject = function(a) {
-    return (!!a) && (a.constructor === Object);
-  };
-
   const requestPrepare = (request) => {
     for(let key in request) {
-      if ( isFunction(request[key]) ) {
-        //
-        const func = request[key];
-        // const funcArgCount = func.length;
 
-        request[key] = function () {
-          // TODO test function argument count
-          // if(arguments.length < funcArgCount) {
-          //   console.warn('arguments length error');
-          // }
-
-          const requestClass = func(...arguments);
-
-
-          const resultSendRequest = SendRequest(
-            requestClass.getType(),
-            requestClass.getUrl(),
-            requestClass.getParams(),
-            requestClass.getResponsePrepare(),
-            requestClass.getFileName(),
-          ).catch((e) => {
-
-            let errorMessage = requestClass.getErrorMessage();
-
-            if( isString(errorMessage) ) {
-              if(errorMessage === '') {
-                errorMessage = e.toString()
-              } else {
-                errorMessage = errorMessage + "\n\nДетали по ошибке:\n" + e.toString();
-              }
-            }
-
-            else if( isFunction(errorMessage) ) {
-              errorMessage = errorMessage(e);
-            }
-
-            global.VueApp && global.VueApp.$dialogs && global.VueApp.$dialogs.alert(errorMessage, {title: 'Ошибка'});
-
-            return Promise.reject(e);
-          });
-
-          return resultSendRequest;
-
-        }
-      }
-
-      else if ( isLiteralObject(request[key]) ) {
+      if ( isLiteralObject(request[key]) ) {
         request[key] = requestPrepare(request[key]);
       }
+
+      else if ( isFunction(request[key]) ) {
+        //
+        const func = request[key];
+
+        request[key] = function (data, options = { fileName: null, cache:null, errorMessage:null }) {
+
+          const requestClass = func(data);
+          //
+          const settings = requestClass.toObject();
+          for (var key in settings) {
+            if (options[key]) settings[key] = options[key];
+          }
+
+          // cache get
+          let cacheKey = false;
+          switch (true) {
+            case isString(settings.cache):
+              cacheKey = settings.cache;
+              break;
+            case isFunction(settings.cache):
+              cacheKey = settings.cache(data);
+              break;
+          }
+          if(cacheKey && cache[cacheKey]) {
+            let promise = new Promise(function(promiseResolve, promiseReject) {
+              // WARNING - не менять данный объект
+              promiseResolve(cache[cacheKey]);
+            });
+            promise.abort = function(){};
+            return promise;
+          }
+
+          // send request
+          const requestPromise = SendRequest(settings);
+
+          // TODO: fix
+          if(window.VueApp) {
+            window.VueApp.$store.dispatch('loading/addRequest', requestPromise);
+          }
+
+          requestPromise.then(
+            (result) => {
+              // cache save
+              if(cacheKey) {
+                cache[cacheKey] = result;
+              }
+            },
+            (error) => {
+              // error message
+              let message = GetErrorMessage(settings.errorMessage, error);
+              message && ShowErrorMessage(message);
+            });
+
+          return requestPromise;
+        };
+      }
+
 
     }
 
     return request;
-  }
+  };
 
   const request = RequestSchema;
-  requestPrepare(request)
+  requestPrepare(request);
 
-  return request
+  return request;
 };
 
 export default RequestManager;

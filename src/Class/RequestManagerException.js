@@ -1,3 +1,4 @@
+/*
 class RequestManagerException extends Error {
   // constructor(message) {
   //   super(message);
@@ -26,5 +27,18 @@ class RequestManagerException extends Error {
 }
 
 RequestManagerException.prototype.name = 'RequestManagerException';
+*/
+
+function RequestManagerException(code, message = '', details = null) {
+  this.name = "RequestManagerException";
+  // const fullMsg = `[${code}]` + (message ? `: ${message}` : '');
+  // super(fullMsg);
+  this.code     = code;
+  this.message  = message;
+
+  this.details = details;
+}
+RequestManagerException.prototype = Error.prototype;
+
 
 export default RequestManagerException;
