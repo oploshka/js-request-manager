@@ -30,6 +30,8 @@ const RequestManager = () => {
           for (var key in settings) {
             if (options[key]) settings[key] = options[key];
           }
+          // TODO: delete fix!!!
+          settings.userResponseDataPrepare = settings.responsePrepare;
 
           // cache get
           let cacheKey = false;
