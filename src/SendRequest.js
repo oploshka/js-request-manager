@@ -7,6 +7,7 @@ import RequestLinkClass   from "@requestManager/Class/RequestLinkClass";
 import RequestTypePrepare from "@requestManager/Prepare/RequestTypePrepare";
 import RequestUrlPrepare  from "@requestManager/Prepare/RequestUrlPrepare";
 import RequestDataPrepare from "@requestManager/Prepare/RequestDataPrepare";
+import RequestObjPrepare  from "@requestManager/Prepare/RequestObjPrepare";
 //
 import apiResponsePrepare from "@requestManager/Prepare/ResponsePrepare";
 
@@ -17,6 +18,7 @@ import {isEmpty} from '@requestManager/Helper';
  * @param url {String}
  * @param params {{get: Object, post:Object}}
  * @param userResponseDataPrepare {Function}
+ * @param fileName {String}
  * @return {Promise<unknown>}
  * @constructor
  */
@@ -34,7 +36,7 @@ const SendRequest = async ({
   const _requestUrl   = RequestUrlPrepare (type, urlClass, params);
   const _requestData  = RequestDataPrepare(type, urlClass, params);
 
-  const axiosObject = {
+  let axiosObject = {
     method: _requestType,
     url: _requestUrl,
     headers: {}
@@ -44,14 +46,23 @@ const SendRequest = async ({
     axiosObject.responseType = 'blob';
   }
 
-  let token = localStorage.getItem('user-token');
-  axiosObject.headers['Authorization'] = `Bearer ${token}`;
-
   if(!isEmpty(_requestData.get)){
     axiosObject.params  = _requestData.get;
   }
   if(!isEmpty(_requestData.post)){
     axiosObject.data    = _requestData.post;
+  }
+
+  try {
+    axiosObject = RequestObjPrepare(axiosObject, {type,url,params,fileName});
+  } catch (e) {
+    let promise = new Promise(function(promiseResolve, promiseReject) {
+      promiseReject(
+        new RequestManagerException('REQUEST_OBJECT_PREPARE', e.message, {errorObject: e})
+      );
+    });
+    promise.abort = () => {};
+    return promise;
   }
 
   let request = null;
