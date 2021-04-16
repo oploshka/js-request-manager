@@ -3,10 +3,14 @@ import RequestManagerException from '@requestManager/Class/RequestManagerExcepti
 
 const ResponsePrepare = (responseData) => {
   // TODO: fix
-  if (!responseData.success || responseData.success === false) {
-    throw new RequestManagerException('BACKEND_ERROR', responseData.error, responseData);
+  if (responseData.details) {
+    throw new RequestManagerException('BACKEND_ERROR', responseData.details, responseData);
   }
-  return responseData.data;
+  if (responseData.non_field_errors) {
+    let str = responseData.non_field_errors.join("\n");
+    throw new RequestManagerException('BACKEND_ERROR', str, responseData);
+  }
+  return responseData;
 };
 
 export default ResponsePrepare;
