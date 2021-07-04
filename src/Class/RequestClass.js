@@ -1,10 +1,10 @@
 
 class RequestClass {
 
-  #field;
+  _field;
 
   constructor(option = {}) {
-    this.#field = {
+    this._field = {
       name            : option.name             || '',
       type            : option.type,
       url             : option.url, // RequestLinkClass(option.url);
@@ -19,20 +19,20 @@ class RequestClass {
 
   }
 
-  getName            () { return this.#field.name;   }
-  getType            () { return this.#field.type;   }
-  getUrl             () { return this.#field.url;    }
-  getParams          () { return this.#field.params; }
-  getResponsePrepare () { return this.#field.responsePrepare; }
+  getName            () { return this._field.name;   }
+  getType            () { return this._field.type;   }
+  getUrl             () { return this._field.url;    }
+  getParams          () { return this._field.params; }
+  getResponsePrepare () { return this._field.responsePrepare; }
   //
-  getCache           () { return this.#field.cache;  }
-  getErrorMessage    () { return this.#field.errorMessage; }
+  getCache           () { return this._field.cache;  }
+  getErrorMessage    () { return this._field.errorMessage; }
   // TODO: delete?
-  getFileName        () { return this.#field.fileName; }
+  getFileName        () { return this._field.fileName; }
 
 
   toObject() {
-    return Object.assign({}, this.#field);
+    return Object.assign({}, this._field);
   }
   // system
   toJSON  () { return this.toObject(); } // JSON.stringify
