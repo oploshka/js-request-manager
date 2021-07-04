@@ -1,6 +1,6 @@
 {
   "name": "js-request-manager",
-  "version": "0.1.3",
+  "version": "0.2.0",
   "description": "JS Request Manager is a library for creating an sdk library for your server (API). The API type doesn't matter, whether it's REST or RPC",
   "author": "Andrey Tyurin <ectb@mail.ru>",
   "scripts": {},
@@ -8,7 +8,6 @@
   "exports": {
     "./": "./src/"
   },
-  "homepage": "https://oploshka.github.io/js-request-manager/",
   "keywords": [
     "js request manager",
     "api request manager",
