@@ -13,10 +13,7 @@ export default {
         post: {login, password},
       },
       responsePrepare: (data) => {
-        if(data.jwt) {
-          return {token: data.jwt};
-        }
-        return data;
+        return {token: data.jwt};
       },
       // errorMessage: '',
     });
