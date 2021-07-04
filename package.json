@@ -1,0 +1,62 @@
+{
+  "name": "js-request-manager",
+  "version": "0.1.0",
+  "description": "JS Request Manager is a library for creating an sdk library for your server (API). The API type doesn't matter, whether it's REST or RPC",
+  "author": "Andrey Tyurin <ectb@mail.ru>",
+  "scripts": {},
+  "main": "./src/RequestManager.js",
+  "exports": {
+    "./": "./src/"
+  },
+  "homepage": "https://oploshka.github.io/js-request-manager/",
+  "keywords": [
+    "js request manager",
+    "api request manager",
+    "rpc request manager",
+
+    "request manager",
+    "api manager",
+    "rpc manager",
+
+    "api request",
+    "rpc request",
+    "batch request",
+
+    "request",
+    "api",
+    "apis",
+    "rest",
+    "rpc",
+    "manager",
+    "batch"
+  ],
+  "license": "MIT",
+  "repository": "git@github.com:oploshka/js-request-manager.git",
+
+
+  "eslintConfig": {
+    "root": true,
+    "env": {
+      "node": true
+    },
+    "extends": [
+      "plugin:vue/essential",
+      "eslint:recommended"
+    ],
+    "rules": {
+      "semi": [
+        2,
+        "always"
+      ],
+      "no-unused-vars": "off",
+      "no-console": "off",
+      "no-debugger": "off"
+    },
+    "parserOptions": {
+      "parser": "babel-eslint"
+    }
+  },
+  "browserslist": [
+    "last 2 chrome versions"
+  ]
+}
