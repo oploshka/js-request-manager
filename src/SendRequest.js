@@ -60,7 +60,7 @@ const SendRequest = async (requestInfo, Config) => {
 
 
       if(!responseObject.isValid) {
-        let res = await AxiosErrorConvert(responseObject.axios);
+        let res = await AxiosErrorConvert(responseObject.axios, Config);
         promiseReject( res );
         return;
       }

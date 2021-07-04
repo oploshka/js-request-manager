@@ -4,7 +4,7 @@ import RequestManagerException from '../Class/RequestManagerException';
 import {HTTP_ERROR_STATUS, getStatusInfo} from "../Helper/HttpStatus";
 import {isArray} from "../Helper/Helper";
 
-const AxiosErrorConvert = async (error) => {
+const AxiosErrorConvert = async (error, Config) => {
   let returnError = error;
 
   if (error.isAxiosError ) {
@@ -18,34 +18,23 @@ const AxiosErrorConvert = async (error) => {
       );
     }
 
+    // fix content-type: application/json; charset=UTF-8"
+    let contentType = error.response.headers['content-type']
+    if(contentType) {
+      contentType = contentType.split(';')[0]
+    }
 
-
-    if(error.response.data && error.response.headers['content-type'] === 'application/json') {
+    if(error.response.data && contentType === 'application/json') {
       let responseData = error.response.data;
       if (responseData instanceof Blob) {
         responseData = await error.response.data.text().then(text => JSON.parse(text));
       }
 
       // Фикс отдачи сообщения об ошибке
-      let errorMessage = '';
       try {
-        for(let key in responseData) {
-          if(errorMessage !== '' ) {
-            errorMessage += "\n";
-          }
-          if( isArray(responseData[key]) ){
-            errorMessage += responseData[key].join("\n");
-          } else {
-            // isString
-            errorMessage += responseData[key];
-          }
-        }
-        if(errorMessage){
-          return new RequestManagerException('ERROR_BACKEND', errorMessage, {axiosErrorObject: error});
-        }
+        Config.ResponsePrepare.validate(responseData); // ожидаем что это кинет исключение.
       } catch (e) {
-        errorMessage = '';
-        console.error(e);
+        return e;
       }
 
     }
