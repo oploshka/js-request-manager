@@ -5,7 +5,7 @@ class RequestManagerException extends Error {
   //   this.message = message;
   // }
 
-  #details = null
+  _details = null
 
   constructor(code, message = '', details = null) {
     const fullMsg = `[${code}]` + (message ? `: ${message}` : '');
@@ -14,11 +14,11 @@ class RequestManagerException extends Error {
     this.code     = code;
     this.message  = message;
 
-    this.#details = details;
+    this._details = details;
   }
 
   getDetails(){
-    return this.#details;
+    return this._details;
   }
 
   toString() {

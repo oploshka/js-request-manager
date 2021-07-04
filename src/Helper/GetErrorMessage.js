@@ -1,5 +1,5 @@
-
-import {isString, isFunction} from '@requestManager/Helper';
+// TODO: вернуть в ядро!!!
+import {isString, isFunction} from '../Helper/Helper';
 
 const GetErrorMessage = (obj, error) => {
   let message = '';
@@ -17,5 +17,3 @@ const GetErrorMessage = (obj, error) => {
   }
   return message;
 };
-
-export default GetErrorMessage;

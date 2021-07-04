@@ -1,5 +1,5 @@
 
-import RequestClass from "@requestManager/Class/RequestClass";
+import RequestClass from "js-request-manager/src/Class/RequestClass";
 
 export default {
 
@@ -13,10 +13,7 @@ export default {
         post: {login, password},
       },
       responsePrepare: (data) => {
-        if(data.jwt) {
-          return {token: data.jwt};
-        }
-        return data;
+        return {token: data.jwt};
       },
       // errorMessage: '',
     });

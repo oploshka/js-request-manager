@@ -1,5 +1,5 @@
 
-import RequestClass from "@requestManager/Class/RequestClass";
+import RequestClass from "js-request-manager/src/Class/RequestClass";
 
 export default {
 
