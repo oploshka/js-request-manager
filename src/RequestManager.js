@@ -68,6 +68,9 @@ const RequestManager = (_configure) => {
             return promise;
           }
 
+          // TODO: fix
+          settings.options = options;
+
           // send request
           const requestPromise = SendRequest(settings, Config);
 
