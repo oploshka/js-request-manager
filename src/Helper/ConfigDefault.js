@@ -22,7 +22,7 @@ export const RequestPrepare = {
 
 export const ResponsePrepare = {
   validate(responseData){
-    // import RequestManagerException from "@requestManager/Class/RequestManagerException";
+    // import RequestManagerException from "./Class/RequestManagerException";
     //
     // if (responseData.details) {
     //   throw new RequestManagerException('BACKEND_ERROR', responseData.details, responseData);

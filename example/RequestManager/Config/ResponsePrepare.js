@@ -1,5 +1,5 @@
 
-import RequestManagerException from "@requestManager/Class/RequestManagerException";
+import RequestManagerException from "js-request-manager/src/Class/RequestManagerException";
 
 // ResponsePrepare
 export default {

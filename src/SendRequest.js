@@ -1,10 +1,11 @@
-import axios from 'axios';
+// TODO: fix npm install
+import axios        from 'axios';
 import fileDownload from 'js-file-download';
 
-import RequestManagerException  from "@requestManager/Class/RequestManagerException";
-import AxiosErrorConvert        from "@requestManager/Helper/AxiosErrorConvert";
-import RequestHelper            from "@requestManager/Helper/RequestHelper";
-import ResponseHelper           from "@requestManager/Helper/ResponseHelper";
+import RequestManagerException  from "./Class/RequestManagerException";
+import AxiosErrorConvert        from "./Helper/AxiosErrorConvert";
+import RequestHelper            from "./Helper/RequestHelper";
+import ResponseHelper           from "./Helper/ResponseHelper";
 
 /**
  * @param requestInfo {{

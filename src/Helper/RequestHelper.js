@@ -1,5 +1,5 @@
-import RequestLinkClass from "@requestManager/Class/RequestLinkClass";
-import {isEmpty} from "@requestManager/Helper/Helper";
+import RequestLinkClass from "../Class/RequestLinkClass";
+import {isEmpty} from "../Helper/Helper";
 
 export default {
   getRequestObject({ type, url, params, fileName, options}, Config) {

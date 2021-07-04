@@ -1,4 +1,4 @@
-import RequestManager from '@requestManager/RequestManager';
+import RequestManager from 'js-request-manager/src/RequestManager';
 
 // Config
 import hostSchema      from "./Config/HostSchema";

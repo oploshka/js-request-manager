@@ -1,7 +1,7 @@
 //
-import SendRequest    from '@requestManager/SendRequest';
-import {isString, isFunction, isLiteralObject} from '@requestManager/Helper/Helper';
-import * as ConfigDefault from "@requestManager/Helper/ConfigDefault";
+import SendRequest    from './SendRequest';
+import {isString, isFunction, isLiteralObject} from './Helper/Helper';
+import * as ConfigDefault from "./Helper/ConfigDefault";
 
 const cache = {};
 

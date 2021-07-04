@@ -1,5 +1,5 @@
 
-import {isString, isFunction} from '@requestManager/Helper/Helper';
+import {isString, isFunction} from 'js-request-manager/src/Helper/Helper';
 
 const GetErrorMessage = (obj, error) => {
   let message = '';
