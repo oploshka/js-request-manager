@@ -1,13 +1,10 @@
 import axios from 'axios';
 import fileDownload from 'js-file-download';
 
-import RequestManagerException from "@requestManager/Class/RequestManagerException";
-import AxiosErrorConvert       from "@requestManager/Helper/AxiosErrorConvert";
-//
-import apiResponsePrepare from "@requestManager/Prepare/ResponsePrepare";
-
-import RequestHelper from "@requestManager/Helper/RequestHelper";
-import ResponseHelper from "@requestManager/Helper/ResponseHelper";
+import RequestManagerException  from "@requestManager/Class/RequestManagerException";
+import AxiosErrorConvert        from "@requestManager/Helper/AxiosErrorConvert";
+import RequestHelper            from "@requestManager/Helper/RequestHelper";
+import ResponseHelper           from "@requestManager/Helper/ResponseHelper";
 
 /**
  * @param requestInfo {{
@@ -20,12 +17,12 @@ import ResponseHelper from "@requestManager/Helper/ResponseHelper";
  * }}
  * @return {Promise<unknown>}
  */
-const SendRequest = async (requestInfo) => {
+const SendRequest = async (requestInfo, Config) => {
   let { type, url, params, userResponseDataPrepare  /* (d) => d */, fileName /* '' */, options} = requestInfo;
 
   let requestObject;
   try {
-    requestObject = RequestHelper.getRequestObject(requestInfo);
+    requestObject = RequestHelper.getRequestObject(requestInfo, Config);
   } catch (e) {
     let promise = Promise.reject(new RequestManagerException('REQUEST_OBJECT_PREPARE', e.message, {errorObject: e}));
     promise.abort = () => {};
@@ -76,7 +73,7 @@ const SendRequest = async (requestInfo) => {
       if(responseObject.contentType === 'application/json') {
 
         let _data = await ResponseHelper.getDataPromise(responseObject.axios);
-        _data = apiResponsePrepare(_data);
+        _data = Config.ResponsePrepare.validate(_data);
         if(requestInfo.userResponseDataPrepare) {
           _data = requestInfo.userResponseDataPrepare(_data);
         }

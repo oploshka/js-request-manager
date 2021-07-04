@@ -1,7 +1,6 @@
-import hostSchema from "@requestManager/Configuration/HostSchema";
 
 class RequestLinkClass {
-
+  #hostSchema = {}
   #linkOrigin = null;
   #linkCache  = null;
 
@@ -21,8 +20,8 @@ class RequestLinkClass {
     }
     else if(requestUrlArray.length === 2) {
       const host = requestUrlArray[0].toLowerCase();
-      if(host in hostSchema) {
-        this.#linkCache.url = hostSchema[ host ] + requestUrlArray[1];
+      if(host in this.#hostSchema) {
+        this.#linkCache.url = this.#hostSchema[ host ] + requestUrlArray[1];
       } else {
         // eslint-disable-next-line no-console
         console.warn('[REQUEST MANAGER] prepareUrl not correct hostSchema', this.#linkOrigin);
@@ -33,7 +32,9 @@ class RequestLinkClass {
 
   }
 
-  constructor(link) {
+  constructor(link, hostSchema = {}) {
+    this.#hostSchema    = hostSchema;
+    this.#linkOrigin    = link;
     this.#linkOrigin    = link;
   }
 

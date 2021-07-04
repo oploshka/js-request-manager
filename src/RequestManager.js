@@ -1,15 +1,31 @@
-
-import RequestSchema  from "@requestManager/Configuration/RequestSchema";
+//
 import SendRequest    from '@requestManager/SendRequest';
-//
-import {isString, isFunction, isLiteralObject} from '@requestManager/Helper';
-//
-import ShowErrorMessage   from '@requestManager/User/ShowErrorMessage';
-import GetErrorMessage    from "@requestManager/User/GetErrorMessage";
+import {isString, isFunction, isLiteralObject} from '@requestManager/Helper/Helper';
+import * as ConfigDefault from "@requestManager/Helper/ConfigDefault";
 
 const cache = {};
 
-const RequestManager = () => {
+/*
+{
+  RequestSchema,
+
+  // configuration
+  hostSchema = {},
+  RequestPrepare= {},
+  ResponsePrepare= {},
+  Hook = {},
+}
+**/
+const RequestManager = (_configure) => {
+
+  const RequestSchema = _configure.RequestSchema;
+  // config
+  const Config = {
+    hostSchema      : Object.assign(ConfigDefault.HostSchema,      _configure.Config.hostSchema),
+    RequestPrepare  : Object.assign(ConfigDefault.RequestPrepare,  _configure.Config.RequestPrepare),
+    ResponsePrepare : Object.assign(ConfigDefault.ResponsePrepare, _configure.Config.ResponsePrepare),
+    Hook            : Object.assign(ConfigDefault.Hook,            _configure.Config.Hook),
+  };
 
   const requestPrepare = (request) => {
     for(let key in request) {
@@ -53,12 +69,7 @@ const RequestManager = () => {
           }
 
           // send request
-          const requestPromise = SendRequest(settings);
-
-          // TODO: fix
-          if(window.VueApp) {
-            window.VueApp.$store.dispatch('loading/addRequest', requestPromise);
-          }
+          const requestPromise = SendRequest(settings, Config);
 
           requestPromise.then(
             (result) => {
@@ -68,10 +79,15 @@ const RequestManager = () => {
               }
             },
             (error) => {
-              // error message
-              let message = GetErrorMessage(settings.errorMessage, error);
-              message && ShowErrorMessage(message);
-            });
+              //
+            }
+          );
+
+          try {
+            Config.Hook.RequestPromise(requestPromise, settings);
+          } catch (e){
+            console.error(e);
+          }
 
           return requestPromise;
         };

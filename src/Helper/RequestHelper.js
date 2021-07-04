@@ -1,18 +1,14 @@
 import RequestLinkClass from "@requestManager/Class/RequestLinkClass";
-import RequestTypePrepare from "@requestManager/Prepare/RequestTypePrepare";
-import RequestUrlPrepare from "@requestManager/Prepare/RequestUrlPrepare";
-import RequestDataPrepare from "@requestManager/Prepare/RequestDataPrepare";
-import {isEmpty} from "@requestManager/Helper";
-import RequestObjPrepare from "@requestManager/Prepare/RequestObjPrepare";
+import {isEmpty} from "@requestManager/Helper/Helper";
 
 export default {
-  getRequestObject({ type, url, params, fileName, options}) {
+  getRequestObject({ type, url, params, fileName, options}, Config) {
 
-    let urlClass = new RequestLinkClass(url);
+    let urlClass = new RequestLinkClass(url, Config.hostSchema);
     let requestObj = {
-      type  : RequestTypePrepare(type, urlClass, params),
-      url   : RequestUrlPrepare(type, urlClass, params),
-      data  : RequestDataPrepare(type, urlClass, params),
+      type  : Config.RequestPrepare.type(type, urlClass, params),
+      url   : Config.RequestPrepare.url(type, urlClass, params),
+      data  : Config.RequestPrepare.data(type, urlClass, params),
     };
 
     // axios
@@ -38,7 +34,7 @@ export default {
       requestObj.axios.headers['Content-Type'] = 'multipart/form-data';
     }
 
-    requestObj.axios = RequestObjPrepare(requestObj.axios, {type,url,params,fileName, options});
+    requestObj.axios = Config.RequestPrepare.axiosObject(requestObj.axios, {type,url,params,fileName, options});
 
     return requestObj;
   }
