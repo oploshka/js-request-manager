@@ -1,9 +1,9 @@
 
-class RequestClass {
+const RequestClass = function (option) {
 
-  _field;
+  let _field = {};
 
-  constructor(option = {}) {
+  const init = (option = {}) => {
     this._field = {
       name            : option.name             || '',
       type            : option.type,
@@ -16,27 +16,28 @@ class RequestClass {
       // TODO: delete?
       fileName        : option.fileName  || '',
     };
+  };
 
-  }
+  init(option);
 
-  getName            () { return this._field.name;   }
-  getType            () { return this._field.type;   }
-  getUrl             () { return this._field.url;    }
-  getParams          () { return this._field.params; }
-  getResponsePrepare () { return this._field.responsePrepare; }
+  this.getName            = () => { return _field.name;   };
+  this.getType            = () => { return _field.type;   };
+  this.getUrl             = () => { return _field.url;    };
+  this.getParams          = () => { return _field.params; };
+  this.getResponsePrepare = () => { return _field.responsePrepare; };
   //
-  getCache           () { return this._field.cache;  }
-  getErrorMessage    () { return this._field.errorMessage; }
+  this.getCache           = () => { return _field.cache;  };
+  this.getErrorMessage    = () => { return _field.errorMessage; };
   // TODO: delete?
-  getFileName        () { return this._field.fileName; }
+  this.getFileName        = () => { return _field.fileName; };
 
 
-  toObject() {
+  this.toObject = () =>  {
     return Object.assign({}, this._field);
-  }
+  };
   // system
-  toJSON  () { return this.toObject(); } // JSON.stringify
-}
+  this.toJSON  = () => { return this.toObject(); }; // JSON.stringify
+};
 
 
 export default RequestClass;

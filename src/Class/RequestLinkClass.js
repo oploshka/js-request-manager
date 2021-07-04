@@ -1,48 +1,48 @@
 
-class RequestLinkClass {
-  _hostSchema = {}
-  _linkOrigin = null;
-  _linkCache  = null;
+const RequestLinkClass = function(link, hostSchema = {}) {
+  let _hostSchema = {};
+  let _linkOrigin = null;
+  let _linkCache  = null;
 
-  _getLinkCache = () => {
-    if(this._linkCache){
-      return this._linkCache;
+  this.getLinkCache = () => {
+    if(_linkCache){
+      return _linkCache;
     }
-    this._linkCache = {
+    _linkCache = {
       url: '',
     };
 
-    const requestUrlArray = this._linkOrigin.split('://');
+    const requestUrlArray = _linkOrigin.split('://');
 
     if(requestUrlArray.length > 2) {
       // eslint-disable-next-line no-console
-      console.warn('[REQUEST MANAGER] prepareUrl not correct requestUrl', this._linkOrigin);
+      console.warn('[REQUEST MANAGER] prepareUrl not correct requestUrl', _linkOrigin);
     }
     else if(requestUrlArray.length === 2) {
       const host = requestUrlArray[0].toLowerCase();
-      if(host in this._hostSchema) {
-        this._linkCache.url = this._hostSchema[ host ] + requestUrlArray[1];
+      if(host in _hostSchema) {
+        _linkCache.url = _hostSchema[ host ] + requestUrlArray[1];
       } else {
         // eslint-disable-next-line no-console
-        console.warn('[REQUEST MANAGER] prepareUrl not correct hostSchema', this._linkOrigin);
+        console.warn('[REQUEST MANAGER] prepareUrl not correct hostSchema', _linkOrigin);
       }
     }
 
-    return this._linkCache;
+    return _linkCache;
 
-  }
+  };
 
-  constructor(link, hostSchema = {}) {
-    this._hostSchema    = hostSchema;
-    this._linkOrigin    = link;
-    this._linkOrigin    = link;
-  }
+  this.getUrl = () => {
+    return this.getLinkCache().url;
+  };
 
-  getUrl() {
-    return this._getLinkCache().url;
-  }
-
-}
+  const init = (link, hostSchema) => {
+    _hostSchema    = hostSchema;
+    _linkOrigin    = link;
+    _linkOrigin    = link;
+  };
+  init(link, hostSchema);
+};
 
 
 export default RequestLinkClass;
