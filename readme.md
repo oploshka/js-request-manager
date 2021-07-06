@@ -7,14 +7,16 @@ Request Manager - это библиотека для создания sdk биб
 Лучше 1 раз увидеть, чем 100 раз услышать
 
 
-## Как это выглядит после настройки
+# Как это выглядит после настройки
 async/await
 ```js
 try {
-  let responseData = RequestManager.Auth.authorization({login: 'admin', password: 'pass'})
+  let responseData = await RequestManager.Auth.authorization({login: 'admin', password: 'pass'})
+  // user code for success response
   localStorage.setItem('user-token', responseData.token)
   alert('авторизация прошла успешно!');
 } catch (err) {
+  // user code for error response or server error
   alert('не удалось авторизоваться');
   return
 }
@@ -24,16 +26,18 @@ try {
 RequestManager.Auth.authorization({login: 'admin', password: 'pass'})
   .then(
     (result) => {
+      // user code for success response
       localStorage.setItem('user-token', result.token)
       alert('авторизация прошла успешно!');
     },
     (error) => {
+      // user code for error response or server error
       alert('не удалось авторизоваться');
     }
   )
 ```
 
-## Возможности
+# Возможности
 
 - кэшировать запросы; 
 - делать пред обработку данных;
@@ -44,14 +48,26 @@ RequestManager.Auth.authorization({login: 'admin', password: 'pass'})
 Многое из этого требует интеграции с вашей системой. 
 Финальный функционал определять вам.
 
-## Установка
+# Установка
 
+### NPM install
 ```shell
+# install required dependencies
 npm install axios
 npm install js-file-download
+# install
 npm install js-request-manager
 ```
-or
+### Yarn install
+```shell
+# install required dependencies
+yarn add @axios
+yarn add @js-file-download
+# install
+yarn add @js-request-manager
+```
+
+### package.json
 ```js
 // package.json
 {
@@ -65,7 +81,7 @@ or
 }
 ```
 
-## Инициализация (варианты):
+# Инициализация (варианты):
    - Скопировать [файлы оптимального примера](https://github.com/oploshka/js-request-manager/tree/master/example/RequestManagerOptimal) к себе в проект (рекомендуется).
    - Скопировать [файл минимального примера](https://github.com/oploshka/js-request-manager/tree/master/example/RequestManagerBase) к себе в проект.
    - или создать файл вручную.
@@ -105,7 +121,7 @@ global.RequestManager = RequestManager({
 
 ```
    
-## RequestManager принимает следующие настройки:
+# RequestManager принимает следующие настройки:
 ```js
 const RequestManagerSettings = {
    RequestSchema: {}, 
@@ -127,6 +143,11 @@ const RequestManagerSettings = {
    }
 }
 ```
+
+
+> Далее можно посмотреть детальную информацию по каждому из полей RequestManagerSettings
+> 
+> Они будут описаны в форме RequestManagerSettings.[Тип настроек].[Подтип настроек].[Настройка]
 
    
 ### RequestManagerSettings.RequestSchema
@@ -197,6 +218,7 @@ request = new RequestClass({
 })
 
 ```
+
 
 ### RequestManagerSettings.Config
 Тут мы можем изменить стандартное поведение Request Manager, подписаться на события, задать alias для url.
