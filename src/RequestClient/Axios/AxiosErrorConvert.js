@@ -1,8 +1,8 @@
 
-import RequestManagerException from '../Class/RequestManagerException';
+import RequestManagerException from '../../Class/RequestManagerException';
 
-import {HTTP_ERROR_STATUS, getStatusInfo} from "../Helper/HttpStatus";
-import {isArray} from "../Helper/Helper";
+import {HTTP_ERROR_STATUS, getStatusInfo} from "../../Helper/HttpStatus";
+import {isArray} from "../../Helper/Helper";
 
 const AxiosErrorConvert = async (error, Config) => {
   let returnError = error;

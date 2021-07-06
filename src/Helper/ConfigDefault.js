@@ -14,9 +14,9 @@ export const RequestPrepare = {
   url(requestType, requestUrl, requestData) {
     return requestUrl.getUrl();
   },
-  //
-  axiosObject(axiosObject, options) {
-    return axiosObject;
+  // axiosObject => requestClientDataPrepare
+  requestClientDataPrepare(requestClientData, requestClass) {
+    return requestClientData;
   },
 };
 
