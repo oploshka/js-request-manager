@@ -1,12 +1,12 @@
 //
-import SendRequestClass from "./SendRequestClass";
-import RequestClass   from "./Class/RequestClass";
+import SendRequestClass from "./Class/SendRequestClass";
+import RequestClass     from "./Class/RequestClass";
 //
 import {isString, isFunction, isLiteralObject} from './Helper/Helper';
 import * as ConfigDefault from "./Helper/ConfigDefault";
 
 // TODO: fix
-import RequestClientAxios from "./RequestClient/Axios";
+import RequestClientAxios from "./RequestClient/Axios/index";
 
 /**
  * @param _configure {{
@@ -28,17 +28,17 @@ import RequestClientAxios from "./RequestClient/Axios";
  *   }
  * }}
  */
-const RequestManager = (_configure) => {
+const RequestManager = (_configure = {}) => {
 
   const cache = {};
 
   const RequestSchema = _configure.RequestSchema;
   // config
   const Config = {
-    hostSchema      : Object.assign(ConfigDefault.HostSchema,      _configure.Config.hostSchema),
-    RequestPrepare  : Object.assign(ConfigDefault.RequestPrepare,  _configure.Config.RequestPrepare),
-    ResponsePrepare : Object.assign(ConfigDefault.ResponsePrepare, _configure.Config.ResponsePrepare),
-    Hook            : Object.assign(ConfigDefault.Hook,            _configure.Config.Hook),
+    hostSchema      : Object.assign(ConfigDefault.HostSchema,      !_configure.Config ? {} : _configure.Config.hostSchema),
+    RequestPrepare  : Object.assign(ConfigDefault.RequestPrepare,  !_configure.Config ? {} : _configure.Config.RequestPrepare),
+    ResponsePrepare : Object.assign(ConfigDefault.ResponsePrepare, !_configure.Config ? {} : _configure.Config.ResponsePrepare),
+    Hook            : Object.assign(ConfigDefault.Hook,            !_configure.Config ? {} : _configure.Config.Hook),
   };
   // TODO: fix
   const RequestClient = _configure.RequestClient ? _configure.RequestClient : RequestClientAxios;
@@ -129,7 +129,7 @@ const RequestManager = (_configure) => {
 
 
           try {
-            Config.Hook.RequestPromise(requestPromise, settings);
+            Config.Hook.RequestPromise(requestPromise, mergeRequestClass);
           } catch (e){
             console.error(e);
           }
@@ -147,9 +147,20 @@ const RequestManager = (_configure) => {
   const request = RequestSchema;
   requestPrepare(request);
 
-  // TODO fix for Request Manager - need test
-  // request.send = async (obj) => {
-  //   return SendRequest.send(new RequestClass(obj));
+  /**
+   * for send custom user request
+   * @param {String} type
+   * @param {String} url
+   * @param {{get: {Object}, post: {Object}}}params
+   * @param {Object} options
+   * @return {Promise<*>}
+   */
+  // request.send = async function (type, url, params, options = {}) {
+  //   return SendRequest.send(
+  //     new RequestClass(
+  //       Object.assign({type, url, params}, options)
+  //     )
+  //   );
   // };
 
   return request;

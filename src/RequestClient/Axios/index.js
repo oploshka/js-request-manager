@@ -1,17 +1,12 @@
 // TODO: fix npm install
 import axios from 'axios';
 import {isEmpty} from "../../Helper/Helper";
-import AxiosErrorConvert from "./AxiosErrorConvert";
-import ResponseHelper from "./ResponseHelper";
 
 export default {
-  // TODO: fix
-  ...ResponseHelper,
-  errorConvert: AxiosErrorConvert,
 
-  async send(obj) { return axios(obj); },
+  async send(obj) { return await axios(obj); },
 
-  getRequestClientObject(requestObj, requestClass) {
+  getRequestClientObject(requestObj, requestClass, Config) {
     const axiosObj = {
       method  : requestObj.type,
       url     : requestObj.url,
@@ -35,6 +30,40 @@ export default {
     }
 
     return axiosObj;
+  },
+
+
+  isNetworkError(axiosResponse, requestClass, Config) {
+    if(/* axiosResponse.isAxiosError && */ !axiosResponse.response) {
+      return axiosResponse.message ? axiosResponse.message : 'Неизвестная сетевая ошибка';
+    }
+  },
+
+  getRMObject(axiosResponse, requestClass, Config) {
+
+
+    if(!axiosResponse.response) {
+      return {status: -1, contentType: '', data: {}, }
+    }
+
+    const clearContentType = (contentType) => {
+      return contentType ? contentType.split(';')[0] : '';
+    }
+
+    let httpStatus  = axiosResponse.response.status ? axiosResponse.response.status : null;
+    let contentType = '';
+    let data        = axiosResponse.response.data ? axiosResponse.response.data : {};
+
+    //
+    if(axiosResponse.response.headers && axiosResponse.response.headers['content-type']) {
+      contentType = clearContentType( axiosResponse.response.headers['content-type'] );
+    }
+    if(axiosResponse.response.data instanceof Blob){
+      contentType = clearContentType( axiosResponse.response.data.type );
+    }
+    // TODO: fix httpStatus 204
+
+    return {httpStatus: httpStatus, contentType: contentType, data: data}
   },
 
 };

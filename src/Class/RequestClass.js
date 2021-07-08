@@ -4,7 +4,7 @@ const RequestClass = function (option) {
   let _field = {};
 
   const init = (option = {}) => {
-    this._field = {
+    _field = {
       name            : option.name             || '',
       type            : option.type,
       url             : option.url, // RequestLinkClass(option.url);
@@ -33,7 +33,7 @@ const RequestClass = function (option) {
 
 
   this.toObject = () =>  {
-    return Object.assign({}, this._field);
+    return Object.assign({}, _field);
   };
   // system
   this.toJSON  = () => { return this.toObject(); }; // JSON.stringify
