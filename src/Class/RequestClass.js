@@ -8,7 +8,7 @@ const RequestClass = function (option) {
       name            : option.name             || '',
       type            : option.type,
       url             : option.url, // RequestLinkClass(option.url);
-      params          : option.params,
+      params          : {},
       responsePrepare : option.responsePrepare  || null,
       //
       cache           : option.cache            || false,
@@ -16,6 +16,11 @@ const RequestClass = function (option) {
       // TODO: delete?
       fileName        : option.fileName  || '',
     };
+
+    if(option.params) {
+      _field.params.get   = option.params.get   || {};
+      _field.params.post  = option.params.post  || {};
+    }
   };
 
   init(option);

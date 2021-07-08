@@ -1,6 +1,6 @@
 // TODO: fix npm install
 import axios from 'axios';
-import {isEmpty} from "../../Helper/Helper";
+import {isEmpty} from "../Helper/Helper";
 
 export default {
 
@@ -12,6 +12,7 @@ export default {
       url     : requestObj.url,
       headers : {}
     };
+    // axiosObj.responseType = 'application/json';
 
     if(requestClass.getFileName()){
       axiosObj.responseType = 'blob';
@@ -41,25 +42,25 @@ export default {
 
   getRMObject(axiosResponse, requestClass, Config) {
 
-
-    if(!axiosResponse.response) {
+    if( !(axiosResponse && axiosResponse.request && axiosResponse.request.response) ) {
       return {status: -1, contentType: '', data: {}, }
     }
+    const resp = axiosResponse.request;
 
     const clearContentType = (contentType) => {
       return contentType ? contentType.split(';')[0] : '';
     }
 
-    let httpStatus  = axiosResponse.response.status ? axiosResponse.response.status : null;
+    let httpStatus  = resp.status ? resp.status : -1;
     let contentType = '';
-    let data        = axiosResponse.response.data ? axiosResponse.response.data : {};
+    let data        = axiosResponse.data || resp.response;
 
     //
-    if(axiosResponse.response.headers && axiosResponse.response.headers['content-type']) {
-      contentType = clearContentType( axiosResponse.response.headers['content-type'] );
+    if(axiosResponse.headers && axiosResponse.headers['content-type']) {
+      contentType = clearContentType( axiosResponse.headers['content-type'] );
     }
-    if(axiosResponse.response.data instanceof Blob){
-      contentType = clearContentType( axiosResponse.response.data.type );
+    if(axiosResponse.data instanceof Blob){
+      contentType = clearContentType( axiosResponse.data.type );
     }
     // TODO: fix httpStatus 204
 

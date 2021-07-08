@@ -6,7 +6,7 @@ import {isString, isFunction, isLiteralObject} from './Helper/Helper';
 import * as ConfigDefault from "./Helper/ConfigDefault";
 
 // TODO: fix
-import RequestClientAxios from "./RequestClient/Axios/index";
+import AxiosRequestClient from "./RequestClient/AxiosRequestClient";
 
 /**
  * @param _configure {{
@@ -41,7 +41,7 @@ const RequestManager = (_configure = {}) => {
     Hook            : Object.assign(ConfigDefault.Hook,            !_configure.Config ? {} : _configure.Config.Hook),
   };
   // TODO: fix
-  const RequestClient = _configure.RequestClient ? _configure.RequestClient : RequestClientAxios;
+  const RequestClient = _configure.RequestClient ? _configure.RequestClient : AxiosRequestClient;
 
   const SendRequest = new SendRequestClass(RequestClient, Config);
 

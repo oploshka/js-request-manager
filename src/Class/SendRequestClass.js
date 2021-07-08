@@ -91,7 +91,7 @@ const sendRequestClass = function(_rc, _cnfg) {
 
           let requestClassErrorObject = requestClass.getErrorMessage();
           if(requestClassErrorObject) {
-            errMessage = GetErrorMessage(errMessage);
+            errMessage = GetErrorMessage(requestClassErrorObject);
           }
 
           if(!errMessage) {
@@ -112,7 +112,7 @@ const sendRequestClass = function(_rc, _cnfg) {
         }
 
 
-        let data = await RequestClient.getSuccessInfo(ri, requestClass, Config);
+        let data = await Config.ResponsePrepare.getSuccessInfo(ri, requestClass, Config);
 
         if(data instanceof Blob) {
           let fileName = 'TODO fix'; // TODO: fix file name
