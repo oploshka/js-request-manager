@@ -8,7 +8,10 @@ const RequestClass = function (option) {
       name            : option.name             || '',
       type            : option.type,
       url             : option.url, // RequestLinkClass(option.url);
-      params          : {},
+      params          : {
+        get : {},
+        post: {},
+      },
       responsePrepare : option.responsePrepare  || null,
       //
       cache           : option.cache            || false,

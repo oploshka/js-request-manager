@@ -42,29 +42,44 @@ export default {
 
   getRMObject(axiosResponse, requestClass, Config) {
 
-    if( !(axiosResponse && axiosResponse.request && axiosResponse.request.response) ) {
-      return {status: -1, contentType: '', data: {}, }
+    const ri = {
+      httpStatus  : -1,
+      contentType : '',
+      data        : {},
+      headers     : {}
     }
-    const resp = axiosResponse.request;
-
     const clearContentType = (contentType) => {
       return contentType ? contentType.split(';')[0] : '';
     }
 
-    let httpStatus  = resp.status ? resp.status : -1;
-    let contentType = '';
-    let data        = axiosResponse.data || resp.response;
+    // get status
+    if(axiosResponse.status) {
+      ri.httpStatus = axiosResponse.status;
+    } else if(axiosResponse.request &&  axiosResponse.request.status) {
+      ri.httpStatus = axiosResponse.request.status;
+    }
 
-    //
-    if(axiosResponse.headers && axiosResponse.headers['content-type']) {
-      contentType = clearContentType( axiosResponse.headers['content-type'] );
+    // get headers
+    if(axiosResponse.headers) {
+      ri.headers = axiosResponse.headers;
     }
-    if(axiosResponse.data instanceof Blob){
-      contentType = clearContentType( axiosResponse.data.type );
+
+    // get contentType
+    if( ri.headers['content-type']) {
+      ri.contentType = clearContentType( axiosResponse.headers['content-type'] );
     }
+
+    // get data
+    if(axiosResponse.data){
+      ri.data = axiosResponse.data;
+
+      if(ri.data instanceof Blob){
+        ri.contentType = clearContentType( ri.data.type );
+      }
+    }
+
     // TODO: fix httpStatus 204
-
-    return {httpStatus: httpStatus, contentType: contentType, data: data}
+    return ri;
   },
 
 };
