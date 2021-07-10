@@ -1,6 +1,8 @@
 import RequestManager from 'js-request-manager/src/RequestManager';
 import RequestClass   from "js-request-manager/src/Class/RequestClass";
 
+import axios from 'axios';
+
 const RmSimpleCreate = RequestManager({
   RequestSchema: {
     Auth: {
@@ -56,6 +58,9 @@ const RmSimpleCreate = RequestManager({
         console.log(requestPromise, settings);
       }
     },
+  },
+  RequestClient: {
+    async send(obj) { return await axios(obj); }
   }
 });
 

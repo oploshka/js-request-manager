@@ -1,6 +1,8 @@
 import RequestClass   from "js-request-manager/src/Class/RequestClass";
 import RequestManager from "js-request-manager/src/RequestManager";
 
+import axios from 'axios';
+
 /**
  * @name NumberAPIRequestSchemaObject
  */
@@ -140,4 +142,9 @@ const NumberAPIRequestSchema =  {
 /**
  * @alias NumberAPIRequestSchemaObject need fix return value {RequestClass} in {Promise}
  */
-export default RequestManager({RequestSchema: NumberAPIRequestSchema});
+export default RequestManager({
+  RequestSchema: NumberAPIRequestSchema,
+  RequestClient: {
+    async send(obj) { return await axios(obj); }
+  }
+});

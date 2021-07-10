@@ -38,8 +38,8 @@ const RequestManager = (_configure = {}) => {
     ResponsePrepare : Object.assign(ConfigDefault.ResponsePrepare, !_configure.Config ? {} : _configure.Config.ResponsePrepare),
     Hook            : Object.assign(ConfigDefault.Hook,            !_configure.Config ? {} : _configure.Config.Hook),
   };
-  // TODO: fix
-  const RequestClient = _configure.RequestClient ? _configure.RequestClient : AxiosRequestClient;
+
+  const RequestClient = Object.assign(AxiosRequestClient, (_configure.RequestClient || {}) );
 
   const SendRequest = new SendRequestClass(RequestClient, Config);
 

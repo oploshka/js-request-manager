@@ -1,5 +1,7 @@
 import RequestManager from 'js-request-manager/src/RequestManager';
 
+import axios from 'axios';
+
 // Config
 import hostSchema      from "./Config/HostSchema";
 import RequestPrepare  from "./Config/RequestPrepare";
@@ -16,6 +18,9 @@ const RmOptimalStructureCreate = RequestManager({
     RequestPrepare  : RequestPrepare,
     ResponsePrepare : ResponsePrepare,
     Hook            : Hook,
+  },
+  RequestClient: {
+    async send(obj) { return await axios(obj); }
   }
 });
 
