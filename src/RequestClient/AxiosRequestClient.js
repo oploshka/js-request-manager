@@ -17,6 +17,7 @@ export default {
     if(requestClass.getFileName()){
       axiosObj.responseType = 'blob';
     }
+
     if(!isEmpty(requestObj.data.get)){
       axiosObj.params  = requestObj.data.get;
     }

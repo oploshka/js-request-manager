@@ -21,9 +21,11 @@ const RequestClass = function (option) {
     };
 
     if(option.params) {
-      _field.params.get   = option.params.get   || {};
-      _field.params.post  = option.params.post  || {};
+      _field.params = Object.assign({}, _field.params, option.params);
     }
+    if(option.get ) { _field.params.get   = option.get;  }
+    if(option.post) { _field.params.post  = option.post; }
+
   };
 
   init(option);
