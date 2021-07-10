@@ -9,7 +9,7 @@ import Hook            from "./Config/Hook";
 // RequestSchema
 import RequestSchema from "./RequestSchema";
 
-global.RequestManager = RequestManager({
+const RmOptimalStructureCreate = RequestManager({
   RequestSchema: RequestSchema,
   Config: {
     hostSchema      : hostSchema,
@@ -18,3 +18,5 @@ global.RequestManager = RequestManager({
     Hook            : Hook,
   }
 });
+
+export default RmOptimalStructureCreate;

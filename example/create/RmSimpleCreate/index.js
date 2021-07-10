@@ -1,7 +1,7 @@
 import RequestManager from 'js-request-manager/src/RequestManager';
 import RequestClass   from "js-request-manager/src/Class/RequestClass";
 
-global.RequestManager = RequestManager({
+const RmSimpleCreate = RequestManager({
   RequestSchema: {
     Auth: {
       authorization: ({login, password}) => {
@@ -58,3 +58,5 @@ global.RequestManager = RequestManager({
     },
   }
 });
+
+export default RmSimpleCreate;

@@ -28,6 +28,11 @@ module.exports = {
     port: 9000,
   },
 
+  resolve: {
+    alias: {
+      'js-request-manager': __dirname,
+    }
+  },
 
   module: {
     rules: [

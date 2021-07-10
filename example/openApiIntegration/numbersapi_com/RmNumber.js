@@ -1,10 +1,10 @@
-import RequestClass from "../../src/Class/RequestClass";
-import RequestManager from "../../src/RequestManager";
+import RequestClass   from "js-request-manager/src/Class/RequestClass";
+import RequestManager from "js-request-manager/src/RequestManager";
 
 /**
- * @name NumberRequestSchemaObject
+ * @name NumberAPIRequestSchemaObject
  */
-const NumberRequestSchema =  {
+const NumberAPIRequestSchema =  {
   Test: {
     getTestText: () => {
       return new RequestClass({
@@ -28,7 +28,7 @@ const NumberRequestSchema =  {
      * @param {Number} number (integer)
      * @param {String} notfound [ default | floor | ceil ]
      * @param {String} notFactText
-     * @return {RequestClass|Promise}
+     * @return {RequestClass}
      */
     getTriviaInfo: ({number, notfound=null, notFactText=null }) => {
       return new RequestClass({
@@ -135,20 +135,9 @@ const NumberRequestSchema =  {
     },
   },
 
-
-
 };
 
 /**
- * @alias NumberRequestSchemaObject the number provided by the caller or the default param.
+ * @alias NumberAPIRequestSchemaObject need fix return value {RequestClass} in {Promise}
  */
-export default RequestManager({RequestSchema: NumberRequestSchema});
-
-// /**
-//  * @alias NumberRequestSchemaObject the number provided by the caller or the default param.
-//  */
-// const res = RequestManager({RequestSchema: NumberRequestSchema});
-//
-// export default res
-
-// export default NumberRequestSchema;
+export default RequestManager({RequestSchema: NumberAPIRequestSchema});

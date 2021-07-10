@@ -9,24 +9,22 @@ import * as ConfigDefault from "./Helper/ConfigDefault";
 import AxiosRequestClient from "./RequestClient/AxiosRequestClient";
 
 /**
- * @param _configure {{
- *   RequestSchema: Object,
- *   Config: {
- *     hostSchema: Object,
- *     RequestPrepare: {
- *       data: Function,
- *       type: Function,
- *       url: Function,
- *       axiosObject: Function,
- *     },
- *     ResponsePrepare: {
- *       validate: Function,
- *     },
- *     Hook: {
- *       RequestPromise: Function
- *     }
- *   }
- * }}
+ * @typedef {Function} RequestSchemaFunction
+ * @return {RequestClass}
+ */
+
+/**
+ * @typedef {Object.<string, (RequestSchemaStr|RequestSchemaFunction)>} RequestSchemaStr
+ */
+
+/**
+ * @param {Object} _configure
+ * @param {RequestSchemaStr} _configure.RequestSchema
+ * @param {Object} _configure.Config
+ * @param {Object} _configure.Config.hostSchema
+ * @param {Object} _configure.Config.RequestPrepare
+ * @param {Object} _configure.Config.ResponsePrepare
+ * @param {Object} _configure.Config.Hook
  */
 const RequestManager = (_configure = {}) => {
 

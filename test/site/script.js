@@ -1,11 +1,11 @@
 
 
-import NumberRM from "../../testSdk/numbersapi_com/NumberRM";
+import RmNumber from "js-request-manager/example/openApiIntegration/numbersapi_com/RmNumber";
 
-window.NumberRM = NumberRM;
+window.NumberRM = RmNumber;
 
-NumberRM.Trivia.getTriviaInfo({number:94685654654, notFactText:"not interesting fact"}).then(console.warn, console.err)
+RmNumber.Trivia.getTriviaInfo({number:94685654654, notFactText:"not interesting fact"}).then(console.warn, console.err)
 
 // NumberRM.Trivia.getTriviaInfo({})
 
-export default NumberRM
+export default RmNumber
