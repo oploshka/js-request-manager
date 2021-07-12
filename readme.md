@@ -68,7 +68,7 @@ yarn add @js-request-manager
 ```
 
 ### package.json
-```js
+```json5
 // package.json
 {
   "dependencies": {
@@ -81,13 +81,20 @@ yarn add @js-request-manager
 }
 ```
 
+
 # Инициализация (варианты):
-   - Скопировать [файлы оптимального примера](https://github.com/oploshka/js-request-manager/tree/master/example/RequestManagerOptimal) к себе в проект (рекомендуется).
-   - Скопировать [файл минимального примера](https://github.com/oploshka/js-request-manager/tree/master/example/RequestManagerBase) к себе в проект.
+   - Скопировать [файлы оптимального примера](https://github.com/oploshka/js-request-manager/tree/master/example/create/RmOptimalStructureCreate) к себе в проект (рекомендуется).
+   - Скопировать [файл минимального примера](https://github.com/oploshka/js-request-manager/tree/master/example/create/RmSimpleCreate) к себе в проект.
    - или создать файл вручную.
+
+<details>
+<summary><b>Example:</b> Пример создания вручную</summary>
+
 ```js
 import RequestManager from 'js-request-manager/src/RequestManager';
 import RequestClass   from "js-request-manager/src/Class/RequestClass";
+// request sender
+import axios from 'axios';
 
 global.RequestManager = RequestManager({
   RequestSchema: {
@@ -116,11 +123,16 @@ global.RequestManager = RequestManager({
     Hook: {
       RequestPromise (requestPromise, settings) { console.log(requestPromise, settings); }
     },
+  },
+  RequestClient: {
+    async send(obj) { return await axios(obj); }
   }
 });
 
 ```
-   
+</details>
+
+
 # RequestManager принимает следующие настройки:
 ```js
 const RequestManagerSettings = {
@@ -149,34 +161,36 @@ const RequestManagerSettings = {
 > 
 > Они будут описаны в форме RequestManagerSettings.[Тип настроек].[Подтип настроек].[Настройка]
 
-   
-### RequestManagerSettings.RequestSchema
-Тут описывается все как мы будем группировать наши запросы.
-```js
-// schema example
-const RequestSchema = {
-  Auth: {
-    authorization: ({login, password})        => { return new RequestClass({/* ... */}); },
-    registration : ({email, login, password}) => { return new RequestClass({/* ... */}); },
-  },
-  News: {
-    getAll : ()           => { return new RequestClass({/* ... */}); },
-    getById: ({id})       => { return new RequestClass({/* ... */}); },
-    getOldNews: ()        => { return new RequestClass({/* ... */}); },
-    getNewNews: ()        => { return new RequestClass({/* ... */}); },
-    create:({name, desc}) => { return new RequestClass({/* ... */}); },
-    delete:({id})         => { return new RequestClass({/* ... */}); },
-  },
-  Tags: {
-    News: {
-      getAll : ()         => { return new RequestClass({/* ... */}); },
-    },
-    User: {
-      getAll : ()         => { return new RequestClass({/* ... */}); },
-    },
-  },
-  getTheme : ()           => { return new RequestClass({/* ... */}); },
-};
+
+<details>
+<summary><b>RequestManagerSettings.RequestSchema</b></summary>
+
+> Тут описывается все как мы будем группировать наши запросы.
+> ```js
+> // schema example
+> const RequestSchema = {
+>   Auth: {
+>     authorization: ({login, password})        => { return new RequestClass({/* ... */}); },
+>     registration : ({email, login, password}) => { return new RequestClass({/* ... */}); },
+>   },
+>   News: {
+>     getAll : ()           => { return new RequestClass({/* ... */}); },
+>     getById: ({id})       => { return new RequestClass({/* ... */}); },
+>     getOldNews: ()        => { return new RequestClass({/* ... */}); },
+>     getNewNews: ()        => { return new RequestClass({/* ... */}); },
+>     create:({name, desc}) => { return new RequestClass({/* ... */}); },
+>     delete:({id})         => { return new RequestClass({/* ... */}); },
+>   },
+>   Tags: {
+>     News: {
+>       getAll : ()         => { return new RequestClass({/* ... */}); },
+>     },
+>     User: {
+>       getAll : ()         => { return new RequestClass({/* ... */}); },
+>     },
+>   },
+>   getTheme : ()           => { return new RequestClass({/* ... */}); },
+> };
 ```
 Один запрос описывается функцией, которая принимает один объект и возвращает RequestClass
 
@@ -192,38 +206,46 @@ RequestManager.Tags.User.getAll({}).then(console.log, console.error);
 
 RequestManager.getTheme({});
 ```
+</details>
 
-### RequestManagerSettings.RequestSchema RequestClass
+<details>
+<summary><b>RequestManagerSettings.RequestSchema RequestClass</b></summary>
+
 Это класс, которым мы описываем все наши запросы.
 ```js
 import RequestClass   from "js-request-manager/src/Class/RequestClass";
 
 request = new RequestClass({
-  name : '',      // String - request name (need for debug or custom prepare) 
-  type : '',      // String - request type [GET|POST|PUT|DELETE ... or other custom ]
-  url  : '',      // String - request url
-  params : {
-    get : {},     // Send GET params
-    post: {},     // Send POST params
-  },
-  
-  responsePrepare: (response) => { // Function
-    return {token: response.jwt};  // change response
-  }, 
-  
-  cache : false,        // Create request cache   
-  errorMessage: '',     // String or Function
-  // For load file
-  fileName: 'test.txt', // String or Function
+name : '',      // String - request name (need for debug or custom prepare)
+type : '',      // String - request type [GET|POST|PUT|DELETE ... or other custom ]
+url  : '',      // String - request url
+params : {
+get : {},     // Send GET params
+post: {},     // Send POST params
+},
+
+responsePrepare: (response) => { // Function
+return {token: response.jwt};  // change response
+},
+
+cache : false,        // Create request cache   
+errorMessage: '',     // String or Function
+// For load file
+fileName: 'test.txt', // String or Function
 })
-
 ```
+</details>
 
+<details>
+<summary><b>RequestManagerSettings.Config</b></summary>
 
-### RequestManagerSettings.Config
 Тут мы можем изменить стандартное поведение Request Manager, подписаться на события, задать alias для url.
 
-### RequestManagerSettings.Config.hostSchema
+</details>
+
+<details>
+<summary><b>RequestManagerSettings.Config.hostSchema</b></summary>
+
 Задаем alias для url.
 Делаем это для того, чтобы не писать полные имена доменов во всех запросах.
 Пример:
@@ -241,11 +263,18 @@ RequestClass({ url: 'auth://authorize' /* ... */}); // url => https://auth.domai
 RequestClass({ url: 'apiV1://users'    /* ... */}); // url => https://domain.test/api/v1/users
 RequestClass({ url: 'apiV2://news'     /* ... */}); // url => https://v2.domain.test/api/news
 ```
+</details>
 
-### RequestManagerSettings.Config.RequestPrepare
+<details>
+<summary><b>RequestManagerSettings.Config.RequestPrepare</b></summary>
+
 В данном объекте мы можем дополнить/переопределить/изменить/удалить данные, которые будут в запросе.
+</details>
 
-### RequestManagerSettings.Config.RequestPrepare.data
+<details>
+<summary><b>RequestManagerSettings.Config.RequestPrepare.data</b></summary>
+
+
 Эта функция позволяет изменить/дополнить/подменить данные запроса.
 Это отрабатывает для всех запросов!!!
 ```js
@@ -269,8 +298,11 @@ function(requestType, requestUrl, requestData) {
   return requestData;
 }
 ```
+</details>
 
-### RequestManagerSettings.Config.RequestPrepare.type
+<details>
+<summary><b>RequestManagerSettings.Config.RequestPrepare.type</b></summary>
+
 Эта функция позволяет изменить/подменить тип запроса.
 Это отрабатывает для всех запросов!!!
 ```js
@@ -292,9 +324,12 @@ function(requestType, requestUrl, requestData) {
   return requestType; // return original request type
 }
 ```
+</details>
 
 
-### RequestManagerSettings.Config.RequestPrepare.url
+<details>
+<summary><b>RequestManagerSettings.Config.RequestPrepare.url</b></summary>
+
 Эта функция позволяет изменить/подменить url запроса.
 Это отрабатывает для всех запросов!!!
 ```js
@@ -308,8 +343,11 @@ function(requestType, requestUrl, requestData) {
    return requestUrl.getUrl(); // warning requestUrl - is RequestLinkClass
 }
 ```
+</details>
 
-### RequestManagerSettings.Config.RequestPrepare.axiosObject
+<details>
+<summary><b>RequestManagerSettings.Config.RequestPrepare.axiosObject</b></summary>
+
 Эта функция позволяет изменить/подменить объект, который передается в axios.
 Нужно понимать какой объект хочет получить библиотека axios.
 ```js
@@ -322,12 +360,17 @@ function(axiosObject, options) {
   return axiosObject;
 }
 ```
+</details>
 
+<details>
+<summary><b>RequestManagerSettings.Config.ResponsePrepare</b></summary>
 
-### RequestManagerSettings.Config.ResponsePrepare
 В данном блоке мы работаем с ответом (можем изменить)
+</details>
 
-### RequestManagerSettings.Config.ResponsePrepare.validate
+<details>
+<summary><b>RequestManagerSettings.Config.ResponsePrepare.validate</b></summary>
+
 Тут мы проверяем является ли ответ успешным
 ```js
 // import RequestManagerException from "js-request-manager/src/Class/RequestManagerException";
@@ -338,12 +381,16 @@ function(responseData){
   return responseData;
 };
 ```
+</details>
 
-
-### RequestManagerSettings.Config.Hook
+<details>
+<summary><b>RequestManagerSettings.Config.Hook</b></summary>
 Hook - можем подписаться на события Request Managera
+</details>
 
-### RequestManagerSettings.Config.Hook.RequestPromise
+<details>
+<summary><b>RequestManagerSettings.Config.Hook.RequestPromise</b></summary>
+
 Данное событие вызывается после того как запрос отправлен.
 Применим для loading, ведения статистики, логирования, вывода сообщений об ошибках
 ```js
@@ -355,3 +402,4 @@ function(requestPromise, settings){
     });
 };
 ```
+</details>
