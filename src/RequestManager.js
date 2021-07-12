@@ -14,32 +14,32 @@ import AxiosRequestClient from "./RequestClient/AxiosRequestClient";
  */
 
 /**
- * @typedef {Object.<string, (RequestSchemaStr|RequestSchemaFunction)>} RequestSchemaStr
+ * @typedef {Object.<string, RequestSchemaFunction|RequestSchemaStr>} RequestSchemaStr
  */
 
 /**
- * @param {Object} _configure
- * @param {RequestSchemaStr} _configure.RequestSchema
- * @param {Object} _configure.Config
- * @param {Object} _configure.Config.hostSchema
- * @param {Object} _configure.Config.RequestPrepare
- * @param {Object} _configure.Config.ResponsePrepare
- * @param {Object} _configure.Config.Hook
+ * @param {RequestSchemaStr} schema
+ * @param {Object} cnf
+ * @param {Object} cnf.hostSchema
+ * @param {Object} cnf.RequestPrepare
+ * @param {Object} cnf.ResponsePrepare
+ * @param {Object} cnf.Hook
+ * @param {Object} cnf.RequestClient
  */
-const RequestManager = (_configure = {}) => {
+const RequestManager = (schema, cnf = {}) => {
 
   const cache = {};
 
-  const RequestSchema = _configure.RequestSchema;
+  const RequestSchema = schema;
   // config
   const Config = {
-    hostSchema      : Object.assign(ConfigDefault.HostSchema,      !_configure.Config ? {} : _configure.Config.hostSchema),
-    RequestPrepare  : Object.assign(ConfigDefault.RequestPrepare,  !_configure.Config ? {} : _configure.Config.RequestPrepare),
-    ResponsePrepare : Object.assign(ConfigDefault.ResponsePrepare, !_configure.Config ? {} : _configure.Config.ResponsePrepare),
-    Hook            : Object.assign(ConfigDefault.Hook,            !_configure.Config ? {} : _configure.Config.Hook),
+    hostSchema      : Object.assign(ConfigDefault.HostSchema,      cnf.hostSchema),
+    RequestPrepare  : Object.assign(ConfigDefault.RequestPrepare,  cnf.RequestPrepare),
+    ResponsePrepare : Object.assign(ConfigDefault.ResponsePrepare, cnf.ResponsePrepare),
+    Hook            : Object.assign(ConfigDefault.Hook,            cnf.Hook),
   };
 
-  const RequestClient = Object.assign(AxiosRequestClient, (_configure.RequestClient || {}) );
+  const RequestClient = Object.assign(AxiosRequestClient, (cnf.RequestClient || {}) );
 
   const SendRequest = new SendRequestClass(RequestClient, Config);
 

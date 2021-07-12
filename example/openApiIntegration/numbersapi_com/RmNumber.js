@@ -142,8 +142,7 @@ const NumberAPIRequestSchema =  {
 /**
  * @alias NumberAPIRequestSchemaObject need fix return value {RequestClass} in {Promise}
  */
-export default RequestManager({
-  RequestSchema: NumberAPIRequestSchema,
+export default RequestManager(NumberAPIRequestSchema,{
   RequestClient: {
     async send(obj) { return await axios(obj); }
   }

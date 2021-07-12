@@ -3,65 +3,66 @@ import RequestClass   from "js-request-manager/src/Class/RequestClass";
 
 import axios from 'axios';
 
-const RmSimpleCreate = RequestManager({
-  RequestSchema: {
-    Auth: {
-      authorization: ({login, password}) => {
-        return new RequestClass({
-          name  : 'authorization',
-          type  : 'POST',
-          url   : 'api://authorize', // https://domain.test/api/authorize
-          params: {
-            get: {},
-            post: {login, password},
-          },
-          responsePrepare: (data) => {
-            return {token: data.jwt};
-          },
-          errorMessage: 'Not correct login or password',
-        });
-      },
-    }
+const schema = {
+  Auth: {
+    authorization: ({login, password}) => {
+      return new RequestClass({
+        name  : 'authorization',
+        type  : 'POST',
+        url   : 'api://authorize', // https://domain.test/api/authorize
+        params: {
+          get: {},
+          post: {login, password},
+        },
+        responsePrepare: (data) => {
+          return {token: data.jwt};
+        },
+        errorMessage: 'Not correct login or password',
+      });
+    },
+  }
+}
+
+const conf = {
+  // not require
+  hostSchema: {
+    api: 'https://domain.test/api',
   },
-  Config: {
+  RequestPrepare: {
     // not require
-    hostSchema: {
-      api: 'https://domain.test/api',
+    data (requestType, requestUrl, requestData) {
+      return requestData;
     },
-    RequestPrepare: {
-      // not require
-      data (requestType, requestUrl, requestData) {
-        return requestData;
-      },
-      // not require
-      type (requestType, requestUrl, requestData) {
-        return requestType;
-      },
-      // not require
-      url (requestType, requestUrl, requestData) {
-        return requestUrl.getUrl();
-      },
-      // not require
-      axiosObject (axiosObject, options) {
-        return axiosObject;
-      },
+    // not require
+    type (requestType, requestUrl, requestData) {
+      return requestType;
     },
-    ResponsePrepare: {
-      // not require
-      validate (responseData) {
-        return responseData;
-      },
+    // not require
+    url (requestType, requestUrl, requestData) {
+      return requestUrl.getUrl();
     },
-    Hook: {
-      // not require
-      RequestPromise (requestPromise, settings) {
-        console.log(requestPromise, settings);
-      }
+    // not require
+    axiosObject (axiosObject, options) {
+      return axiosObject;
     },
+  },
+  ResponsePrepare: {
+    // not require
+    validate (responseData) {
+      return responseData;
+    },
+  },
+  Hook: {
+    // not require
+    RequestPromise (requestPromise, settings) {
+      console.log(requestPromise, settings);
+    }
   },
   RequestClient: {
     async send(obj) { return await axios(obj); }
   }
-});
+}
+
+const RmSimpleCreate = RequestManager(schema, conf);
 
 export default RmSimpleCreate;

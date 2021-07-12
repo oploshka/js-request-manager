@@ -11,15 +11,12 @@ import Hook            from "./Config/Hook";
 // RequestSchema
 import RequestSchema from "./RequestSchema";
 
-const RmOptimalStructureCreate = RequestManager({
-  RequestSchema: RequestSchema,
-  Config: {
-    hostSchema      : hostSchema,
-    RequestPrepare  : RequestPrepare,
-    ResponsePrepare : ResponsePrepare,
-    Hook            : Hook,
-  },
-  RequestClient: {
+const RmOptimalStructureCreate = RequestManager(RequestSchema, {
+  hostSchema      : hostSchema,
+  RequestPrepare  : RequestPrepare,
+  ResponsePrepare : ResponsePrepare,
+  Hook            : Hook,
+  RequestClient   : {
     async send(obj) { return await axios(obj); }
   }
 });
