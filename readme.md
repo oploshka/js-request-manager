@@ -8,45 +8,23 @@ Request Manager - это библиотека для создания sdk биб
 
 
 # Как это выглядит после настройки
-async/await
+### async/await
 ```js
 try {
   let responseData = await RequestManager.Auth.authorization({login: 'admin', password: 'pass'})
-  // user code for success response
-  localStorage.setItem('user-token', responseData.token)
-  alert('авторизация прошла успешно!');
+  // ... user code for success response
 } catch (err) {
-  // user code for error response or server error
-  alert('не удалось авторизоваться');
-  return
+  // ... user code for error response or server error
+  return;
 }
 ```
-или Promise
+### Promise
 ```js
-RequestManager.Auth.authorization({login: 'admin', password: 'pass'})
-  .then(
-    (result) => {
-      // user code for success response
-      localStorage.setItem('user-token', result.token)
-      alert('авторизация прошла успешно!');
-    },
-    (error) => {
-      // user code for error response or server error
-      alert('не удалось авторизоваться');
-    }
-  )
+RequestManager.Auth.authorization({login: 'admin', password: 'pass'}).then(
+  (result)  => { /* ... user code for success response */ },
+  (error)   => { /* ... user code for error response or server error */ }
+);
 ```
-
-# Возможности
-
-- кэшировать запросы; 
-- делать пред обработку данных;
-- отдавать фейковые данные;
-- выводить сообщения с ошибкой
-- вешать loading, logger
-
-Многое из этого требует интеграции с вашей системой. 
-Финальный функционал определять вам.
 
 # Установка
 
@@ -69,7 +47,6 @@ yarn add @js-request-manager
 
 ### package.json
 ```json5
-// package.json
 {
   "dependencies": {
     // ..
@@ -88,109 +65,115 @@ yarn add @js-request-manager
    - или создать файл вручную.
 
 <details>
-<summary><b>Example:</b> Пример создания вручную</summary>
+<summary><b style="font-size: 130%;">Example: Пример создания вручную</b></summary>
 
-```js
-import RequestManager from 'js-request-manager/src/RequestManager';
-import RequestClass   from "js-request-manager/src/Class/RequestClass";
-// request sender
-import axios from 'axios';
-
-global.RequestManager = RequestManager({
-  RequestSchema: {
-    Auth: {
-      authorization: ({login, password}) => {
-        return new RequestClass({
-          name  : 'authorization',
-          type  : 'POST',
-          url   : 'api://authorize', // https://domain.test/api/authorize
-          params: {
-            get: {},
-            post: {login, password},
-          },
-          responsePrepare: (data) => {
-            return {token: data.jwt};
-          },
-          errorMessage: 'Not correct login or password',
-        });
-      },
-    }
-  },
-  Config: {
-    hostSchema: {
-      api: 'https://domain.test/api',
-    },
-    Hook: {
-      RequestPromise (requestPromise, settings) { console.log(requestPromise, settings); }
-    },
-  },
-  RequestClient: {
-    async send(obj) { return await axios(obj); }
-  }
-});
-
-```
+> ```js
+> import RequestManager from 'js-request-manager/src/RequestManager';
+> import RequestClass   from "js-request-manager/src/Class/RequestClass";
+> // request sender
+> import axios from 'axios';
+> 
+> const requestSchema = {
+>   Auth: {
+>     authorization: ({login, password}) => {
+>       return new RequestClass({
+>         name  : 'authorization',
+>         type  : 'POST',
+>         url   : 'api://authorize', // https://domain.test/api/authorize
+>         params: {
+>           get: {},
+>           post: {login, password},
+>         },
+>         responsePrepare: (data) => {
+>           return {token: data.jwt};
+>         },
+>         errorMessage: 'Not correct login or password',
+>       });
+>     },
+>   }
+> }
+> 
+> const Config = {
+>   hostSchema: {
+>     api: 'https://domain.test/api',
+>   },
+>   Hook: {
+>     RequestPromise (requestPromise, settings) { console.log(requestPromise, settings); }
+>   },
+>   RequestClient: {
+>     async send(obj) { return await axios(obj); }
+>   }
+> }
+> 
+> const RmSimpleCreate = RequestManager(requestSchema, Config);
+> 
+> // optional (recommended use global request manager)
+> global.RequestManager = RmSimpleCreate
+> 
+> export default RmSimpleCreate
+> 
+> ```
 </details>
 
 
 # RequestManager принимает следующие настройки:
 ```js
-const RequestManagerSettings = {
-   RequestSchema: {}, 
-   // Config - all parameters are optional
-   Config: {
-      hostSchema: {},
-      RequestPrepare: {
-         data (requestType, requestUrl, requestData) { return requestData; },
-         type (requestType, requestUrl, requestData) { return requestType; },
-         url (requestType, requestUrl, requestData)  { return requestUrl.getUrl(); },
-         axiosObject (axiosObject, options)          { return axiosObject; },
-      },
-      ResponsePrepare: {
-         validate (responseData) { return responseData; },
-      },
-      Hook: {
-         RequestPromise (requestPromise, settings) { console.log(requestPromise, settings); }
-      },
-   }
+const RequestSchema = {/* ... request schema */ };
+
+const Config = {
+  // Config - all parameters are optional
+  hostSchema: {},
+  RequestPrepare: {
+    data (requestType, requestUrl, requestData) { return requestData; },
+    type (requestType, requestUrl, requestData) { return requestType; },
+    url (requestType, requestUrl, requestData)  { return requestUrl.getUrl(); },
+    axiosObject (axiosObject, options)          { return axiosObject; },
+  },
+  ResponsePrepare: {
+    validate (responseData) { return responseData; },
+  },
+  Hook: {
+    RequestPromise (requestPromise, settings) { console.log(requestPromise, settings); }
+  },
+  RequestClient: {
+    async send(obj) { return await axios(obj); }
+  }
 }
 ```
 
 
-> Далее можно посмотреть детальную информацию по каждому из полей RequestManagerSettings
-> 
-> Они будут описаны в форме RequestManagerSettings.[Тип настроек].[Подтип настроек].[Настройка]
+## RequestSchema setting information
 
+Тут описывается как мы будем группировать все наши запросы.
 
 <details>
-<summary><b>RequestManagerSettings.RequestSchema</b></summary>
+<summary><b style="font-size: 130%;">RequestSchema</b></summary>
 
-> Тут описывается все как мы будем группировать наши запросы.
-> ```js
-> // schema example
-> const RequestSchema = {
->   Auth: {
->     authorization: ({login, password})        => { return new RequestClass({/* ... */}); },
->     registration : ({email, login, password}) => { return new RequestClass({/* ... */}); },
->   },
->   News: {
->     getAll : ()           => { return new RequestClass({/* ... */}); },
->     getById: ({id})       => { return new RequestClass({/* ... */}); },
->     getOldNews: ()        => { return new RequestClass({/* ... */}); },
->     getNewNews: ()        => { return new RequestClass({/* ... */}); },
->     create:({name, desc}) => { return new RequestClass({/* ... */}); },
->     delete:({id})         => { return new RequestClass({/* ... */}); },
->   },
->   Tags: {
->     News: {
->       getAll : ()         => { return new RequestClass({/* ... */}); },
->     },
->     User: {
->       getAll : ()         => { return new RequestClass({/* ... */}); },
->     },
->   },
->   getTheme : ()           => { return new RequestClass({/* ... */}); },
-> };
+```js
+// schema example
+const RequestSchema = {
+  Auth: {
+    authorization: ({login, password})        => { return new RequestClass({/* ... */}); },
+    registration : ({email, login, password}) => { return new RequestClass({/* ... */}); },
+  },
+  News: {
+    getAll : ()           => { return new RequestClass({/* ... */}); },
+    getById: ({id})       => { return new RequestClass({/* ... */}); },
+    getOldNews: ()        => { return new RequestClass({/* ... */}); },
+    getNewNews: ()        => { return new RequestClass({/* ... */}); },
+    create:({name, desc}) => { return new RequestClass({/* ... */}); },
+    delete:({id})         => { return new RequestClass({/* ... */}); },
+  },
+  Tags: {
+    News: {
+      getAll : ()         => { return new RequestClass({/* ... */}); },
+    },
+    User: {
+      getAll : ()         => { return new RequestClass({/* ... */}); },
+    },
+  },
+  getTheme : ()           => { return new RequestClass({/* ... */}); },
+};
 ```
 Один запрос описывается функцией, которая принимает один объект и возвращает RequestClass
 
@@ -198,53 +181,56 @@ const RequestManagerSettings = {
 ```js
 RequestManager.Auth.authorization({login: 'admin', password: 'pass'});
 
-RequestManager.News.getAll({}); // need send empty object
+RequestManager.News.getAll();
 RequestManager.News.getById({id});
 
-RequestManager.Tags.News.getAll({});
+RequestManager.Tags.News.getAll();
 RequestManager.Tags.User.getAll({}).then(console.log, console.error);
 
-RequestManager.getTheme({});
+RequestManager.getTheme();
 ```
 </details>
 
 <details>
-<summary><b>RequestManagerSettings.RequestSchema RequestClass</b></summary>
+<summary><b style="font-size: 130%;">RequestSchema RequestClass</b></summary>
 
 Это класс, которым мы описываем все наши запросы.
 ```js
 import RequestClass   from "js-request-manager/src/Class/RequestClass";
 
 request = new RequestClass({
-name : '',      // String - request name (need for debug or custom prepare)
-type : '',      // String - request type [GET|POST|PUT|DELETE ... or other custom ]
-url  : '',      // String - request url
-params : {
-get : {},     // Send GET params
-post: {},     // Send POST params
-},
+  name : '',      // String - request name (need for debug or custom prepare)
+  type : '',      // String - request type [GET|POST|PUT|DELETE ... or other custom ]
+  url  : '',      // String - request url
+  params : {
+    get : {},     // Send GET params
+    post: {},     // Send POST params
+  },
 
-responsePrepare: (response) => { // Function
-return {token: response.jwt};  // change response
-},
+  responsePrepare: (response) => { // Function
+    return {token: response.jwt};  // change response
+  },
 
-cache : false,        // Create request cache   
-errorMessage: '',     // String or Function
-// For load file
-fileName: 'test.txt', // String or Function
+  cache : false,        // Create request cache   
+  errorMessage: '',     // String or Function
+  // For load file
+  fileName: 'test.txt', // String or Function
 })
 ```
 </details>
 
-<details>
-<summary><b>RequestManagerSettings.Config</b></summary>
+
+
+### Config setting information
 
 Тут мы можем изменить стандартное поведение Request Manager, подписаться на события, задать alias для url.
+Далее можно посмотреть детальную информацию по RequestSchema и Config
 
-</details>
+Config будут описан в форме Config.[Тип настроек].[Подтип настроек] = [Настройка]
+
 
 <details>
-<summary><b>RequestManagerSettings.Config.hostSchema</b></summary>
+<summary><b style="font-size: 130%;">Config.hostSchema</b></summary>
 
 Задаем alias для url.
 Делаем это для того, чтобы не писать полные имена доменов во всех запросах.
@@ -266,20 +252,20 @@ RequestClass({ url: 'apiV2://news'     /* ... */}); // url => https://v2.domain.
 </details>
 
 <details>
-<summary><b>RequestManagerSettings.Config.RequestPrepare</b></summary>
+<summary><b style="font-size: 130%;">Config.RequestPrepare</b></summary>
 
 В данном объекте мы можем дополнить/переопределить/изменить/удалить данные, которые будут в запросе.
 </details>
 
 <details>
-<summary><b>RequestManagerSettings.Config.RequestPrepare.data</b></summary>
+<summary><b style="font-size: 130%;">Config.RequestPrepare.data</b></summary>
 
 
 Эта функция позволяет изменить/дополнить/подменить данные запроса.
 Это отрабатывает для всех запросов!!!
 ```js
-// example RequestManagerSettings.Config.RequestPrepare.data
-function(requestType, requestUrl, requestData) {
+// example Config.RequestPrepare.data
+function RequestPrepare_data(requestType, requestUrl, requestData) {
   if(requestType === 'POST-REPLACE') { // add new types of queries if you understand what this is for.
      return { test: "test"} // replace requestData
   }
@@ -301,13 +287,13 @@ function(requestType, requestUrl, requestData) {
 </details>
 
 <details>
-<summary><b>RequestManagerSettings.Config.RequestPrepare.type</b></summary>
+<summary><b style="font-size: 130%;">Config.RequestPrepare.type</b></summary>
 
 Эта функция позволяет изменить/подменить тип запроса.
 Это отрабатывает для всех запросов!!!
 ```js
-// example RequestManagerSettings.Config.RequestPrepare.type
-function(requestType, requestUrl, requestData) {
+// example Config.RequestPrepare.type
+function RequestPrepare_type(requestType, requestUrl, requestData) {
   if(requestType === 'POST-REPLACE') { // add new types of queries if you understand what this is for.
     return 'POST' // replace requestType
   }
@@ -328,13 +314,13 @@ function(requestType, requestUrl, requestData) {
 
 
 <details>
-<summary><b>RequestManagerSettings.Config.RequestPrepare.url</b></summary>
+<summary><b style="font-size: 130%;">Config.RequestPrepare.url</b></summary>
 
 Эта функция позволяет изменить/подменить url запроса.
 Это отрабатывает для всех запросов!!!
 ```js
-// example RequestManagerSettings.Config.RequestPrepare.url
-function(requestType, requestUrl, requestData) {
+// example Config.RequestPrepare.url
+function RequestPrepare_url(requestType, requestUrl, requestData) {
   
   if(requestType === 'POST-REPLACE') {
     return 'https://test.domain.com/test-url' // replace url
@@ -346,12 +332,12 @@ function(requestType, requestUrl, requestData) {
 </details>
 
 <details>
-<summary><b>RequestManagerSettings.Config.RequestPrepare.axiosObject</b></summary>
+<summary><b style="font-size: 130%;">Config.RequestPrepare.axiosObject</b></summary>
 
 Эта функция позволяет изменить/подменить объект, который передается в axios.
 Нужно понимать какой объект хочет получить библиотека axios.
 ```js
-function(axiosObject, options) {
+function RequestPrepare_axiosObject(axiosObject, options) {
   let token = localStorage.getItem('user-token');
   if (token) {
     // add axios header
@@ -363,13 +349,13 @@ function(axiosObject, options) {
 </details>
 
 <details>
-<summary><b>RequestManagerSettings.Config.ResponsePrepare</b></summary>
+<summary><b style="font-size: 130%;">Config.ResponsePrepare</b></summary>
 
 В данном блоке мы работаем с ответом (можем изменить)
 </details>
 
 <details>
-<summary><b>RequestManagerSettings.Config.ResponsePrepare.validate</b></summary>
+<summary><b style="font-size: 130%;">Config.ResponsePrepare.validate</b></summary>
 
 Тут мы проверяем является ли ответ успешным
 ```js
@@ -384,17 +370,18 @@ function(responseData){
 </details>
 
 <details>
-<summary><b>RequestManagerSettings.Config.Hook</b></summary>
+<summary><b style="font-size: 130%;">Config.Hook</b></summary>
+
 Hook - можем подписаться на события Request Managera
 </details>
 
 <details>
-<summary><b>RequestManagerSettings.Config.Hook.RequestPromise</b></summary>
+<summary><b style="font-size: 130%;">Config.Hook.RequestPromise</b></summary>
 
 Данное событие вызывается после того как запрос отправлен.
 Применим для loading, ведения статистики, логирования, вывода сообщений об ошибках
 ```js
-function(requestPromise, settings){
+function Hook_RequestPromise(requestPromise, settings){
   requestPromise.then(
     (result) => {},
     (error) => {
@@ -403,3 +390,16 @@ function(requestPromise, settings){
 };
 ```
 </details>
+
+
+
+# Возможности
+
+- кэшировать запросы;
+- делать пред обработку данных;
+- отдавать фейковые данные;
+- выводить сообщения с ошибкой
+- вешать loading, logger
+
+Многое из этого требует интеграции с вашей системой.
+Финальный функционал определять вам.
