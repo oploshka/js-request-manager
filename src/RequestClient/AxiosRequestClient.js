@@ -45,7 +45,7 @@ export default {
     }
   },
 
-  getRMObject(axiosResponse, requestClass, Config) {
+  getRiObject(axiosResponse, requestClass, Config) {
 
     const ri = {
       httpStatus  : -1,

@@ -20,7 +20,7 @@ describe("RequestManager for numbersapi.com", function() {
   });
 
   it("test Html request", function (done) {
-    RmNumber.Test.getTestJson().then(
+    RmNumber.Test.getTestText().then(
       (res) => {
         assert.isString(res)
         done();

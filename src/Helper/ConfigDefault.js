@@ -14,7 +14,6 @@ export const RequestPrepare = {
   url(requestType, requestUrl, requestData) {
     return requestUrl.getUrl();
   },
-  // axiosObject => requestClientDataPrepare
   requestClientDataPrepare(requestClientData, requestClass) {
     return requestClientData;
   },
@@ -29,17 +28,16 @@ export const ResponsePrepare = {
     return false;
   },
 
-  getErrorInfo: async (ri, requestClass, Config) => {
-    return null;
-    // return {
-    //   code: '',
-    //   message: '',
-    //   data: '',
-    // }
+  getErrorInfo: async (riObject, requestClass, Config) => {
+    return {
+      code: 'error',
+      message: riObject.data.error || 'Не известная ошибка',
+      data: riObject.data,
+    }
   },
 
-  getSuccessInfo: async (ri, requestClass, Config) => {
-    return ri.data
+  getSuccessInfo: async (riObject, requestClass, Config) => {
+    return riObject.data
   },
 };
 

@@ -76,7 +76,7 @@ const sendRequestClass = function(_rc, _cnfg) {
         /**
          * @type {{headers: {}, data: {}, contentType: string, httpStatus: number}}
          */
-        let ri = RequestClient.getRMObject(rcsResponse);
+        let ri = RequestClient.getRiObject(rcsResponse);
 
         // fix file load error
         if (ri.data instanceof Blob && ri.contentType === 'application/json') {
