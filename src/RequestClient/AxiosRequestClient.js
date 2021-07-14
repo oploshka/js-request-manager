@@ -67,20 +67,26 @@ export default {
     // get headers
     if(axiosResponse.headers) {
       ri.headers = axiosResponse.headers;
+    } else if(axiosResponse.response &&  axiosResponse.response.headers) {
+      ri.headers = axiosResponse.response.headers;
     }
 
     // get contentType
     if( ri.headers['content-type']) {
-      ri.contentType = clearContentType( axiosResponse.headers['content-type'] );
+      ri.contentType = clearContentType( ri.headers['content-type'] );
     }
 
     // get data
     if(axiosResponse.data){
       ri.data = axiosResponse.data;
+    } else if(axiosResponse.response &&  axiosResponse.response.data) {
+      ri.data = axiosResponse.response.data;
+    } else if(axiosResponse.request &&  axiosResponse.request.response) {
+      ri.data = axiosResponse.request.response;
+    }
 
-      if(ri.data instanceof Blob){
-        ri.contentType = clearContentType( ri.data.type );
-      }
+    if(ri.data instanceof Blob){
+      ri.contentType = clearContentType( ri.data.type );
     }
 
     // TODO: fix httpStatus 204

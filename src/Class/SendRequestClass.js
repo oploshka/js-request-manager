@@ -122,10 +122,10 @@ const sendRequestClass = function(_rc, _cnfg) {
           data = {};
         }
 
-        // TODO: fix prepare
-        // if(requestClass.userResponseDataPrepare) {
-        //   data = requestClass.userResponseDataPrepare(data);
-        // }
+        const responsePrepareFunc = requestClass.getResponsePrepare();
+        if(responsePrepareFunc) {
+          data = responsePrepareFunc(data);
+        }
 
         promiseResolve(data);
 
