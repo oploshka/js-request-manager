@@ -1,18 +1,23 @@
 
-import RequestManagerException from "js-request-manager/src/Class/RequestManagerException";
-
 // ResponsePrepare
 export default {
-  validate(responseData){
-    // TODO: fix
-    if (responseData.details) {
-      throw new RequestManagerException('BACKEND_ERROR', responseData.details, responseData);
+  isError(riObject) {
+    if( !(200 <= riObject.httpStatus && riObject.httpStatus < 300) ) {
+      return true;
     }
-    if (responseData.non_field_errors) {
-      let str = responseData.non_field_errors.join("\n");
-      throw new RequestManagerException('BACKEND_ERROR', str, responseData);
+    return false;
+  },
+
+  getErrorInfo: async (riObject, requestClass, Config) => {
+    return {
+      code: 'error',
+      message: riObject.data.error || 'Не известная ошибка',
+      data: riObject.data,
     }
-    return responseData;
+  },
+
+  getSuccessInfo: async (riObject, requestClass, Config) => {
+    return riObject.data
   },
 };
 

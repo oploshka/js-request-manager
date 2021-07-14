@@ -29,7 +29,7 @@ RequestManager.Auth.authorization({login: 'admin', password: 'pass'}).then(
 # Установка
 
 <details open>
-<summary><b style="font-size: 1.3em;">NPM install</b></summary>
+<summary><b style="font-size: 1.3em;">NPM</b></summary>
 
 ```shell
 # install required dependencies
@@ -41,7 +41,7 @@ npm install js-request-manager
 </details>
 
 <details>
-<summary><b style="font-size: 1.3em;">Yarn install</b></summary>
+<summary><b style="font-size: 1.3em;">Yarn</b></summary>
 
 ```shell
 # install required dependencies
@@ -75,7 +75,7 @@ yarn add @js-request-manager
    - или создать файл вручную.
 
 <details>
-<summary><b style="font-size: 1.3em;">Example: Пример создания вручную</b></summary>
+<summary><b style="font-size: 1.3em;">Пример создания вручную</b></summary>
 
 > ```js
 > import RequestManager from 'js-request-manager/src/RequestManager';
