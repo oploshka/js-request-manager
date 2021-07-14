@@ -11,7 +11,7 @@ export default {
   getErrorInfo: async (riObject, requestClass, Config) => {
     return {
       code: 'error',
-      message: riObject.data.error || 'Не известная ошибка',
+      message: riObject.data.error || 'Неизвестная ошибка',
       data: riObject.data,
     }
   },

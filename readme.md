@@ -430,7 +430,7 @@ function ResponsePrepare_isError(responseData){
 async function ResponsePrepare_getErrorInfo(riObject, requestClass, Config) => {
   return {
     code: 'error',
-    message: riObject.data.error || 'Не известная ошибка',
+    message: riObject.data.error || 'Неизвестная ошибка',
     data: riObject.data,
   };
 };

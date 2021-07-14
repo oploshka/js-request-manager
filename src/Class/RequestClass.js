@@ -61,6 +61,8 @@ const RequestClass = function (option) {
   this.getParams          = () => { return _field.params; };
   this.getFileName        = () => { return _field.fileName; };
   //
+  this.getSettings        = () => { return _field.settings; };
+  //
   this.getResponsePrepare = () => { return _field.settings.responsePrepare; };
   this.getCache           = () => { return _field.settings.cache;  };
   this.getErrorMessage    = () => { return _field.settings.errorMessage; };
