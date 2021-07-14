@@ -116,7 +116,7 @@ const sendRequestClass = function(_rc, _cnfg) {
         let data = await Config.ResponsePrepare.getSuccessInfo(ri, requestClass, Config);
 
         if(data instanceof Blob) {
-          let fileName = 'TODO fix'; // TODO: fix file name
+          let fileName = requestClass.getFileName();
           fileDownload(ri.data, fileName, ri.contentType);
 
           data = {};
