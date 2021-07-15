@@ -2,12 +2,11 @@
   "name": "js-request-manager",
   "version": "1.0.0",
   "description": "JS Request Manager is a library for creating an sdk library for your server (API). The API type doesn't matter, whether it's REST or RPC",
-  "author": "Andrey Tyurin <ectb@mail.ru>",
+  "author": "Andrey Tyurin <ectb08@mail.ru>",
   "scripts": {
-    "build": "webpack",
+    "build": "webpack --config webpack.config.prod-build.js",
     "serve": "webpack serve",
-    "test": "mocha -r esm -r babel-polyfill -r @babel/register \"test/Api/*/*Test.js\"",
-    "test2": "mocha -r esm \"test/*Test.js\""
+    "test": "mocha -r esm -r babel-polyfill -r @babel/register \"test/Api/*/*Test.js\""
   },
   "main": "./src/RequestManager.js",
   "exports": {
