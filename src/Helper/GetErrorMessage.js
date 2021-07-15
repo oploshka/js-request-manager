@@ -17,3 +17,5 @@ const GetErrorMessage = (obj, error) => {
   }
   return message;
 };
+
+export default GetErrorMessage;

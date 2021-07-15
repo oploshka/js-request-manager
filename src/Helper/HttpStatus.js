@@ -34,6 +34,16 @@ export const getStatusInfo = (status) => {
   return '';
 };
 
+export const getStatusMessage = (status) => {
+  let message = ''
+  message += getStatusInfo(status);
+  message += message ? ': ' : '';
+  message += status + ' ';
+  message += (status in HTTP_ERROR_STATUS) ?  HTTP_ERROR_STATUS[status] : 'Undefined error';
+
+  return message;
+};
+
 export const HTTP_ERROR_STATUS = {
   //
   300 : 'Multiple Choices',                   // множество выборов;

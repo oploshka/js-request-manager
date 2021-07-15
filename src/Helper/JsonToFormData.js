@@ -28,7 +28,7 @@ function objectToFormData(obj, rootName, ignoreList) {
       if (data instanceof File) {
         formData.append(root, data);
       }
-      else if (data instanceof FileClass) {
+      else if (global.FileClass && data instanceof global.FileClass) {
         let file = data.getFile();
         /*
           lastModified: 1517902190000

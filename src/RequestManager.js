@@ -1,31 +1,96 @@
 //
-import SendRequest    from './SendRequest';
+import SendRequestClass from "./Class/SendRequestClass";
+import RequestClass     from "./Class/RequestClass";
+//
 import {isString, isFunction, isLiteralObject} from './Helper/Helper';
 import * as ConfigDefault from "./Helper/ConfigDefault";
 
-const cache = {};
+// TODO: fix
+import AxiosRequestClient from "./RequestClient/AxiosRequestClient";
 
-/*
-{
-  RequestSchema,
+/**
+ * @typedef {Function} RequestSchemaFunction
+ * @return {RequestClass}
+ */
 
-  // configuration
-  hostSchema = {},
-  RequestPrepare= {},
-  ResponsePrepare= {},
-  Hook = {},
-}
-**/
-const RequestManager = (_configure) => {
+/**
+ * @typedef {Object.<string, RequestSchemaFunction|RequestSchemaStr>} RequestSchemaStr
+ */
 
-  const RequestSchema = _configure.RequestSchema;
+/**
+ * @param {RequestSchemaStr} schema
+ * @param {Object} cnf
+ * @param {Object} cnf.hostSchema
+ * @param {Object} cnf.RequestPrepare
+ * @param {Object} cnf.ResponsePrepare
+ * @param {Object} cnf.Hook
+ * @param {Object} cnf.RequestClient
+ */
+const RequestManager = (schema, cnf = {}) => {
+
+  const cache = {};
+
+  const RequestSchema = schema;
   // config
   const Config = {
-    hostSchema      : Object.assign(ConfigDefault.HostSchema,      _configure.Config.hostSchema),
-    RequestPrepare  : Object.assign(ConfigDefault.RequestPrepare,  _configure.Config.RequestPrepare),
-    ResponsePrepare : Object.assign(ConfigDefault.ResponsePrepare, _configure.Config.ResponsePrepare),
-    Hook            : Object.assign(ConfigDefault.Hook,            _configure.Config.Hook),
+    hostSchema      : Object.assign(ConfigDefault.HostSchema,      cnf.hostSchema),
+    RequestPrepare  : Object.assign(ConfigDefault.RequestPrepare,  cnf.RequestPrepare),
+    ResponsePrepare : Object.assign(ConfigDefault.ResponsePrepare, cnf.ResponsePrepare),
+    Hook            : Object.assign(ConfigDefault.Hook,            cnf.Hook),
   };
+
+  const RequestClient = Object.assign(AxiosRequestClient, (cnf.RequestClient || {}) );
+
+  const SendRequest = new SendRequestClass(RequestClient, Config);
+
+  //
+  const mergeRequestClassAndRequestSettings = (requestClass, userRequestSettings) => {
+    if(!userRequestSettings) {
+      return requestClass;
+    }
+    //
+    const requestClassObj = requestClass.toObject();
+
+    return new RequestClass(Object.assign({}, requestClassObj, userRequestSettings));
+  }
+
+  const cacheCreate = (RequestClass) => {
+    // Cache get
+    const cacheInfo = RequestClass.getCache()
+    let cacheKey = false;
+    switch (true) {
+      case isString(cacheInfo):
+        cacheKey = cacheInfo;
+        break;
+      case isFunction(cacheInfo):
+        cacheKey = cacheInfo(RequestClass);
+        break;
+    }
+
+    // TODO: use Request Name
+    if(cacheKey && cache[cacheKey]) {
+      let promise = new Promise(function(promiseResolve, promiseReject) {
+        // WARNING - не менять данный объект
+        promiseResolve(cache[cacheKey]);
+      });
+      promise.abort = function(){};
+      //
+      return { getCache: promise};
+    }
+
+    if(cacheKey) {
+      return {
+        setCache(result) {
+          cache[cacheKey] = result;
+        },
+        rejectCache() {
+          delete cache[cacheKey];
+        }
+      }
+    }
+
+    return {};
+  }
 
   const requestPrepare = (request) => {
     for(let key in request) {
@@ -38,56 +103,31 @@ const RequestManager = (_configure) => {
         //
         const func = request[key];
 
-        request[key] = function (data, options = { fileName: null, cache:null, errorMessage:null }) {
+        // request[key] = function (data, options = { fileName: null, cache:null, errorMessage:null }) {
+        request[key] = function (requestData, userRequestSettings) {
 
-          const requestClass = func(data);
-          //
-          const settings = requestClass.toObject();
-          for (var key in settings) {
-            if (options[key]) settings[key] = options[key];
-          }
-          // TODO: delete fix!!!
-          settings.userResponseDataPrepare = settings.responsePrepare;
+          const requestClass = func(requestData);
+          const mergeRequestClass = mergeRequestClassAndRequestSettings(requestClass, userRequestSettings);
 
-          // cache get
-          let cacheKey = false;
-          switch (true) {
-            case isString(settings.cache):
-              cacheKey = settings.cache;
-              break;
-            case isFunction(settings.cache):
-              cacheKey = settings.cache(data);
-              break;
+          const cache = cacheCreate(mergeRequestClass)
+          if(cache.getCache) {
+            return cache.getCache();
           }
-          if(cacheKey && cache[cacheKey]) {
-            let promise = new Promise(function(promiseResolve, promiseReject) {
-              // WARNING - не менять данный объект
-              promiseResolve(cache[cacheKey]);
-            });
-            promise.abort = function(){};
-            return promise;
-          }
-
-          // TODO: fix
-          settings.options = options;
 
           // send request
-          const requestPromise = SendRequest(settings, Config);
+          const requestPromise = SendRequest.send(mergeRequestClass);
 
-          requestPromise.then(
-            (result) => {
-              // cache save
-              if(cacheKey) {
-                cache[cacheKey] = result;
-              }
-            },
-            (error) => {
-              //
-            }
-          );
+          if(cache.setCache) {
+            requestPromise.then(
+              (result) => { cache.setCache(result); },
+              (error)  => { cache.rejectCache();    }
+            );
+            return
+          }
+
 
           try {
-            Config.Hook.RequestPromise(requestPromise, settings);
+            Config.Hook.RequestPromise(requestPromise, mergeRequestClass);
           } catch (e){
             console.error(e);
           }
@@ -104,6 +144,22 @@ const RequestManager = (_configure) => {
 
   const request = RequestSchema;
   requestPrepare(request);
+
+  /**
+   * for send custom user request
+   * @param {String} type
+   * @param {String} url
+   * @param {{get: {Object}, post: {Object}}}params
+   * @param {Object} options
+   * @return {Promise<*>}
+   */
+  // request.send = async function (type, url, params, options = {}) {
+  //   return SendRequest.send(
+  //     new RequestClass(
+  //       Object.assign({type, url, params}, options)
+  //     )
+  //   );
+  // };
 
   return request;
 };

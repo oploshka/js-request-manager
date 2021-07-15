@@ -1,14 +1,14 @@
-# API request Manager.
+# Менеджер запросов к API.
 
-Request Manager is a library for creating an sdk library for your server (API).
-The API type doesn't matter, whether it's REST or RPC.
-As a result, we get the opportunity to centrally process all requests.
-We do not bother with converting data in the code, but only work with pure data.
-It is better to see 1 time than to hear 100 times.
+Request Manager - это библиотека для создания sdk библиотеки для вашего сервера (API).
+Тип API не имеет значения, будь то REST или RPC.
+В итоге мы получаем возможность централизованно обрабатывать все запросы.
+Мы не заморачиваемся с преобразованием данных в коде, а лишь работаем с чистыми данными.
+Лучше 1 раз увидеть, чем 100 раз услышать.
 
-[Documentation in Russian](readme.ru.md)
+[Documentation in English](readme.md)
 
-# How it looks after setting up
+# Как это выглядит после настройки
 ### async/await
 ```js
 try {
@@ -27,7 +27,7 @@ RequestManager.Auth.authorization({login: 'admin', password: 'pass'}).then(
 );
 ```
 
-# Installation
+# Установка
 
 <details open>
 <summary><b style="font-size: 1.3em;">NPM</b></summary>
@@ -70,13 +70,13 @@ yarn add @js-request-manager
 </details>
 
 
-# Initialization (options):
-   - Copy [optimal example files](https://github.com/oploshka/js-request-manager/tree/master/example/create/RmOptimalStructureCreate) to your project (recommended).
-   - Copy [minimal example file](https://github.com/oploshka/js-request-manager/tree/master/example/create/RmSimpleCreate) to your project.
-   - or create a file manually.
+# Инициализация (варианты):
+   - Скопировать [файлы оптимального примера](https://github.com/oploshka/js-request-manager/tree/master/example/create/RmOptimalStructureCreate) к себе в проект (рекомендуется).
+   - Скопировать [файл минимального примера](https://github.com/oploshka/js-request-manager/tree/master/example/create/RmSimpleCreate) к себе в проект.
+   - или создать файл вручную.
 
 <details>
-<summary><b style="font-size: 1.3em;">Example of manual creation</b></summary>
+<summary><b style="font-size: 1.3em;">Пример создания вручную</b></summary>
 
 > ```js
 > import RequestManager from 'js-request-manager/src/RequestManager';
@@ -127,7 +127,7 @@ yarn add @js-request-manager
 </details>
 
 
-# RequestManager accepts the following settings:
+# RequestManager принимает следующие настройки:
 ```js
 const RequestSchema = {/* ... request schema */ };
 
@@ -184,8 +184,8 @@ const Config = {
 
 ## RequestSchema setting information
 
-It describes how we will group all our requests, what parameters they will accept and in what form they will be sent.
-We can also change or replace the response data.
+Тут описывается как мы будем группировать все наши запросы, какие параметры они будут принимать и в каком виде их отсылать.
+Так же можем изменить или подменить данные ответа.
 
 <details>
 <summary><b style="font-size: 1.3em">RequestSchema</b></summary>
@@ -216,9 +216,9 @@ const RequestSchema = {
   getTheme : ()           => { return new RequestClass({/* ... */}); },
 };
 ```
-A single request is described by a function that accepts a single object and returns RequestClass
+Один запрос описывается функцией, которая принимает один объект и возвращает RequestClass
 
-An example of how to call it
+Пример как это вызывать
 ```js
 RequestManager.Auth.authorization({login: 'admin', password: 'pass'});
 
@@ -235,7 +235,7 @@ RequestManager.getTheme();
 <details>
 <summary><b style="font-size: 1.3em;">RequestSchema RequestClass</b></summary>
 
-This is the class that we use to describe all our queries.
+Это класс, которым мы описываем все наши запросы.
 ```js
 import RequestClass   from "js-request-manager/src/Class/RequestClass";
 
@@ -263,19 +263,19 @@ request = new RequestClass({
 
 ## Config setting information
 
-Here we can change the standard behavior of the Request Manager, subscribe to events, set an alias for the url.
-Next, you can see detailed information on RequestSchema and Config
+Тут мы можем изменить стандартное поведение Request Manager, подписаться на события, задать alias для url.
+Далее можно посмотреть детальную информацию по RequestSchema и Config
 
-Config will be described in the form Config.[Type].[Sub type] = [Settings]
+Config будут описан в форме Config.[Тип настроек].[Подтип настроек] = [Настройка]
 
 ------------------------------------------------------
 
 <details>
 <summary><b style="font-size: 1.3em;">Config.hostSchema</b></summary>
 
-Setting an alias for the url.
-We do this in order not to write full domain names in all requests.
-Example:
+Задаем alias для url.
+Делаем это для того, чтобы не писать полные имена доменов во всех запросах.
+Пример:
 ```js
 const hostSchema = {
    auth   : 'https://auth.domain.test/api',
@@ -284,7 +284,7 @@ const hostSchema = {
 };
 ```
 
-In the future, you can use abbreviations when describing queries
+В дальнейшем при описании запросов можно использовать сокращения
 ```js
 RequestClass({ url: 'auth://authorize' /* ... */}); // url => https://auth.domain.test/api/authorize
 RequestClass({ url: 'apiV1://users'    /* ... */}); // url => https://domain.test/api/v1/users
@@ -297,8 +297,8 @@ RequestClass({ url: 'apiV2://news'     /* ... */}); // url => https://v2.domain.
 <details open>
 <summary><b style="font-size: 1.3em;">Config.RequestPrepare</b></summary>
 
-In this object, we can add/redefine/change/delete the data that will be in the request.
-RequestPrepare is an object. See the parameters (below) in Config.RequestPrepare.[Settings subtype].
+В данном объекте мы можем дополнить/переопределить/изменить/удалить данные, которые будут в запросе.
+RequestPrepare является объектом. Смотри параметры (ниже) в Config.RequestPrepare.[Подтип настроек].
 
 </details>
 
@@ -306,8 +306,8 @@ RequestPrepare is an object. See the parameters (below) in Config.RequestPrepare
 <summary><b style="font-size: 1.3em;">Config.RequestPrepare.data</b></summary>
 
 
-This function allows you to change/supplement / replace the request data.
-This works for all requests!!!
+Эта функция позволяет изменить/дополнить/подменить данные запроса.
+Это отрабатывает для всех запросов!!!
 ```js
 // example Config.RequestPrepare.data
 function RequestPrepare_data(requestType, requestUrl, requestData) {
@@ -334,8 +334,8 @@ function RequestPrepare_data(requestType, requestUrl, requestData) {
 <details>
 <summary><b style="font-size: 1.3em;">Config.RequestPrepare.type</b></summary>
 
-This function allows you to change / replace the request type.
-This works for all requests!!!
+Эта функция позволяет изменить/подменить тип запроса.
+Это отрабатывает для всех запросов!!!
 ```js
 // example Config.RequestPrepare.type
 function RequestPrepare_type(requestType, requestUrl, requestData) {
@@ -360,8 +360,8 @@ function RequestPrepare_type(requestType, requestUrl, requestData) {
 <details>
 <summary><b style="font-size: 1.3em;">Config.RequestPrepare.url</b></summary>
 
-This function allows you to change/replace the request url.
-This works for all requests!!!
+Эта функция позволяет изменить/подменить url запроса.
+Это отрабатывает для всех запросов!!!
 ```js
 // example Config.RequestPrepare.url
 function RequestPrepare_url(requestType, requestUrl, requestData) {
@@ -378,8 +378,8 @@ function RequestPrepare_url(requestType, requestUrl, requestData) {
 <details>
 <summary><b style="font-size: 1.3em;">Config.RequestPrepare.requestClientDataPrepare</b></summary>
 
-This function allows you to change the object passed to axios or fetch.
-Add headers, settings, etc.
+Эта функция позволяет изменить объект передаваемый в axios или fetch.
+Добавить заголовки, настройки и тп.
 
 ```js
 function RequestPrepare_requestClientDataPrepare(requestClientData, requestClass) {
@@ -392,7 +392,7 @@ function RequestPrepare_requestClientDataPrepare(requestClientData, requestClass
 },
 ```
 
-ps: this is a general callback
+ps: это общий callback
 </details>
 
 ------------------------------------------------------
@@ -400,15 +400,15 @@ ps: this is a general callback
 <details open>
 <summary><b style="font-size: 1.3em;">Config.ResponsePrepare</b></summary>
 
-In this block, we are working with the answer (we can change it).
-ResponsePrepare is an object.
-See the parameters (below) in Config.ResponsePrepare.[Settings subtype].
+В данном блоке мы работаем с ответом (можем изменить).
+ResponsePrepare является объектом.
+Смотри параметры (ниже) в Config.ResponsePrepare.[Подтип настроек].
 </details>
 
 <details>
 <summary><b style="font-size: 1.3em;">Config.ResponsePrepare.isError</b></summary>
 
-Here we check whether the answer is an error
+Тут мы проверяем является ли ответ ошибкой 
 ```js
 function ResponsePrepare_isError(responseData){
   if( !(200 <= riObject.httpStatus && riObject.httpStatus < 300) ) {
@@ -425,13 +425,13 @@ function ResponsePrepare_isError(responseData){
 <details>
 <summary><b style="font-size: 1.3em;">Config.ResponsePrepare.getErrorInfo</b></summary>
 
-If ResponsePrepare_isError is true, then we are trying to get information about the error.
-We give this information in the form of an object.
+Если ResponsePrepare_isError - true, то мы пытаемся получить информацию об ошибке.
+Данную информацию отдаем в виде объекта.
 ```js
 async function ResponsePrepare_getErrorInfo(riObject, requestClass, Config) => {
   return {
     code: 'error',
-    message: riObject.data.error || 'Unknown error',
+    message: riObject.data.error || 'Неизвестная ошибка',
     data: riObject.data,
   };
 };
@@ -441,13 +441,13 @@ async function ResponsePrepare_getErrorInfo(riObject, requestClass, Config) => {
 <details>
 <summary><b style="font-size: 1.3em;">Config.ResponsePrepare.getSuccessInfo</b></summary>
 
-If ResponsePrepare_isError is false, then we get clean data from the response.
-Let's look at the example of the answer:
+Если ResponsePrepare_isError - false, то мы получаем чистые данные из ответа.
+Рассмотрим на примере ответа:
 
 ```json5
 { "success": true, "result": { "a": 1, "b": 2} } 
 ```
-In this case, we want to get - {"a": 1, "b": 2}. To do this, use the following code:
+В данном случае, мы хотим получить - { "a": 1, "b": 2}. Для этого используем следующий код: 
 
 ```js
 async function ResponsePrepare_getSuccessInfo(riObject, requestClass, Config) => {
@@ -462,16 +462,16 @@ async function ResponsePrepare_getSuccessInfo(riObject, requestClass, Config) =>
 <details open>
 <summary><b style="font-size: 1.3em;">Config.Hook</b></summary>
 
-Hook - we can subscribe to Request Managera events.
-Hook is an object.
-See the parameters (below) in Config. Hook.[Subtype of settings].
+Hook - можем подписаться на события Request Managera.
+Hook является объектом.
+Смотри параметры (ниже) в Config.Hook.[Подтип настроек].
 </details>
 
 <details>
 <summary><b style="font-size: 1.3em;">Config.Hook.RequestPromise</b></summary>
 
-This event is called after the request is sent.
-It is applicable for loading, maintaining statistics, logging, and displaying error messages
+Данное событие вызывается после того как запрос отправлен.
+Применим для loading, ведения статистики, логирования, вывода сообщений об ошибках
 ```js
 function Hook_RequestPromise(requestPromise, settings){
   requestPromise.then(
@@ -488,25 +488,25 @@ function Hook_RequestPromise(requestPromise, settings){
 <details open>
 <summary><b style="font-size: 1.3em;">Config.RequestClient</b></summary>
 
-This function allows you to determine through which we will send the request.
-Usually axios or fetch is used (you can use others as well).
-In the examples below, we will use axios.
+Набор функция позволяет определить, через что мы будем отсылать запрос.
+Обычно используется axios или fetch (можно использовать и другие). 
+В примерах ниже мы будем использовать axios.
 
-In 99%, it is necessary to pass axios. This is done via Config.RequestClient.send.
-The rest should work correctly!
-To add custom tokens, headers (and so on) to axiosObj, use " Config.RequestPrepare.requestClientDataPrepare"
+В 99% необходимо передать axios. Делается это через Config.RequestClient.send.
+Остальное должно работать корректно!
+Для добавления пользовательских токенов, заголовков (и тп) в axiosObj используйте "Config.RequestPrepare.requestClientDataPrepare"
 
-Overriding the rest makes sense if you are using a different client for sending
-or axios has released a new version (not compatible with the old one).
+Переопределение остального имеет смысл, если вы используете другой клиент для отправки
+или axios выпустили новую версию (не совместимую со старой).
 
-ps: It is worth noting axios on the front and on the back - behaves a little differently
+ps: Стоит отметить axios на фронте и на беке - ведет себя немного по разному
 
 </details>
 
 <details>
 <summary><b style="font-size: 1.3em;">Config.RequestClient.send</b></summary>
 
-Here we say that the sending will be via "axios".
+Тут мы говорим, что отправка будет через "axios".
 ```js
 import axios from 'axios';
 
@@ -519,10 +519,10 @@ async function RequestClient_send(obj) {
 <details>
 <summary><b style="font-size: 1.3em;">Config.RequestClient.getRequestClientObject</b></summary>
 
-This setting works correctly in most cases.
-There is no need to redefine it without an urgent need!
-To add custom tokens, headers (and so on) to axiosObj, use " Config.RequestPrepare.requestClientDataPrepare"
-Here we convert the data from the RequestManagera request object to an axios object. We only convert it!
+Данная настройка работает корректно в большинстве случаев. 
+Не нужно ее переопределять без острой необходимости!
+Для добавления пользовательских токенов, заголовков (и тп) в axiosObj используйте "Config.RequestPrepare.requestClientDataPrepare"
+Тут мы конвертируем данные из объекта запроса RequestManagera в объект axios. Только конвертируем!
 ```js
 function getRequestClientObject(requestObj, requestClass, Config) {
   const axiosObj = {
@@ -557,16 +557,16 @@ function getRequestClientObject(requestObj, requestClass, Config) {
 <details>
 <summary><b style="font-size: 1.3em;">Config.RequestClient.isNetworkError</b></summary>
 
-In js, network errors can't get much information.
-If network errors occur, we handle them separately.
-If this is a network error , we will return a message with the error text.
+В js сетевые ошибки не могут получить много информации. 
+При возникновении сетевых ошибок, мы их обрабатываем отдельно.
+Если это сетевая ошибка - то вернем сообщение с текстом ошибки.
 
-This setting works correctly in most cases.
-There is no need to redefine it without an urgent need!
+Данная настройка работает корректно в большинстве случаев.
+Не нужно ее переопределять без острой необходимости!
 ```js
 function isNetworkError(axiosResponse, requestClass, Config) {
   if(/* axiosResponse.isAxiosError && */ !axiosResponse.response) {
-    return axiosResponse.message ? axiosResponse.message : 'Unknown network error';
+    return axiosResponse.message ? axiosResponse.message : 'Неизвестная сетевая ошибка';
   }
 },
 ```
@@ -575,10 +575,10 @@ function isNetworkError(axiosResponse, requestClass, Config) {
 <details>
 <summary><b style="font-size: 1.3em;">Config.RequestClient.getRiObject</b></summary>
 
-We pull the information from the response to riObject (internal type of Request Manager).
+Вытаскиваем информацию из ответа в riObject (внутренний тип Request Manager).
 
-This setting works correctly in most cases.
-There is no need to redefine it without an urgent need!
+Данная настройка работает корректно в большинстве случаев.
+Не нужно ее переопределять без острой необходимости!
 ```js
 function getRiObject(axiosResponse, requestClass, Config) {
 
@@ -627,28 +627,28 @@ function getRiObject(axiosResponse, requestClass, Config) {
 ------------------------------------------------------
 
 
-# Advantages
+# Преимущества
 
-- Ability to integrate into any js project (webpack, Vue, React, Next, Nuxt, Angular and ...).
-- 1 sending point for all requests.
-- The ability to create an sdk and reuse it in different projects.
-- Ease of use (grouping by type, uniformity, response prepare).
-- Query caching (optional, disabled by default).
-- Working with fake data.
-- Use of global error handlers (user notify)
+- Возможность интегрировать в любой js проект (webpack, Vue, React, Next, Nuxt, Angular и ...).
+- 1 точка отправки для всех запросов.
+- Возможность создать sdk и переиспользовать в разных проектах.
+- Удобство использования (группировка по типам, единообразие, response prepare).
+- Кэширование запросов (опционально, по умолчанию выключено).
+- Работа с фейковыми данными.
+- Использование глобальных обработчиков ошибок (user notify)
 - Logger, Statistics, Loading, ...
 
-A lot of this requires integration with your system.
-The final functionality is up to you to determine.
+Многое из этого требует интеграции с вашей системой.
+Финальный функционал определять вам.
 
 
-# Disadvantages
+# Недостатки
 
-- There is no way to make a universal solution (the variety of APIs knows no boundaries).
-  Perhaps someone will need additional functionality.
-  Such cases are reduced to a minimum, but they can still happen.
-- Complexity. Integration with the API requires experience. You need to understand what is happening and where.
-  This solution makes it easier, but I always want it easier...
-- The solution is designed for communication via json.
-  To work with other formats (xml, yaml,...)
-  , you may need to use additional librari
+- Нет возможности сделать универсальное решение (разнообразие API не знает границ). 
+  Возможно, кому то потребуются доп. функционал. 
+  Такие случаи сведены к миниму, но все же они могут случится.
+- Сложность. Интеграция с API требует опыта. Нужно понимать, что и где происходит.
+  Данное решение это упрощает, но всегда хочется проще...
+- Решение расчитано на общение через json. 
+  Для работы с другими форматами (xml, yaml, ...) 
+  возможно потребуется использовать дополнительные библиотеки.
