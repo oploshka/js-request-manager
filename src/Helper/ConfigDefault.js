@@ -14,20 +14,30 @@ export const RequestPrepare = {
   url(requestType, requestUrl, requestData) {
     return requestUrl.getUrl();
   },
-  //
-  axiosObject(axiosObject, options) {
-    return axiosObject;
+  requestClientDataPrepare(requestClientData, requestClass) {
+    return requestClientData;
   },
 };
 
 export const ResponsePrepare = {
-  validate(responseData){
-    // import RequestManagerException from "./Class/RequestManagerException";
-    //
-    // if (responseData.details) {
-    //   throw new RequestManagerException('BACKEND_ERROR', responseData.details, responseData);
-    // }
-    return responseData;
+
+  isError(riObject) {
+    if( !(200 <= riObject.httpStatus && riObject.httpStatus < 300) ) {
+      return true;
+    }
+    return false;
+  },
+
+  getErrorInfo: async (riObject, requestClass, Config) => {
+    return {
+      code: 'error',
+      message: riObject.data.error || 'Неизвестная ошибка',
+      data: riObject.data,
+    }
+  },
+
+  getSuccessInfo: async (riObject, requestClass, Config) => {
+    return riObject.data
   },
 };
 

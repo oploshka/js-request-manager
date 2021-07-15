@@ -14,7 +14,7 @@ export default {
     return requestUrl.getUrl();
   },
   //
-  axiosObject(axiosObject, options) {
+  requestClientDataPrepare(axiosObject, options) {
     //
     let token = localStorage.getItem('user-token');
     if(token) {
