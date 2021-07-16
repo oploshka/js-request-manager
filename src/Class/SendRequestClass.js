@@ -58,25 +58,22 @@ const sendRequestClass = function(_rc, _cnfg) {
 
         let rcsResponse = {};
         try {
-          // console.log(requestClientData);
           rcsResponse = await RequestClient.send(requestClientData);
-          // rcsResponse = await axios(requestClientData);
-          // console.log(rcsResponse);
         } catch (rcsResponseError) {
-          console.log({exception: rcsResponseError});
-          // network error
-          let isNetworkError = RequestClient.isNetworkError(rcsResponseError, requestClass, Config)
-          if(isNetworkError) {
-            promiseReject( new RequestManagerException('ERROR_NETWORK', isNetworkError, {RequestClientResponse: rcsResponseError}));
-            return;
-          }
           rcsResponse = rcsResponseError;
+        }
+
+        // network error
+        let isNetworkError = RequestClient.isNetworkError(rcsResponse, requestClass, Config)
+        if(isNetworkError) {
+          promiseReject( new RequestManagerException('ERROR_NETWORK', isNetworkError, {RequestClientResponse: rcsResponse}));
+          return;
         }
 
         /**
          * @type {{headers: {}, data: {}, contentType: string, httpStatus: number}}
          */
-        let ri = RequestClient.getRiObject(rcsResponse);
+        let ri = await RequestClient.getRiObject(rcsResponse);
 
         // fix file load error
         if (ri.data instanceof Blob && ri.contentType === 'application/json') {

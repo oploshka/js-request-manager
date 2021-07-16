@@ -3,10 +3,9 @@ import {isEmpty} from "../Helper/Helper";
 
 export default {
 
+  // import axios from 'axios';
+  // async send(obj) { return await axios(obj); },
   async send(obj) {
-    // // TODO: fix npm install
-    // import axios from 'axios';
-    //  async send(obj) { return await axios(obj); },
     return Promise.reject('NOT INIT RequestClient send function');
   },
 

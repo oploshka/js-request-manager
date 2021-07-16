@@ -5,6 +5,7 @@ import RmReqres from "js-request-manager/example/openApiIntegration/reqres_in/Rm
 // fix
 global.FormData = function FormData(){  };
 global.Blob     = function     Blob(){  };
+global.fetch    = require("node-fetch");
 
 describe("RequestManager for reqres.in", function() {
 
