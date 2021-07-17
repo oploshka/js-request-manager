@@ -49,13 +49,13 @@ npm install js-request-manager
 
 ```shell
 # # install a request client, such as axios or fetch (or any other)
-# yarn add @axios              # for use axios client
-# yarn add @node-fetch         # for use fetch client in nodejs
+# yarn add axios              # for use axios client
+# yarn add node-fetch         # for use fetch client in nodejs
 
 # install required dependencies
-yarn add @js-file-download
+yarn add js-file-download
 # install
-yarn add @js-request-manager
+yarn add js-request-manager
 ```
 </details>
 
@@ -65,7 +65,7 @@ yarn add @js-request-manager
 ```json5
 {
   "dependencies": {
-    // "axios": "^0.21.1", or "node-fetch": "^2.6.1",
+    // "axios": "^0.21.1", or "node-fetch": "^2.6.1", or js fetch()
     // ..
     "js-file-download": "^0.4.12",
     "js-request-manager": "^1.0.0",

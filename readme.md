@@ -33,8 +33,11 @@ RequestManager.Auth.authorization({login: 'admin', password: 'pass'}).then(
 <summary><b style="font-size: 1.3em;">NPM</b></summary>
 
 ```shell
+# # install a request client, such as axios or fetch (or any other)
+# npm install axios              # for use axios client
+# npm install node-fetch         # for use fetch client in nodejs
+
 # install required dependencies
-npm install axios
 npm install js-file-download
 # install
 npm install js-request-manager
@@ -45,11 +48,14 @@ npm install js-request-manager
 <summary><b style="font-size: 1.3em;">Yarn</b></summary>
 
 ```shell
+# # install a request client, such as axios or fetch (or any other)
+# yarn add axios              # for use axios client
+# yarn add node-fetch         # for use fetch client in nodejs
+
 # install required dependencies
-yarn add @axios
-yarn add @js-file-download
+yarn add js-file-download
 # install
-yarn add @js-request-manager
+yarn add js-request-manager
 ```
 </details>
 
@@ -59,8 +65,8 @@ yarn add @js-request-manager
 ```json5
 {
   "dependencies": {
+    // "axios": "^0.21.1", or "node-fetch": "^2.6.1", or js fetch()
     // ..
-    "axios": "^0.21.1",
     "js-file-download": "^0.4.12",
     "js-request-manager": "^1.0.0",
     // ..
