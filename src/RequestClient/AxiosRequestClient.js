@@ -44,7 +44,7 @@ export default {
     }
   },
 
-  getRiObject(axiosResponse, requestClass, Config) {
+  async getRiObject(axiosResponse, requestClass, Config) {
 
     const ri = {
       httpStatus  : -1,
@@ -86,6 +86,11 @@ export default {
 
     if(ri.data instanceof Blob){
       ri.contentType = clearContentType( ri.data.type );
+
+      // fix file load error
+      if( ri.contentType === 'application/json'){
+        ri.data = await ri.data.text().then(text => JSON.parse(text));
+      }
     }
 
     // TODO: fix httpStatus 204

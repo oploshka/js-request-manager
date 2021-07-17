@@ -161,13 +161,13 @@ const RequestManager = (schema, cnf = {}) => {
    * @param {Object} options
    * @return {Promise<*>}
    */
-  // request.send = async function (type, url, params, options = {}) {
-  //   return SendRequest.send(
-  //     new RequestClass(
-  //       Object.assign({type, url, params}, options)
-  //     )
-  //   );
-  // };
+  request.send = async function (type, url, params, options = {}) {
+    return SendRequest.send(
+      new RequestClass(
+        Object.assign({type, url, params}, options)
+      )
+    );
+  };
 
   return request;
 };

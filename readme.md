@@ -153,7 +153,7 @@ const Config = {
       return false;
     },
     getErrorInfo: async (riObject, requestClass, Config) => {
-      return {code: 'error', message: 'Undefined error', data: {}}
+      return {code: 'error', message: 'Undefined error', data: riObject}
     },
     getSuccessInfo: async (riObject, requestClass, Config) => {
       return riObject.data
@@ -165,6 +165,7 @@ const Config = {
     }
   },
   RequestClient: {
+    name: 'AXIOS', // or FETCH
     async send(obj) {
       return await axios(obj);
     },

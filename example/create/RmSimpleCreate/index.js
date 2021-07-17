@@ -59,7 +59,7 @@ const conf = {
       return {
         code: 'error',
         message: riObject.data.error || 'Неизвестная ошибка',
-        data: riObject.data,
+        data: riObject,
       }
     },
     // not require

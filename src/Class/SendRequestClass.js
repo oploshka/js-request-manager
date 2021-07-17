@@ -75,11 +75,6 @@ const sendRequestClass = function(_rc, _cnfg) {
          */
         let ri = await RequestClient.getRiObject(rcsResponse);
 
-        // fix file load error
-        if (ri.data instanceof Blob && ri.contentType === 'application/json') {
-          ri.data = await ri.data.text().then(text => JSON.parse(text));
-        }
-
         //
         if( Config.ResponsePrepare.isError(ri, requestClass, Config) ) {
 
