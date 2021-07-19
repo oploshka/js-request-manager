@@ -74,8 +74,8 @@ yarn add js-request-manager
 
 
 # Инициализация (варианты):
-   - Скопировать [файлы оптимального примера](https://github.com/oploshka/js-request-manager/tree/master/example/create/RmOptimalStructureCreate) к себе в проект (рекомендуется).
-   - Скопировать [файл минимального примера](https://github.com/oploshka/js-request-manager/tree/master/example/create/RmSimpleCreate) к себе в проект.
+   - Скопировать [файлы оптимального примера](https://github.com/oploshka/js-request-manager/tree/develop/example/create/RmOptimalStructureCreate) к себе в проект (рекомендуется).
+   - Скопировать [файл минимального примера](https://github.com/oploshka/js-request-manager/tree/develop/example/create/RmSimpleCreate) к себе в проект.
    - или создать файл вручную.
 
 <details>
