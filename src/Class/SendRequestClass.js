@@ -1,5 +1,3 @@
-// TODO: fix npm install
-import fileDownload from 'js-file-download';
 
 import RequestManagerException  from "../Class/RequestManagerException";
 import RequestLinkClass         from "../Class/RequestLinkClass";
@@ -108,10 +106,7 @@ const sendRequestClass = function(_rc, _cnfg) {
         let data = await Config.ResponsePrepare.getSuccessInfo(ri, requestClass, Config);
 
         if(data instanceof Blob) {
-          let fileName = requestClass.getFileName();
-          fileDownload(ri.data, fileName, ri.contentType);
-
-          data = {};
+          data = await RequestClient.fileDownload(data, ri, requestClass, Config);
         }
 
         const responsePrepareFunc = requestClass.getResponsePrepare();

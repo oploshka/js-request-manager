@@ -9,6 +9,21 @@ export default {
     return Promise.reject('NOT INIT RequestClient send function');
   },
 
+  async fileDownload(data, ri, requestClass, Config) {
+    // # npm install
+    // import fileDownload from 'js-file-download';
+    // # js code
+    // const download = async (data, ri, requestClass, Config) => {
+    //   let fileName = requestClass.getFileName();
+    //   fileDownload(ri.data, fileName, ri.contentType);
+    // }
+    // download(data, ri, requestClass, Config)
+
+    console.warn('Use custom file download client');
+    return {};
+  },
+
+
   getRequestClientObject(requestObj, requestClass, Config) {
     const axiosObj = {
       method  : requestObj.type,
