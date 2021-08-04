@@ -7,6 +7,7 @@ npm install js-request-manager@1.0.0-beta.4
 # Публикация пакета на npmjs
 ```shell
 # (предварительно npm login)
+# npm run build  # !!! не забыть !!!
 npm publish
 ```
 

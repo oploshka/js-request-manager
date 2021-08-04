@@ -54,13 +54,14 @@ export default {
 
 
   isNetworkError(axiosResponse, requestClass, Config) {
-    if(/* axiosResponse.isAxiosError && */ !axiosResponse.response) {
+    // if(!axiosResponse.status /* axiosResponse.isAxiosError &&  !axiosResponse.response */ ) {
+    if( !(axiosResponse.request && axiosResponse.request.status) ) {
       return axiosResponse.message ? axiosResponse.message : 'Неизвестная сетевая ошибка';
     }
   },
 
   async getRiObject(axiosResponse, requestClass, Config) {
-
+    // httpStatus 204 - empty response and not content type!!!
     const ri = {
       httpStatus  : -1,
       contentType : '',
@@ -108,7 +109,6 @@ export default {
       }
     }
 
-    // TODO: fix httpStatus 204
     return ri;
   },
 

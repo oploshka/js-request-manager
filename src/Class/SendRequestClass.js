@@ -80,9 +80,12 @@ const sendRequestClass = function(_rc, _cnfg) {
           let errMessage = '';
           let errDetails = null;
 
+          // TODO: добавить параметр undefinedErrorMessage!!!!
+          // TODO: fix - тут приходит строка
+          // TODO: fix - GetErrorMessage - ожидал 2 параметра!!!!
           let requestClassErrorObject = requestClass.getErrorMessage();
           if(requestClassErrorObject) {
-            errMessage = GetErrorMessage(requestClassErrorObject);
+            errMessage = GetErrorMessage(requestClassErrorObject, ri, requestClass, Config);
           }
 
           if(!errMessage) {
