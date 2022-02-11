@@ -2,7 +2,8 @@
 import SendRequestClass from "./Class/SendRequestClass";
 import RequestClass     from "./Class/RequestClass";
 //
-import {isString, isFunction, isLiteralObject} from './Helper/Helper';
+import { mergeRequestClassAndRequestSettings, cacheCreate} from "./Helper/Function";
+import { isFunction, isLiteralObject} from './Helper/Helper';
 import * as ConfigDefault from "./Helper/ConfigDefault";
 
 /**
@@ -26,127 +27,91 @@ const RequestManager = (schema, cnf = {}) => {
   const cache = {};
 
   const RequestSchema = schema;
+  const RequestClientProvider = cnf.RequestClientProvider
   // config
   const Config = {
     hostSchema      : Object.assign(ConfigDefault.HostSchema,      cnf.hostSchema),
     Hook            : Object.assign(ConfigDefault.Hook,            cnf.Hook),
-    // RequestPrepare  : Object.assign(ConfigDefault.RequestPrepare,  cnf.RequestPrepare),
-    // ResponsePrepare : Object.assign(ConfigDefault.ResponsePrepare, cnf.ResponsePrepare),
-    RequestClientProvider: ConfigDefault.RequestClientProvider,
   };
 
-  // let defaultRequestClient = AxiosRequestClient;
-  // if(cnf.RequestClient && cnf.RequestClient.name){
-  //   switch (cnf.RequestClient.name){
-  //     case 'AXIOS': defaultRequestClient = AxiosRequestClient; break;
-  //     case 'FETCH': defaultRequestClient = FetchRequestClient; break;
-  //   }
-  // }
-  // const RequestClient = Object.assign(defaultRequestClient, (cnf.RequestClient || {}) );
-
+  // Создаем функцию для отправки
   const SendRequest = new SendRequestClass(RequestClientProvider, Config);
-
-  //
-  const mergeRequestClassAndRequestSettings = (requestClass, userRequestSettings) => {
-    if(!userRequestSettings) {
-      return requestClass;
-    }
-    //
-    const requestClassObj = requestClass.toObject();
-
-    return new RequestClass(Object.assign({}, requestClassObj, userRequestSettings));
+  
+  // соединяем ключи для имен методов
+  const concatenateKey= (p, c) => {
+    return p + '::' + c;
   }
-
-  const cacheCreate = (RequestClass) => {
-    // Cache get
-    const cacheInfo = RequestClass.getCache()
-    let cacheKey = false;
-    switch (true) {
-      case isString(cacheInfo):
-        cacheKey = cacheInfo;
-        break;
-      case isFunction(cacheInfo):
-        cacheKey = cacheInfo(RequestClass);
-        break;
-    }
-
-    // TODO: use Request Name
-    if(cacheKey && cache[cacheKey]) {
-      let promise = new Promise(function(promiseResolve, promiseReject) {
-        // WARNING - не менять данный объект
-        promiseResolve(cache[cacheKey]);
-      });
-      promise.abort = function(){};
-      //
-      return { getCache: promise};
-    }
-
-    if(cacheKey) {
-      return {
-        setCache(result) {
-          cache[cacheKey] = result;
-        },
-        rejectCache() {
-          delete cache[cacheKey];
-        }
+  
+  // Тут мы перебираем все элементы и генерим по ним менеджер запросов
+  const requestPrepare = (requestSchema, parentKey = '') => {
+    const req1 = {};
+    for(let key in requestSchema) {
+      if ( isLiteralObject(requestSchema[key]) ) {
+        req1[key] = requestPrepare(requestSchema[key], concatenateKey(parentKey, key) );
       }
-    }
-
-    return {};
-  }
-
-  const requestPrepare = (request) => {
-    for(let key in request) {
-
-      if ( isLiteralObject(request[key]) ) {
-        request[key] = requestPrepare(request[key]);
-      }
-
-      else if ( isFunction(request[key]) ) {
-        //
-        const func = request[key];
-
+      else if ( isFunction(requestSchema[key]) ) {
         // request[key] = function (data, options = { fileName: null, cache:null, errorMessage:null }) {
-        request[key] = function (requestData, userRequestSettings) {
-
-          const requestClass = func(requestData);
-          const mergeRequestClass = mergeRequestClassAndRequestSettings(requestClass, userRequestSettings);
-
-          const cache = cacheCreate(mergeRequestClass)
-          if(cache.getCache) {
-            return cache.getCache();
-          }
-
-          // send request
-          const requestPromise = SendRequest.send(mergeRequestClass);
-
-          if(cache.setCache) {
-            requestPromise.then(
-              (result) => { cache.setCache(result); },
-              (error)  => { cache.rejectCache();    }
-            );
-            return
-          }
-
-
-          try {
-            Config.Hook.RequestPromise(requestPromise, mergeRequestClass);
-          } catch (e){
-            console.error(e);
-          }
-
-          return requestPromise;
-        };
+        req1[key] = createRequestSendFunctionQQ(requestSchema[key], concatenateKey(parentKey, key) )
       }
-
-
     }
-
-    return request;
+    return req1
   };
+  
+  // функция обертка для сохранения
+  const createRequestSendFunctionQQ = (_rsf, _mn) => {
+    //
+    const requestSchemaFunction = _rsf;
+    const methodName            = _mn;
+    
+    // Формируем функцию для отправки
+    return RequestSendFunction(requestData, userRequestSettings) => {
+      const requestClass = requestSchemaFunction(requestData);
+      const mergeRequestClass = mergeRequestClassAndRequestSettings(requestClass, userRequestSettings);
 
-  const request = RequestSchema;
-  requestPrepare(request);
+      // TODO: продумать кеш
+      // const cache = cacheCreate(mergeRequestClass)
+      // if (cache.getCache) {
+      //   return cache.getCache();
+      // }
+  
+      // send request
+      const requestPromise = SendRequest.send(mergeRequestClass);
+  
+      // TODO: продумать кеш
+      // if (cache.setCache) {
+      //   requestPromise.then(
+      //     (result) => {
+      //       cache.setCache(result);
+      //     },
+      //     (error) => {
+      //       cache.rejectCache();
+      //     }
+      //   );
+      //   return
+      // }
+  
+  
+      try {
+        Config.Hook.RequestPromise(requestPromise, mergeRequestClass);
+      } catch (e) {
+        console.error(e);
+      }
+  
+      return requestPromise;
+    }
+    
+  }
+  
+  ///////////////////////////////////////////////////////////
+  
+  
+  
+  
+  
+  
+  
+  
+  const request = requestPrepare(RequestSchema);
 
   /**
    * for send custom user request
