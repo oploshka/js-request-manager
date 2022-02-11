@@ -1,5 +1,3 @@
-// TODO: fix npm install
-import fileDownload from 'js-file-download';
 
 import RequestManagerException  from "../Class/RequestManagerException";
 import RequestLinkClass         from "../Class/RequestLinkClass";
@@ -58,30 +56,22 @@ const sendRequestClass = function(_rc, _cnfg) {
 
         let rcsResponse = {};
         try {
-          // console.log(requestClientData);
           rcsResponse = await RequestClient.send(requestClientData);
-          // rcsResponse = await axios(requestClientData);
-          // console.log(rcsResponse);
         } catch (rcsResponseError) {
-          console.log({exception: rcsResponseError});
-          // network error
-          let isNetworkError = RequestClient.isNetworkError(rcsResponseError, requestClass, Config)
-          if(isNetworkError) {
-            promiseReject( new RequestManagerException('ERROR_NETWORK', isNetworkError, {RequestClientResponse: rcsResponseError}));
-            return;
-          }
           rcsResponse = rcsResponseError;
+        }
+
+        // network error
+        let isNetworkError = RequestClient.isNetworkError(rcsResponse, requestClass, Config)
+        if(isNetworkError) {
+          promiseReject( new RequestManagerException('ERROR_NETWORK', isNetworkError, {RequestClientResponse: rcsResponse}));
+          return;
         }
 
         /**
          * @type {{headers: {}, data: {}, contentType: string, httpStatus: number}}
          */
-        let ri = RequestClient.getRiObject(rcsResponse);
-
-        // fix file load error
-        if (ri.data instanceof Blob && ri.contentType === 'application/json') {
-          ri.data = await ri.data.text().then(text => JSON.parse(text));
-        }
+        let ri = await RequestClient.getRiObject(rcsResponse);
 
         //
         if( Config.ResponsePrepare.isError(ri, requestClass, Config) ) {
@@ -90,9 +80,12 @@ const sendRequestClass = function(_rc, _cnfg) {
           let errMessage = '';
           let errDetails = null;
 
+          // TODO: добавить параметр undefinedErrorMessage!!!!
+          // TODO: fix - тут приходит строка
+          // TODO: fix - GetErrorMessage - ожидал 2 параметра!!!!
           let requestClassErrorObject = requestClass.getErrorMessage();
           if(requestClassErrorObject) {
-            errMessage = GetErrorMessage(requestClassErrorObject);
+            errMessage = GetErrorMessage(requestClassErrorObject, ri, requestClass, Config);
           }
 
           if(!errMessage) {
@@ -116,10 +109,7 @@ const sendRequestClass = function(_rc, _cnfg) {
         let data = await Config.ResponsePrepare.getSuccessInfo(ri, requestClass, Config);
 
         if(data instanceof Blob) {
-          let fileName = requestClass.getFileName();
-          fileDownload(ri.data, fileName, ri.contentType);
-
-          data = {};
+          data = await RequestClient.fileDownload(data, ri, requestClass, Config);
         }
 
         const responsePrepareFunc = requestClass.getResponsePrepare();

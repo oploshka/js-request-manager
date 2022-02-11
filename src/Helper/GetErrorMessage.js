@@ -1,18 +1,14 @@
-// TODO: вернуть в ядро!!!
+
 import {isString, isFunction} from '../Helper/Helper';
 
-const GetErrorMessage = (obj, error) => {
+const GetErrorMessage = (obj, ri, requestClass, Config) => {
   let message = '';
   switch (true) {
     case isString(obj):
-      if(obj === '') {
-        message = error.message; // toString();
-      } else {
-        message = obj + "\n\nДетали по ошибке:\n" + error.message; // toString();
-      }
+      message = obj;
       break;
     case isFunction(obj):
-      message = obj(error);
+      message = obj(ri, requestClass, Config);
       break;
   }
   return message;

@@ -1,7 +1,7 @@
 import RequestClass   from "js-request-manager/src/Class/RequestClass";
 import RequestManager from "js-request-manager/src/RequestManager";
 
-import axios from 'axios';
+// import axios from 'axios';
 
 /**
  * @name NumberAPIRequestSchemaObject
@@ -144,6 +144,7 @@ const NumberAPIRequestSchema =  {
  */
 export default RequestManager(NumberAPIRequestSchema,{
   RequestClient: {
-    async send(obj) { return await axios(obj); }
+    name: 'FETCH',
+    // async send(obj) { return await axios(obj); }
   }
 });

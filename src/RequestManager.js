@@ -5,8 +5,9 @@ import RequestClass     from "./Class/RequestClass";
 import {isString, isFunction, isLiteralObject} from './Helper/Helper';
 import * as ConfigDefault from "./Helper/ConfigDefault";
 
-// TODO: fix
+//
 import AxiosRequestClient from "./RequestClient/AxiosRequestClient";
+import FetchRequestClient from "./RequestClient/FetchRequestClient";
 
 /**
  * @typedef {Function} RequestSchemaFunction
@@ -39,7 +40,14 @@ const RequestManager = (schema, cnf = {}) => {
     Hook            : Object.assign(ConfigDefault.Hook,            cnf.Hook),
   };
 
-  const RequestClient = Object.assign(AxiosRequestClient, (cnf.RequestClient || {}) );
+  let defaultRequestClient = AxiosRequestClient;
+  if(cnf.RequestClient && cnf.RequestClient.name){
+    switch (cnf.RequestClient.name){
+      case 'AXIOS': defaultRequestClient = AxiosRequestClient; break;
+      case 'FETCH': defaultRequestClient = FetchRequestClient; break;
+    }
+  }
+  const RequestClient = Object.assign(defaultRequestClient, (cnf.RequestClient || {}) );
 
   const SendRequest = new SendRequestClass(RequestClient, Config);
 
@@ -153,13 +161,13 @@ const RequestManager = (schema, cnf = {}) => {
    * @param {Object} options
    * @return {Promise<*>}
    */
-  // request.send = async function (type, url, params, options = {}) {
-  //   return SendRequest.send(
-  //     new RequestClass(
-  //       Object.assign({type, url, params}, options)
-  //     )
-  //   );
-  // };
+  request.send = async function (type, url, params, options = {}) {
+    return SendRequest.send(
+      new RequestClass(
+        Object.assign({type, url, params}, options)
+      )
+    );
+  };
 
   return request;
 };

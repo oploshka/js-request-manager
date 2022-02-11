@@ -33,10 +33,12 @@ RequestManager.Auth.authorization({login: 'admin', password: 'pass'}).then(
 <summary><b style="font-size: 1.3em;">NPM</b></summary>
 
 ```shell
-# install required dependencies
-npm install axios
-npm install js-file-download
-# install
+# # install a request client, such as axios or fetch (or any other)
+# npm install axios              # for use axios client
+# npm install node-fetch         # for use fetch client in nodejs
+# # install file download (if necessary)
+# npm install js-file-download   # for file download (or use other)
+# # install
 npm install js-request-manager
 ```
 </details>
@@ -45,11 +47,13 @@ npm install js-request-manager
 <summary><b style="font-size: 1.3em;">Yarn</b></summary>
 
 ```shell
-# install required dependencies
-yarn add @axios
-yarn add @js-file-download
-# install
-yarn add @js-request-manager
+# # install a request client, such as axios or fetch (or any other)
+# yarn add axios              # for use axios client
+# yarn add node-fetch         # for use fetch client in nodejs
+# # install file download (if necessary)
+# yarn add js-file-download   # for file download (or use other)
+# # install
+yarn add js-request-manager
 ```
 </details>
 
@@ -59,9 +63,8 @@ yarn add @js-request-manager
 ```json5
 {
   "dependencies": {
-    // ..
-    "axios": "^0.21.1",
-    "js-file-download": "^0.4.12",
+    // "axios": "^0.21.1", or "node-fetch": "^2.6.1", or js fetch()
+    // js-file-download": "^0.4.12", or other 
     "js-request-manager": "^1.0.0",
     // ..
   }
@@ -71,8 +74,8 @@ yarn add @js-request-manager
 
 
 # Инициализация (варианты):
-   - Скопировать [файлы оптимального примера](https://github.com/oploshka/js-request-manager/tree/master/example/create/RmOptimalStructureCreate) к себе в проект (рекомендуется).
-   - Скопировать [файл минимального примера](https://github.com/oploshka/js-request-manager/tree/master/example/create/RmSimpleCreate) к себе в проект.
+   - Скопировать [файлы оптимального примера](https://github.com/oploshka/js-request-manager/tree/develop/example/create/RmOptimalStructureCreate) к себе в проект (рекомендуется).
+   - Скопировать [файл минимального примера](https://github.com/oploshka/js-request-manager/tree/develop/example/create/RmSimpleCreate) к себе в проект.
    - или создать файл вручную.
 
 <details>
@@ -153,7 +156,7 @@ const Config = {
       return false;
     },
     getErrorInfo: async (riObject, requestClass, Config) => {
-      return {code: 'error', message: 'Undefined error', data: {}}
+      return {code: 'error', message: 'Undefined error', data: riObject}
     },
     getSuccessInfo: async (riObject, requestClass, Config) => {
       return riObject.data
@@ -165,8 +168,13 @@ const Config = {
     }
   },
   RequestClient: {
+    name: 'AXIOS', // or FETCH
     async send(obj) {
       return await axios(obj);
+    },
+    async fileDownload(data, ri, requestClass, Config) {
+      // add file download code
+      return {};
     },
     getRequestClientObject(requestObj, requestClass, Config) {
       return requestObj;
@@ -504,6 +512,13 @@ ps: Стоит отметить axios на фронте и на беке - ве�
 </details>
 
 <details>
+<summary><b style="font-size: 1.3em;">Config.RequestClient.name</b></summary>
+
+Тут мы говорим, какой пресет Config.RequestClient использовать (AXIOS | FETCH).
+По дефолту будет использоваться пресет AXIOS.
+</details>
+
+<details>
 <summary><b style="font-size: 1.3em;">Config.RequestClient.send</b></summary>
 
 Тут мы говорим, что отправка будет через "axios".
@@ -513,6 +528,24 @@ import axios from 'axios';
 async function RequestClient_send(obj) {
   return await axios(obj);
 },
+```
+</details>
+
+<details>
+<summary><b style="font-size: 1.3em;">Config.RequestClient.fileDownload</b></summary>
+
+Тут мы говорим, что мы будет загружать файлы.
+```js
+import fileDownload from 'js-file-download';
+
+async fileDownload(data, ri, requestClass, Config) {
+  const download = async (data, ri, requestClass, Config) => {
+    let fileName = requestClass.getFileName();
+    fileDownload(ri.data, fileName, ri.contentType);
+  }
+  download(data, ri, requestClass, Config)
+  return {};
+}
 ```
 </details>
 

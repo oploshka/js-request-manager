@@ -5,6 +5,7 @@ import RmNumber from "js-request-manager/example/openApiIntegration/numbersapi_c
 // fix
 global.FormData = function FormData(){  };
 global.Blob     = function     Blob(){  };
+global.fetch    = require("node-fetch");
 
 describe("RequestManager for numbersapi.com", function() {
 

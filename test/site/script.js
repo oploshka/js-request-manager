@@ -1,11 +1,13 @@
 
-
 import RmNumber from "js-request-manager/example/openApiIntegration/numbersapi_com/RmNumber";
+window.RmNumber = RmNumber;
 
-window.NumberRM = RmNumber;
+import RmReqres from "js-request-manager/example/openApiIntegration/reqres_in/RmReqres";
+window.RmReqres = RmReqres;
 
+//
 RmNumber.Trivia.getTriviaInfo({number:94685654654, notFactText:"not interesting fact"}).then(console.warn, console.err)
+// RmNumber.Trivia.getTriviaInfo({})
 
-// NumberRM.Trivia.getTriviaInfo({})
+export default {}
 
-export default RmNumber
