@@ -15,12 +15,21 @@ export default {
     }
     return true;
   },
+  // TODO: упростить в 1 метод?
+  getSuccessInfo: async (riObject, requestClass, Config) => {
+    
+    let data = riObject.data;
+    
+    //
+    if(data instanceof Blob) {
+      // data = await RequestClient.fileDownload(data, ri, requestClass, Config);
+      return {};
+    }
+    return data;
+  },
 
   getErrorHandlerList: getErrorHandlerList,
 
-  getSuccessInfo: async (riObject, requestClass, Config) => {
-    return riObject.data
-  },
 };
 
 

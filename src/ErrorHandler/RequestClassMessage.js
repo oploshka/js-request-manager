@@ -3,13 +3,6 @@ import {isString, isFunction} from '../Helper/Helper';
 
 /**
  * Функция которая позволяет обработать requestClass - поле ошибки
- *
- * @param obj
- * @param ri
- * @param requestClass
- * @param Config
- * @returns {string}
- * @constructor
  */
 const GetErrorMessage = (obj, ri, requestClass, Config) => {
   let message = '';
@@ -24,4 +17,17 @@ const GetErrorMessage = (obj, ri, requestClass, Config) => {
   return message;
 };
 
-export default GetErrorMessage;
+
+export default async (riObject, requestClass, Config) => {
+  let requestClassErrorObject = requestClass.getErrorMessage();
+  if(!requestClassErrorObject) {
+    return null;
+  }
+  
+  let errMessage = GetErrorMessage(requestClassErrorObject, ri, requestClass, Config);
+  return {
+    code:     'ERROR_BY_REQUEST_CLASS',
+    message:  errMessage,
+    data:     {},
+  };
+};

@@ -40,7 +40,7 @@ export const getStatusMessage = (status) => {
   message += message ? ': ' : '';
   message += status + ' ';
   message += (status in HTTP_ERROR_STATUS) ?  HTTP_ERROR_STATUS[status] : 'Undefined error';
-
+  
   return message;
 };
 
@@ -55,7 +55,7 @@ export const HTTP_ERROR_STATUS = {
   306 : 'ERROR_306',                          // зарезервировано (код использовался только в ранних спецификациях);
   307 : 'Temporary Redirect',                 // временное перенаправление;
   308 : 'Permanent Redirect',                 // постоянное перенаправление.
-
+  
   //
   400 : 'Bad Request',                        //  неправильный, некорректный запрос;
   401 : 'Unauthorized',                       //  не авторизован (не представился);
@@ -89,7 +89,7 @@ export const HTTP_ERROR_STATUS = {
   449 : 'Retry With',                         //   повторить с
   451 : 'Unavailable For Legal Reasons',      //   недоступно по юридическим причинам.',
   499 : 'Client Closed Request',              //   (клиент закрыл соединение)
-
+  
   //
   500 : 'Internal Server Error',              //   внутренняя ошибка сервера
   501 : 'Not Implemented',                    //   не реализовано
@@ -110,4 +110,20 @@ export const HTTP_ERROR_STATUS = {
   524 : 'A Timeout Occurred',                 //   время ожидания истекло
   525 : 'SSL Handshake Failed',               //   квитирование SSL не удалось
   526 : 'Invalid SSL Certificate',            //   недействительный сертификат SSL.',
+};
+
+
+
+export default async (riObject, requestClass, Config) => {
+  
+  let errMessage = getStatusMessage(riObject.httpStatus);
+  if(!errMessage) {
+    return null;
+  }
+  
+  return {
+    code:     'NETWORK_ERROR',
+    message:  errMessage,
+    data:     {},
+  };
 };

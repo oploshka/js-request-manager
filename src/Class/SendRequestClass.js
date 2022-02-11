@@ -2,8 +2,6 @@
 import RequestManagerException  from "../Class/RequestManagerException";
 import RequestLinkClass         from "../Class/RequestLinkClass";
 
-import { getStatusMessage } from "../Helper/HttpStatus";
-
 const newErrorPromise = (code, message = '', details = null) => {
   let promise = Promise.reject(new RequestManagerException(code, message, details));
   promise.abort = () => {};
@@ -112,16 +110,12 @@ const sendRequestClass = function(_rcp, _cnfg) {
           return;
         }
 
-
-        let data = await Config.ResponsePrepare.getSuccessInfo(ri, requestClass, Config);
-
-        if(data instanceof Blob) {
-          data = await RequestClient.fileDownload(data, ri, requestClass, Config);
-        }
+        //
+        let data = await responsePrepare.getSuccessInfo(ri, requestClass, Config);
 
         const responsePrepareFunc = requestClass.getResponsePrepare();
         if(responsePrepareFunc) {
-          data = responsePrepareFunc(data);
+          data = await responsePrepareFunc(data);
         }
 
         promiseResolve(data);
