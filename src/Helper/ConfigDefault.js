@@ -25,6 +25,14 @@ export const ResponsePrepare = {
     if( !(200 <= riObject.httpStatus && riObject.httpStatus < 300) ) {
       return true;
     }
+    
+    // TODO: продумать ситуации когда ожидается файл!!!
+    //   if(!requestClass.getFileName()){
+    //     if( !riObject.data || !riObject.data.success ) {
+    //       return true;
+    //     }
+    //   }
+    
     return false;
   },
 

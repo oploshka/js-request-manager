@@ -5,47 +5,63 @@ import RequestLinkClass         from "../Class/RequestLinkClass";
 import { getStatusMessage } from "../Helper/HttpStatus";
 import GetErrorMessage from "../Helper/GetErrorMessage";
 
+const newErrorPromise = (code, message = '', details = null) => {
+  let promise = Promise.reject(new RequestManagerException(code, message, details));
+  promise.abort = () => {};
+  return promise;
+};
 
-const sendRequestClass = function(_rc, _cnfg) {
+const sendRequestClass = function(_rcp, _cnfg) {
 
-  const RequestClient = _rc;
+  const RequestProvider = _rcp;
   const Config = _cnfg;
-
-  /**
-   * @param {RequestClass} requestClass
-   * @return {{data: Object, type: String, url: String}}
-   */
-  this.getRequestObject = (requestClass) => {
-
-    const type      = requestClass.getType();
-    const url       = requestClass.getUrl();
-    const params    = requestClass.getParams();
-
-    let urlClass = new RequestLinkClass(url, Config.hostSchema);
-    return {
-      type      : Config.RequestPrepare.type(type, urlClass, params),
-      url       : Config.RequestPrepare.url(type, urlClass, params),
-      data      : Config.RequestPrepare.data(type, urlClass, params),
-    };
-  };
-
+  
   /**
    * @param {RequestClass} requestClass
    * @return {Promise<unknown>}
    */
   this.send = async (requestClass) => {
-
+  
+    // обработчики для запроса
+    let requestGroupName;
+    let requestPrepare;
+    let requestClient;
+    let responsePrepare;
+  
+    try {
+      let obj = RequestProvider.getPreset(requestClass);
+      requestGroupName  = obj.name;
+      requestClient     = obj.RequestClient;
+      requestPrepare    = obj.RequestPrepare;
+      responsePrepare   = obj.ResponsePrepare;
+    } catch (e) {
+      return newErrorPromise('REQUEST_PROVIDER_GET', e.message, {errorObject: e});
+    }
+  
+    // данные для запроса
     let requestObject;
+  
+    try {
+      const type      = requestClass.getType();
+      const url       = requestClass.getUrl();
+      const params    = requestClass.getParams();
+    
+      let urlClass = new RequestLinkClass(url, Config.hostSchema);
+      requestObject = {
+        type      : requestPrepare.type(type, urlClass, params),
+        url       : requestPrepare.url(type, urlClass, params),
+        data      : requestPrepare.data(type, urlClass, params),
+      };
+    } catch (e) {
+      return newErrorPromise('REQUEST_OBJECT_PREPARE', e.message, {errorObject: e});
+    }
+    
     let requestClientData;
     try {
-      requestObject = this.getRequestObject(requestClass);
-
-      requestClientData = RequestClient.getRequestClientObject(requestObject, requestClass)
-      requestClientData = Config.RequestPrepare.requestClientDataPrepare(requestClientData, requestClass);
+      requestClientData = requestClient.getRequestClientObject(requestObject, requestClass)
+      requestClientData = requestClient.sendPrepare(requestClientData, requestObject, requestClass);
     } catch (e) {
-      let promise = Promise.reject(new RequestManagerException('REQUEST_OBJECT_PREPARE', e.message, {errorObject: e}));
-      promise.abort = () => {};
-      return promise;
+      return newErrorPromise('REQUEST_OBJECT_PREPARE', e.message, {errorObject: e});
     }
 
     let request = null;
@@ -56,13 +72,13 @@ const sendRequestClass = function(_rc, _cnfg) {
 
         let rcsResponse = {};
         try {
-          rcsResponse = await RequestClient.send(requestClientData);
+          rcsResponse = await requestClient.send(requestClientData);
         } catch (rcsResponseError) {
           rcsResponse = rcsResponseError;
         }
 
         // network error
-        let isNetworkError = RequestClient.isNetworkError(rcsResponse, requestClass, Config)
+        let isNetworkError = requestClient.isNetworkError(rcsResponse, requestClass, Config)
         if(isNetworkError) {
           promiseReject( new RequestManagerException('ERROR_NETWORK', isNetworkError, {RequestClientResponse: rcsResponse}));
           return;
@@ -71,7 +87,7 @@ const sendRequestClass = function(_rc, _cnfg) {
         /**
          * @type {{headers: {}, data: {}, contentType: string, httpStatus: number}}
          */
-        let ri = await RequestClient.getRiObject(rcsResponse);
+        let ri = await requestClient.getRiObject(rcsResponse);
 
         //
         if( Config.ResponsePrepare.isError(ri, requestClass, Config) ) {

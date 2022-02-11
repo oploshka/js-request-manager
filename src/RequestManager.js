@@ -5,10 +5,6 @@ import RequestClass     from "./Class/RequestClass";
 import {isString, isFunction, isLiteralObject} from './Helper/Helper';
 import * as ConfigDefault from "./Helper/ConfigDefault";
 
-//
-import AxiosRequestClient from "./RequestClient/AxiosRequestClient";
-import FetchRequestClient from "./RequestClient/FetchRequestClient";
-
 /**
  * @typedef {Function} RequestSchemaFunction
  * @return {RequestClass}
@@ -22,10 +18,8 @@ import FetchRequestClient from "./RequestClient/FetchRequestClient";
  * @param {RequestSchemaStr} schema
  * @param {Object} cnf
  * @param {Object} cnf.hostSchema
- * @param {Object} cnf.RequestPrepare
- * @param {Object} cnf.ResponsePrepare
  * @param {Object} cnf.Hook
- * @param {Object} cnf.RequestClient
+ * @param {Object} cnf.RequestClientProvider
  */
 const RequestManager = (schema, cnf = {}) => {
 
@@ -35,21 +29,22 @@ const RequestManager = (schema, cnf = {}) => {
   // config
   const Config = {
     hostSchema      : Object.assign(ConfigDefault.HostSchema,      cnf.hostSchema),
-    RequestPrepare  : Object.assign(ConfigDefault.RequestPrepare,  cnf.RequestPrepare),
-    ResponsePrepare : Object.assign(ConfigDefault.ResponsePrepare, cnf.ResponsePrepare),
     Hook            : Object.assign(ConfigDefault.Hook,            cnf.Hook),
+    // RequestPrepare  : Object.assign(ConfigDefault.RequestPrepare,  cnf.RequestPrepare),
+    // ResponsePrepare : Object.assign(ConfigDefault.ResponsePrepare, cnf.ResponsePrepare),
+    RequestClientProvider: ConfigDefault.RequestClientProvider,
   };
 
-  let defaultRequestClient = AxiosRequestClient;
-  if(cnf.RequestClient && cnf.RequestClient.name){
-    switch (cnf.RequestClient.name){
-      case 'AXIOS': defaultRequestClient = AxiosRequestClient; break;
-      case 'FETCH': defaultRequestClient = FetchRequestClient; break;
-    }
-  }
-  const RequestClient = Object.assign(defaultRequestClient, (cnf.RequestClient || {}) );
+  // let defaultRequestClient = AxiosRequestClient;
+  // if(cnf.RequestClient && cnf.RequestClient.name){
+  //   switch (cnf.RequestClient.name){
+  //     case 'AXIOS': defaultRequestClient = AxiosRequestClient; break;
+  //     case 'FETCH': defaultRequestClient = FetchRequestClient; break;
+  //   }
+  // }
+  // const RequestClient = Object.assign(defaultRequestClient, (cnf.RequestClient || {}) );
 
-  const SendRequest = new SendRequestClass(RequestClient, Config);
+  const SendRequest = new SendRequestClass(RequestClientProvider, Config);
 
   //
   const mergeRequestClassAndRequestSettings = (requestClass, userRequestSettings) => {
