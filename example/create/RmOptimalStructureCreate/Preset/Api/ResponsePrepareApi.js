@@ -1,20 +1,22 @@
 
+import getErrorHandlerList from "./ResponseGetError";
+
 // ResponsePrepare
 export default {
-  isError(riObject) {
+  
+  getErrorNetworkMessage() {
+  
+  },
+  
+  // Ответ успешный
+  isSuccess(riObject) {
     if( !(200 <= riObject.httpStatus && riObject.httpStatus < 300) ) {
-      return true;
+      return false;
     }
-    return false;
+    return true;
   },
 
-  getErrorInfo: async (riObject, requestClass, Config) => {
-    return {
-      code: 'error',
-      message: riObject.data.error || 'Неизвестная ошибка',
-      data: riObject,
-    }
-  },
+  getErrorHandlerList: getErrorHandlerList,
 
   getSuccessInfo: async (riObject, requestClass, Config) => {
     return riObject.data

@@ -3,7 +3,6 @@ import RequestManagerException  from "../Class/RequestManagerException";
 import RequestLinkClass         from "../Class/RequestLinkClass";
 
 import { getStatusMessage } from "../Helper/HttpStatus";
-import GetErrorMessage from "../Helper/GetErrorMessage";
 
 const newErrorPromise = (code, message = '', details = null) => {
   let promise = Promise.reject(new RequestManagerException(code, message, details));
@@ -80,44 +79,36 @@ const sendRequestClass = function(_rcp, _cnfg) {
         // network error
         let isNetworkError = requestClient.isNetworkError(rcsResponse, requestClass, Config)
         if(isNetworkError) {
+          // TODO: fix and add network error message validate
+          // responsePrepare.getErrorNetworkMessage();
           promiseReject( new RequestManagerException('ERROR_NETWORK', isNetworkError, {RequestClientResponse: rcsResponse}));
           return;
         }
 
-        /**
-         * @type {{headers: {}, data: {}, contentType: string, httpStatus: number}}
-         */
+        /** @type {{headers: {}, data: {}, contentType: string, httpStatus: number}} */
         let ri = await requestClient.getRiObject(rcsResponse);
 
-        //
-        if( Config.ResponsePrepare.isError(ri, requestClass, Config) ) {
-
-          let errCode    = '';
-          let errMessage = '';
-          let errDetails = null;
-
-          // TODO: добавить параметр undefinedErrorMessage!!!!
-          // TODO: fix - тут приходит строка
-          // TODO: fix - GetErrorMessage - ожидал 2 параметра!!!!
-          let requestClassErrorObject = requestClass.getErrorMessage();
-          if(requestClassErrorObject) {
-            errMessage = GetErrorMessage(requestClassErrorObject, ri, requestClass, Config);
+        // В ответ ошибка
+        if( !responsePrepare.isSuccess(ri, requestClass, Config) ) {
+          let errObj = null;
+          
+          // вызываем цепочку пользовательских функций по получению ошибки.
+          const errorHandlerList = responsePrepare.getErrorHandlerList();
+          for(let i = 0; i < errorHandlerList.length; i++) {
+            try {
+              errObj = await errorHandlerList[i](ri, requestClass, Config);
+              if(errObj) {
+                // TODO: add responsePrepare.all error
+                promiseReject( new RequestManagerException(errCode, errMessage, errDetails) );
+                return;
+              }
+            } catch (e) {
+              console.warn('[REQUEST_MANAGER] errorHandler error', e)
+            }
           }
-
-          if(!errMessage) {
-            let errObj = await Config.ResponsePrepare.getErrorInfo(ri, requestClass, Config);
-            errCode     = (errObj && errObj.code)     ? errObj.code    : errCode;
-            errMessage  = (errObj && errObj.message)  ? errObj.message : errMessage;
-            errDetails  = (errObj && errObj.data)     ? errObj.data    : errDetails;
-          }
-
-          if(!errMessage) {
-            errCode     = errCode    ? errCode     : 'NOT_VALID_RESPONSE';
-            errMessage  = errMessage ? errMessage  : getStatusMessage(ri.httpStatus);
-            errDetails  = errDetails ? errDetails  : {axiosErrorObject: rcsResponse};
-          }
-
-          promiseReject( new RequestManagerException(errCode, errMessage, errDetails));
+          // Не удалось получить ошибку - по этой причине выводим что нибудь.
+          // TODO: add responsePrepare.all error
+          promiseReject( new RequestManagerException('NOT_VALID_RESPONSE', 'Undefined error', {}));
           return;
         }
 
