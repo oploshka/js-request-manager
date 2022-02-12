@@ -2,25 +2,27 @@
 //
 import RequestClass     from "../Class/RequestClass";
 import RequestLinkClass from "../Class/RequestLinkClass";
+import MethodSchema from "js-request-manager/src/Class/MethodSchema";
 
 /**
  * подготовка данных
+ * @param {iMethodSchemaPrepare} methodDataPrepare
  * @param {MethodSchema} methodSchema
- * @param {Object}       userRequestSettings
- * @returns {RequestSchemaMergeClass|*}
+ * @param {Object} hostSchema
+ * @returns {Object}
  */
-const getRequestObject = (requestClass, hostSchema) => {
+const getRequestObject = (methodDataPrepare, methodSchema, hostSchema) => {
   
   // данные для запроса
-  const type      = requestClass.getType();
-  const url       = requestClass.getUrl();
-  const params    = requestClass.getParams();
+  const type      = methodSchema.getType();
+  const url       = methodSchema.getUrl();
+  const params    = methodSchema.getParams();
   
   let urlClass = new RequestLinkClass(url, hostSchema);
   return {
-    type      : requestPrepare.type(type, urlClass, params),
-    url       : requestPrepare.url(type, urlClass, params),
-    data      : requestPrepare.data(type, urlClass, params),
+    type      : methodDataPrepare.prepareType(type, urlClass, params),
+    url       : methodDataPrepare.prepareUrl(type, urlClass, params),
+    data      : methodDataPrepare.prepareData(type, urlClass, params), // TODO: rename data -> params
   };
   
 }
@@ -28,18 +30,35 @@ const getRequestObject = (requestClass, hostSchema) => {
 /**
  * TODO: переписать логику мержа
  *
+ * @param {iMethodSchemaPrepare} methodDataPrepare
  * @param {MethodSchema} methodSchema
- * @param {Object}       userRequestSettings
- * @returns {RequestSchemaMergeClass|*}
+ * @param {String}       methodName
+ * @param {Object}       hostSchema
+ * @param {Object}       customSettings
+ * @returns {RequestClass}
  */
-const requestClassCreate = (methodSchema, userRequestSettings) => {
-  if(!userRequestSettings) {
-    return requestClass;
-  }
-  //
-  const requestClassObj = requestClass.toObject();
+const requestClassCreate = (methodDataPrepare, methodSchema, methodName, hostSchema, customSettings) => {
   
-  return new RequestClass(Object.assign({}, requestClassObj, userRequestSettings));
+  let fixMethodSchema = methodSchema;
+  
+  // мержим доп настройки для запроса
+  if(customSettings) {
+    // чтоб не писать много кода
+    fixMethodSchema = new MethodSchema(Object.assign({}, methodSchema.toObject(), customSettings));
+  }
+  
+  const requestObject = getRequestObject(methodDataPrepare, fixMethodSchema, hostSchema)
+  const methodSchemaName = fixMethodSchema.getName();
+  
+  return new RequestClass({
+    name    : methodSchemaName || methodName,
+    //
+    type    : requestObject.type,
+    url     : requestObject.url,
+    params  : requestObject.data, // TODO: data -> params ???
+    //
+    methodSchema: fixMethodSchema
+  });
 }
 
-export default mergeRequestClassAndRequestSettings;
+export default requestClassCreate;

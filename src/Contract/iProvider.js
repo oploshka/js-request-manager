@@ -3,8 +3,8 @@
 /** @type {iRequestClient} */
 const requestClient = null;
 
-/** @type {iResponsePrepare} */
-const requestPrepare = null;
+/** @type {iMethodSchemaPrepare} */
+const methodDataPrepare = null;
 
 /** @type {iResponsePrepare} */
 const responsePrepare = null;
@@ -14,19 +14,17 @@ const responsePrepare = null;
  * @constructor
  */
 const iProvider = function () {
-  
   /**
-   *
-   * @returns {{RequestPrepare: iResponsePrepare, name: string, RequestClient: iRequestClient, ResponsePrepare: iResponsePrepare}}
+   * @returns {{name: string, RequestClient: iRequestClient, MethodDataPrepare: iMethodSchemaPrepare, ResponsePrepare: iResponsePrepare}}
    */
   this.getPreset = () => {
     return {
-      name            : 'default',
-      RequestClient   : requestClient,
-      RequestPrepare  : requestPrepare,
-      ResponsePrepare : responsePrepare,
+      name              : 'default',
+      RequestClient     : requestClient,
+      MethodDataPrepare : methodDataPrepare,
+      ResponsePrepare   : responsePrepare,
     }
   };
 };
 
-export default iRequestClient;
+export default iProvider;

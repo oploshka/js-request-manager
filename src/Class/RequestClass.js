@@ -1,5 +1,8 @@
-
-
+/**
+ * TODO: add docs for option
+ * @param option
+ * @constructor
+ */
 const RequestClass = function (option) {
 
   let _field = {

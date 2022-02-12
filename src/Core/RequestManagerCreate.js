@@ -1,6 +1,6 @@
 //
-import SendRequestClass from "./SendRequestClass";
-import RequestClass     from "../Class/RequestClass";
+import Sender       from "./Sender";
+import RequestClass from "../Class/RequestClass";
 //
 import RequestSchemaMerge from "./RequestSchemaMerge";
 import { isFunction, isLiteralObject} from './Helper/Helper';
@@ -28,6 +28,11 @@ const RequestManager = (schema, _stgs) => {
   const cache = {};
 
   const RequestSchema = schema;
+  
+  /**
+   *
+   * @type iProvider
+   */
   const RequestClientProvider = cnf.RequestClientProvider
   // config
   const Config = {
@@ -60,9 +65,17 @@ const RequestManager = (schema, _stgs) => {
   
   // функция обертка для сохранения
   const createRequestSendFunction = (_rsf, _mn) => {
-    //
-    const createRequestSchemaFunc = _rsf; // пользовательская функция для создания схемы запроса
-    const methodName              = _mn;  // Имя метода (генеренный)
+    /**
+     * пользовательская функция для создания схемы запроса
+     * @type {function(Object): MethodSchema }
+     **/
+    const createRequestSchemaFunc = _rsf;
+    
+    /**
+     * Имя метода (генеренный)
+     * @type String
+     **/
+    const methodName              = _mn;
     
     /**
      * Формируем функцию для отправки
@@ -77,14 +90,15 @@ const RequestManager = (schema, _stgs) => {
       // TODO: обернуть в try catch
       
       // получаем не данные запроса
-      const requestClass = createRequestSchemaFunc(data);
+      const methodSchemaTempData = createRequestSchemaFunc(data);
   
       // получаем список функций обработки
-      let provider = RequestClientProvider.getPreset(requestClass);
+      let provider = RequestClientProvider.getPreset(methodSchemaTempData);
   
       // получаем финальные данные для запроса.
-      // TODO: fix function (добавить логику prepare)
-      const requestDataMergeClass = RequestCreate(requestClass, settings, hostSchema);
+      // TODO: переписать на несколько функций
+      // fixMethodSchema = new MethodSchema(Object.assign({name: methodName}, methodSchema.toObject(), customSettings));
+      const requestClass = RequestCreate(provider.MethodDataPrepare, methodSchemaTempData, settings, methodName, Config.hostSchema);
 
       // TODO: продумать кеш
       // const cache = cacheCreate(mergeRequestClass)
@@ -93,7 +107,7 @@ const RequestManager = (schema, _stgs) => {
       // }
   
       // send request
-      const requestPromise = SendRequest.send(requestDataMergeClass);
+      const requestPromise = SendRequest.send(requestClass);
   
       // TODO: продумать кеш
       // if (cache.setCache) {
