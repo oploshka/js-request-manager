@@ -1,10 +1,10 @@
 //
-import SendRequestClass from "./Class/SendRequestClass";
-import RequestClass     from "./Class/RequestClass";
+import SendRequestClass from "./SendRequestClass";
+import RequestClass     from "../Class/RequestClass";
 //
-import { mergeRequestClassAndRequestSettings, cacheCreate} from "./Helper/Function";
+import RequestSchemaMerge from "./RequestSchemaMerge";
 import { isFunction, isLiteralObject} from './Helper/Helper';
-import * as ConfigDefault from "./Helper/ConfigDefault";
+
 
 /**
  * @typedef {Function} RequestSchemaFunction
@@ -22,7 +22,7 @@ import * as ConfigDefault from "./Helper/ConfigDefault";
  * @param {Object} cnf.Hook
  * @param {Object} cnf.RequestClientProvider
  */
-const RequestManager = (schema, cnf = {}) => {
+const RequestManager = (schema, _stgs) => {
 
   const cache = {};
 
@@ -30,8 +30,8 @@ const RequestManager = (schema, cnf = {}) => {
   const RequestClientProvider = cnf.RequestClientProvider
   // config
   const Config = {
-    hostSchema      : Object.assign(ConfigDefault.HostSchema,      cnf.hostSchema),
-    Hook            : Object.assign(ConfigDefault.Hook,            cnf.Hook),
+    hostSchema      : Object.assign({}, cnf.hostSchema),
+    Hook            : Object.assign({}, cnf.hook),
   };
 
   // Создаем функцию для отправки
@@ -51,22 +51,32 @@ const RequestManager = (schema, cnf = {}) => {
       }
       else if ( isFunction(requestSchema[key]) ) {
         // request[key] = function (data, options = { fileName: null, cache:null, errorMessage:null }) {
-        req1[key] = createRequestSendFunctionQQ(requestSchema[key], concatenateKey(parentKey, key) )
+        req1[key] = createRequestSendFunction(requestSchema[key], concatenateKey(parentKey, key) )
       }
     }
     return req1
   };
   
   // функция обертка для сохранения
-  const createRequestSendFunctionQQ = (_rsf, _mn) => {
+  const createRequestSendFunction = (_rsf, _mn) => {
     //
-    const requestSchemaFunction = _rsf;
-    const methodName            = _mn;
+    const createRequestSchemaFunc = _rsf; // пользовательская функция для создания схемы запроса
+    const methodName              = _mn;  // Имя метода (генеренный)
     
     // Формируем функцию для отправки
     const RequestSendFunction = (requestData, userRequestSettings) => {
-      const requestClass = requestSchemaFunction(requestData);
-      const mergeRequestClass = mergeRequestClassAndRequestSettings(requestClass, userRequestSettings);
+      
+      // TODO: обернуть в try catch
+      
+      // получаем не данные запроса
+      const requestClass = createRequestSchemaFunc(requestData);
+  
+      // получаем список функций обработки
+      let provider = RequestClientProvider.getPreset(requestClass);
+  
+      // получаем финальные данные для запроса.
+      // TODO: fix function (добавить логику prepare)
+      const requestDataMergeClass = RequestSchemaMerge(requestClass, userRequestSettings, Config.hostSchema);
 
       // TODO: продумать кеш
       // const cache = cacheCreate(mergeRequestClass)
@@ -75,7 +85,7 @@ const RequestManager = (schema, cnf = {}) => {
       // }
   
       // send request
-      const requestPromise = SendRequest.send(mergeRequestClass);
+      const requestPromise = SendRequest.send(requestDataMergeClass);
   
       // TODO: продумать кеш
       // if (cache.setCache) {

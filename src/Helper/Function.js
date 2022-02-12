@@ -1,17 +1,6 @@
 
 //
-import RequestClass from "js-request-manager/src/Class/RequestClass";
 import {isFunction, isString} from "js-request-manager/src/Helper/Helper";
-
-export const mergeRequestClassAndRequestSettings = (requestClass, userRequestSettings) => {
-  if(!userRequestSettings) {
-    return requestClass;
-  }
-  //
-  const requestClassObj = requestClass.toObject();
-  
-  return new RequestClass(Object.assign({}, requestClassObj, userRequestSettings));
-}
 
 export const cacheCreate = (RequestClass) => {
   // Cache get

@@ -1,5 +1,6 @@
 
-const RequestClass = function (option) {
+// TODO: переписать!!!
+const RequestSchemaMergeClass = function (option) {
 
   let _field = {
     name    : '',
@@ -75,4 +76,4 @@ const RequestClass = function (option) {
 };
 
 
-export default RequestClass;
+export default RequestSchemaMergeClass;
