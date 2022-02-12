@@ -11,6 +11,8 @@ const newErrorPromise = (code, message = '', details = null) => {
 const sendRequestClass = function(_rcp, _cnfg) {
 
   const RequestProvider = _rcp;
+  const hostSchema = _cnfg.hostSchema;
+  // TODO: delete ?
   const Config = _cnfg;
   
   /**
@@ -43,7 +45,7 @@ const sendRequestClass = function(_rcp, _cnfg) {
       const url       = requestClass.getUrl();
       const params    = requestClass.getParams();
     
-      let urlClass = new RequestLinkClass(url, Config.hostSchema);
+      let urlClass = new RequestLinkClass(url, hostSchema);
       requestObject = {
         type      : requestPrepare.type(type, urlClass, params),
         url       : requestPrepare.url(type, urlClass, params),
@@ -63,6 +65,7 @@ const sendRequestClass = function(_rcp, _cnfg) {
 
     let request = null;
 
+    // Тут идет отправка запроса
     // eslint-disable-next-line no-async-promise-executor
     let promise = new Promise(async function(promiseResolve, promiseReject) {
       try {

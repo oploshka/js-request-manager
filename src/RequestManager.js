@@ -64,7 +64,7 @@ const RequestManager = (schema, cnf = {}) => {
     const methodName            = _mn;
     
     // Формируем функцию для отправки
-    return RequestSendFunction(requestData, userRequestSettings) => {
+    const RequestSendFunction = (requestData, userRequestSettings) => {
       const requestClass = requestSchemaFunction(requestData);
       const mergeRequestClass = mergeRequestClassAndRequestSettings(requestClass, userRequestSettings);
 
@@ -99,6 +99,7 @@ const RequestManager = (schema, cnf = {}) => {
   
       return requestPromise;
     }
+    return RequestSendFunction;
     
   }
   
