@@ -4,6 +4,7 @@ import RequestClass     from "../Class/RequestClass";
 //
 import RequestSchemaMerge from "./RequestSchemaMerge";
 import { isFunction, isLiteralObject} from './Helper/Helper';
+import RequestCreate from "js-request-manager/src/Core/RequestCreate";
 
 
 /**
@@ -63,20 +64,27 @@ const RequestManager = (schema, _stgs) => {
     const createRequestSchemaFunc = _rsf; // пользовательская функция для создания схемы запроса
     const methodName              = _mn;  // Имя метода (генеренный)
     
-    // Формируем функцию для отправки
-    const RequestSendFunction = (requestData, userRequestSettings) => {
+    /**
+     * Формируем функцию для отправки
+     * По идее это не  @constructor (понять необходимость)
+     *
+     * @param {Object} data     - данные для отправки
+     * @param {Object} settings - доп. настройки для отправки (по мимо тех что указаны в)
+     * @returns {Promise<unknown>}
+     */
+    const RequestSendFunction = (data = {}, settings = {}) => {
       
       // TODO: обернуть в try catch
       
       // получаем не данные запроса
-      const requestClass = createRequestSchemaFunc(requestData);
+      const requestClass = createRequestSchemaFunc(data);
   
       // получаем список функций обработки
       let provider = RequestClientProvider.getPreset(requestClass);
   
       // получаем финальные данные для запроса.
       // TODO: fix function (добавить логику prepare)
-      const requestDataMergeClass = RequestSchemaMerge(requestClass, userRequestSettings, Config.hostSchema);
+      const requestDataMergeClass = RequestCreate(requestClass, settings, hostSchema);
 
       // TODO: продумать кеш
       // const cache = cacheCreate(mergeRequestClass)
@@ -101,11 +109,12 @@ const RequestManager = (schema, _stgs) => {
       // }
   
   
-      try {
-        Config.Hook.RequestPromise(requestPromise, mergeRequestClass);
-      } catch (e) {
-        console.error(e);
-      }
+      // TODO: продумать
+      // try {
+      //   Config.Hook.RequestPromise(requestPromise, mergeRequestClass);
+      // } catch (e) {
+      //   console.error(e);
+      // }
   
       return requestPromise;
     }

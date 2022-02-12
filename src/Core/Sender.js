@@ -1,14 +1,18 @@
 
-
-// 3/4 Отправка данных
 import RequestManagerException from "../Class/RequestManagerException";
 import ResponseClass from "../Class/ResponseClass";
 
+/**
+ *
+ * @param {iRequestClient} requestClient
+ * @param requestSchemaMergeClass
+ * @returns {Promise<ResponseClass>}
+ */
 const requestClientSend = async (requestClient, requestSchemaMergeClass) => {
   
   let requestClientData;
-  requestClientData = requestClient.getRequestClientObject(requestSchemaMergeClass)
-  requestClientData = requestClient.sendPrepare(requestClientData, requestSchemaMergeClass);
+  requestClientData = requestClient.requestToClientObject(requestSchemaMergeClass)
+  requestClientData = requestClient.prepareClientObject(requestClientData, requestSchemaMergeClass);
   
   let rcsResponse = {};
   try {
@@ -29,12 +33,18 @@ const requestClientSend = async (requestClient, requestSchemaMergeClass) => {
   
   // TODO: fix
   /** @type {{headers: {}, data: {}, contentType: string, httpStatus: number}} */
-  let ri = await requestClient.getRiObject(rcsResponse);
-  return ResponseClass(ri);
+  let ri = await requestClient.clientResponseToResponseClass(rcsResponse);
+  return new ResponseClass(ri);
 }
 
-// 4/4 Обработка ответа
-const responseProcessing = async (responsePrepare, ri, requestClass) => {
+/**
+ *
+ * @param responsePrepare
+ * @param {ResponseClass} ri
+ * @param {requestSchemaMergeClass} requestSchemaMergeClass
+ * @returns {Promise<*>}
+ */
+const responseProcessing = async (responsePrepare, ri, requestSchemaMergeClass) => {
   
   // В ответ ошибка
   if( !responsePrepare.isSuccess(ri, requestClass, Config) ) {
@@ -67,7 +77,7 @@ const responseProcessing = async (responsePrepare, ri, requestClass) => {
   return data;
 }
 
-const Sender = async (requestClient, requestSchemaMergeClass, responsePrepare) => {
+const Sender = async (requestClient, responsePrepare, requestSchemaMergeClass) => {
   // Отправка данных
   try {
     // Шаг 3

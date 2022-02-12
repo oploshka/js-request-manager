@@ -39,7 +39,6 @@ const RequestLinkClass = function(link, hostSchema = {}) {
   const init = (link, hostSchema) => {
     _hostSchema    = hostSchema;
     _linkOrigin    = link;
-    _linkOrigin    = link;
   };
   init(link, hostSchema);
 };

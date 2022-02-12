@@ -1,5 +1,4 @@
 
-
 /**
  * Конвертируем объект RequestSchemaMergeClass в объект для отправки
  * Тут пишем только конвертацию!!!
@@ -56,3 +55,19 @@ export const clientResponseToResponseClass = async (clientResponse, RequestSchem
   }
   return ri;
 };
+
+/**
+ * RequestClient - формально это интерфейс
+ * @constructor
+ */
+const iRequestClient = function () {
+  
+  this.requestToClientObject          = requestToClientObject;
+  this.prepareClientObject            = prepareClientObject;
+  this.send                           = send;
+  this.isNetworkError                 = isNetworkError;
+  this.clientResponseToResponseClass  = clientResponseToResponseClass;
+};
+
+export default iRequestClient;
+

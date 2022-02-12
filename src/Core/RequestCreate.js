@@ -1,9 +1,14 @@
 
 //
-import RequestMergeClass  from "../Class/RequestSchemaMergeClass";
-import RequestLinkClass   from "../Class/RequestLinkClass";
+import RequestClass     from "../Class/RequestClass";
+import RequestLinkClass from "../Class/RequestLinkClass";
 
-// подготовка данных
+/**
+ * подготовка данных
+ * @param {MethodSchema} methodSchema
+ * @param {Object}       userRequestSettings
+ * @returns {RequestSchemaMergeClass|*}
+ */
 const getRequestObject = (requestClass, hostSchema) => {
   
   // данные для запроса
@@ -20,15 +25,21 @@ const getRequestObject = (requestClass, hostSchema) => {
   
 }
 
-// TODO: переписать логику мержа
-const mergeRequestClassAndRequestSettings = (requestClass, userRequestSettings) => {
+/**
+ * TODO: переписать логику мержа
+ *
+ * @param {MethodSchema} methodSchema
+ * @param {Object}       userRequestSettings
+ * @returns {RequestSchemaMergeClass|*}
+ */
+const requestClassCreate = (methodSchema, userRequestSettings) => {
   if(!userRequestSettings) {
     return requestClass;
   }
   //
   const requestClassObj = requestClass.toObject();
   
-  return new RequestSchemaMergeClass(Object.assign({}, requestClassObj, userRequestSettings));
+  return new RequestClass(Object.assign({}, requestClassObj, userRequestSettings));
 }
 
 export default mergeRequestClassAndRequestSettings;
