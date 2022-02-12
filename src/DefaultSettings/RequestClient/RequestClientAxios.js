@@ -1,23 +1,8 @@
 
 import {isEmpty} from "../Helper/Helper";
 
-// import axios from 'axios';
-// async send(obj) { return await axios(obj); },
-export const send = async(obj) => {
-  return Promise.reject('NOT INIT RequestClient send function');
-};
-
-export const sendPrepare = async(axiosObject, options) => {
-  //
-  // let token = localStorage.getItem('user-token');
-  // if(token) {
-  //   axiosObject.headers['Authorization'] = `Token ${token}`;
-  // }
-  //
-  return axiosObject;
-};
-
-export const getRequestClientObject = (requestObj, requestClass, Config) => {
+//
+export const requestToClientObject = (requestObj, requestClass, Config) => {
   const axiosObj = {
     method  : requestObj.type,
     url     : requestObj.url,
@@ -44,6 +29,23 @@ export const getRequestClientObject = (requestObj, requestClass, Config) => {
   
   return axiosObj;
 };
+
+export const prepareClientObject = async(axiosObject, options) => {
+  //
+  // let token = localStorage.getItem('user-token');
+  // if(token) {
+  //   axiosObject.headers['Authorization'] = `Token ${token}`;
+  // }
+  //
+  return axiosObject;
+};
+
+// import axios from 'axios';
+// async send(obj) { return await axios(obj); },
+export const send = async(obj) => {
+  return Promise.reject('NOT INIT RequestClient send function');
+};
+
 
 export const isNetworkError = (axiosResponse, requestClass, Config) => {
   // if(!axiosResponse.status /* axiosResponse.isAxiosError &&  !axiosResponse.response */ ) {

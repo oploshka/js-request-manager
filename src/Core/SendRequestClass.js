@@ -15,65 +15,6 @@ const sendGetProvider = () => {
 
 
 
-// 3/4 Отправка данных
-const requestClientSend = async (requestClient, requestObject, requestClass) => {
-  
-  let requestClientData;
-  requestClientData = requestClient.getRequestClientObject(requestObject, requestClass)
-  requestClientData = requestClient.sendPrepare(requestClientData, requestObject, requestClass);
-  
-  let rcsResponse = {};
-  try {
-    rcsResponse = await requestClient.send(requestClientData);
-  } catch (rcsResponseError) {
-    rcsResponse = rcsResponseError;
-  }
-  
-  // network error
-  let isNetworkError = requestClient.isNetworkError(rcsResponse, requestClass, Config)
-  if(isNetworkError) {
-    // TODO: add network exception
-    throw new RequestManagerException('ERROR_NETWORK', isNetworkError, {RequestClientResponse: rcsResponse});
-  }
-  
-  /** @type {{headers: {}, data: {}, contentType: string, httpStatus: number}} */
-  let ri = await requestClient.getRiObject(rcsResponse);
-  return ri;
-}
-
-// 4/4 Обработка ответа
-const responseProcessing = async (responsePrepare, ri, requestClass) => {
-  
-  // В ответ ошибка
-  if( !responsePrepare.isSuccess(ri, requestClass, Config) ) {
-    let errObj = null;
-    
-    // вызываем цепочку пользовательских функций по получению ошибки.
-    const errorHandlerList = responsePrepare.getErrorHandlerList();
-    for(let i = 0; i < errorHandlerList.length; i++) {
-      try {
-        errObj = await errorHandlerList[i](ri, requestClass, Config);
-        if(errObj) {
-          throw new RequestManagerException(errCode, errMessage, errDetails);
-        }
-      } catch (e) {
-        console.warn('[REQUEST_MANAGER] errorHandler error', e)
-      }
-    }
-    // Не удалось получить ошибку - по этой причине выводим что нибудь.
-    throw new RequestManagerException('NOT_VALID_RESPONSE', 'Undefined error', {});
-  }
-  
-  // Обрабатываем успешный ответ
-  let data = await responsePrepare.getSuccessInfo(ri, requestClass, Config);
-  
-  const responsePrepareFunc = requestClass.getResponsePrepare();
-  if(responsePrepareFunc) {
-    data = await responsePrepareFunc(data);
-  }
-  
-  return data;
-}
 
 const sendLogic = async (promiseObj, requestClass) => {
   
@@ -107,7 +48,6 @@ const sendLogic = async (promiseObj, requestClass) => {
 const sendRequestClass = function(_rcp, _cnfg) {
 
   const RequestProvider = _rcp;
-  const hostSchema = _cnfg.hostSchema;
   // TODO: delete ?
   const Config = _cnfg;
   
@@ -116,7 +56,7 @@ const sendRequestClass = function(_rcp, _cnfg) {
    * @param {RequestClass} requestClass
    * @return {Promise<unknown>}
    */
-  this.send = async (requestClass) => {
+  this.send = async (requestSchemaMergeClass) => {
   
     let promiseObj = null;
     //
