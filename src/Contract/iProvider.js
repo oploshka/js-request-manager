@@ -1,13 +1,20 @@
 
+import iMethodSchemaPrepare from "./iMethodSchemaPrepare";
+import * as RequestClientFetch from "../DefaultSettings/RequestClient/RequestClientFetch";
+import iResponsePrepare from "js-request-manager/src/Contract/iResponsePrepare";
 
-/** @type {iRequestClient} */
-const requestClient = null;
+// ниже указаны типы для работы с интерфейсами.
 
 /** @type {iMethodSchemaPrepare} */
-const methodDataPrepare = null;
+const methodDataPrepare = new iMethodSchemaPrepare();
+
+/** @type {iRequestClient} */
+const requestClient = Object.assign(RequestClientFetch, {});
 
 /** @type {iResponsePrepare} */
-const responsePrepare = null;
+const responsePrepare = new iResponsePrepare();
+
+//
 
 /**
  * iProvider - формально это интерфейс
@@ -20,8 +27,8 @@ const iProvider = function () {
   this.getPreset = () => {
     return {
       name              : 'default',
-      RequestClient     : requestClient,
       MethodDataPrepare : methodDataPrepare,
+      RequestClient     : requestClient,
       ResponsePrepare   : responsePrepare,
     }
   };
