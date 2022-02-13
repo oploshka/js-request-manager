@@ -1,5 +1,5 @@
 
-import MethodSchema from "js-request-manager/src/Class/MethodSchema";
+import MethodInfo from "js-request-manager/src/Class/MethodInfo";
 
 /**
  * @name NumberAPIRequestSchemaObject
@@ -7,14 +7,14 @@ import MethodSchema from "js-request-manager/src/Class/MethodSchema";
 const NumberAPIRequestSchema =  {
   Test: {
     getTestText: () => {
-      return new MethodSchema({
+      return new MethodInfo({
         name  : 'getTestText',
         type  : 'GET',
         url   : 'http://numbersapi.com/2/29/date',
       });
     },
     getTestJson: () => {
-      return new MethodSchema({
+      return new MethodInfo({
         name  : 'getTestJson',
         type  : 'GET',
         url   : 'http://numbersapi.com/random/year?json',
@@ -28,10 +28,10 @@ const NumberAPIRequestSchema =  {
      * @param {Number} number (integer)
      * @param {String} notfound [ default | floor | ceil ]
      * @param {String} notFactText
-     * @return {MethodSchema}
+     * @return {MethodInfo}
      */
     getTriviaInfo: ({number, notfound=null, notFactText=null }) => {
-      return new MethodSchema({
+      return new MethodInfo({
         name  : 'getTriviaInfo',
         type  : 'GET',
         url   : `http://numbersapi.com/${number}/trivia?json`,
@@ -43,14 +43,14 @@ const NumberAPIRequestSchema =  {
       });
     },
     getTriviaRangeInfo: ({range}) => {
-      return new MethodSchema({
+      return new MethodInfo({
         name  : 'getTriviaRangeInfo',
         type  : 'GET',
         url   : `http://numbersapi.com/${range.join(',')}/trivia?json`,
       });
     },
     getRandomTriviaInfo: ({min = null , max = null}) => {
-      return new MethodSchema({
+      return new MethodInfo({
         name  : 'getRandomTriviaInfo',
         type  : 'GET',
         url   : `http://numbersapi.com/random/trivia?json`,
@@ -63,21 +63,21 @@ const NumberAPIRequestSchema =  {
   
   Math: {
     getMathInfo: ({number}) => {
-      return new MethodSchema({
+      return new MethodInfo({
         name  : 'getMathInfo',
         type  : 'GET',
         url   : `http://numbersapi.com/${number}/math?json`,
       });
     },
     getMathRangeInfo: ({range}) => {
-      return new MethodSchema({
+      return new MethodInfo({
         name  : 'getMathRangeInfo',
         type  : 'GET',
         url   : `http://numbersapi.com/${range.join(',')}/math?json`,
       });
     },
     getRandomMathInfo: ({min = null , max = null}) => {
-      return new MethodSchema({
+      return new MethodInfo({
         name  : 'getRandomMathInfo',
         type  : 'GET',
         url   : `http://numbersapi.com/random/math?json`,
@@ -90,21 +90,21 @@ const NumberAPIRequestSchema =  {
   
   Year: {
     getYearInfo: ({number}) => {
-      return new MethodSchema({
+      return new MethodInfo({
         name  : 'getYearInfo',
         type  : 'GET',
         url   : `http://numbersapi.com/${number}/year?json`,
       });
     },
     getYearRangeInfo: ({range}) => {
-      return new MethodSchema({
+      return new MethodInfo({
         name  : 'getYearRangeInfo',
         type  : 'GET',
         url   : `http://numbersapi.com/${range.join(',')}/year?json`,
       });
     },
     getRandomYearInfo: ({min = null , max = null}) => {
-      return new MethodSchema({
+      return new MethodInfo({
         name  : 'getRandomYearInfo',
         type  : 'GET',
         url   : `http://numbersapi.com/random/year?json`,
@@ -117,14 +117,14 @@ const NumberAPIRequestSchema =  {
   
   Date: {
     getDateInfo: ({month, day}) => {
-      return new MethodSchema({
+      return new MethodInfo({
         name  : 'getYearInfo',
         type  : 'GET',
         url   : `http://numbersapi.com/${month}/${day}/date?json`,
       });
     },
     getRandomDateInfo: ({min = null , max = null}) => {
-      return new MethodSchema({
+      return new MethodInfo({
         name  : 'getRandomYearInfo',
         type  : 'GET',
         url   : `http://numbersapi.com/random/date?json`,

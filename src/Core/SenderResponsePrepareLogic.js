@@ -36,7 +36,7 @@ const responseProcessing = async (responsePrepare, responseClass, requestClass) 
   // Обрабатываем успешный ответ
   let data = await responsePrepare.getSuccessInfo(responseClass, requestClass/*, Config*/);
   
-  const responsePrepareFunc = requestClass.getMethodSchema().getResponsePrepare();
+  const responsePrepareFunc = requestClass.getMethodInfo().getResponsePrepare();
   if(responsePrepareFunc) {
     data = await responsePrepareFunc(data);
   }

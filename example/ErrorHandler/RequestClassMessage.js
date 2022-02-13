@@ -24,7 +24,7 @@ const GetErrorMessage = (obj, responseClass, requestClass /*, Config*/) => {
  * @returns {Promise<{code: string, message: string, data: {Object}}>}
  */
 export default async (responseClass, requestClass) => {
-  let requestClassErrorObject = requestClass.getMethodSchema().getErrorMessage();
+  let requestClassErrorObject = requestClass.getMethodInfo().getErrorMessage();
   if(!requestClassErrorObject) {
     return null;
   }

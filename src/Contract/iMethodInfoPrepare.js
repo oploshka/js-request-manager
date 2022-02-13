@@ -12,16 +12,16 @@ export const RequestPrepareUrl  = (requestType, requestUrl, requestData) => {
 }
 
 /**
- * iMethodSchemaPrepare - формально это интерфейс
+ * iMethodInfoPrepare - формально это интерфейс
  * Предназначение - иметь возможность отследить и изменить метод, адрес и данные для отправки
  *
  * @constructor
  */
-const iMethodSchemaPrepare = function () {
+const iMethodInfoPrepare = function () {
   this.prepareData  = RequestPrepareData;
   this.prepareType  = RequestPrepareType;
   this.prepareUrl   = RequestPrepareUrl;
 };
 
 // TODO: подумать о необходимости метода...
-export default iMethodSchemaPrepare;
+export default iMethodInfoPrepare;

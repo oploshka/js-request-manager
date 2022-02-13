@@ -3,7 +3,7 @@ import Sender       from "./Sender";
 import RequestClass from "../Class/RequestClass";
 //
 import { isFunction, isLiteralObject} from '../Helper/Helper';
-import RequestCreate from "js-request-manager/src/Core/RequestCreate";
+import { methodInfoSetSettings, methodInfoToRequestClass } from "./RequestCreate";
 
 
 /**
@@ -67,9 +67,9 @@ const RequestManager = (schema, cnf) => {
   const createRequestSendFunction = (_rsf, _mn) => {
     /**
      * пользовательская функция для создания схемы запроса
-     * @type {function(Object): MethodSchema }
+     * @type {function(Object): MethodInfo }
      **/
-    const createRequestSchemaFunc = _rsf;
+    const methodInfoConstructor = _rsf;
     
     /**
      * Имя метода (генеренный)
@@ -87,18 +87,24 @@ const RequestManager = (schema, cnf) => {
      */
     const RequestSendFunction = (data = {}, settings = {}) => {
       
-      // TODO: обернуть в try catch
+      let provider;
+      let requestClass;
       
-      // получаем не данные запроса
-      const methodSchemaTempData = createRequestSchemaFunc(data);
+      try {
+        // получаем не данные запроса
+        let methodInfo = methodInfoConstructor(data);
+        methodInfo = methodInfoSetSettings(methodInfo, settings, methodName);
   
-      // получаем список функций обработки
-      let provider = RequestClientProvider.getPreset(methodSchemaTempData);
+        // получаем список функций обработки
+        provider = RequestClientProvider.getPreset(methodInfo);
   
-      // получаем финальные данные для запроса.
-      // TODO: переписать на несколько функций
-      // fixMethodSchema = new MethodSchema(Object.assign({name: methodName}, methodSchema.toObject(), customSettings));
-      const requestClass = RequestCreate(provider.MethodDataPrepare, methodSchemaTempData, methodName, Config.hostSchema, settings);
+        // получаем финальные данные для запроса.
+        requestClass = methodInfoToRequestClass(provider.MethodDataPrepare, methodInfo, Config.hostSchema);
+      } catch (e) {
+        console.error(e);
+        // TODO: fix
+        return Promise.reject({})
+      }
 
       // TODO: продумать кеш
       // const cache = cacheCreate(mergeRequestClass)

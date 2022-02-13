@@ -1,5 +1,5 @@
 
-const MethodSchema = function (option) {
+const MethodInfo = function (option) {
 
   let _field = {
     name    : '',
@@ -75,4 +75,4 @@ const MethodSchema = function (option) {
 };
 
 
-export default MethodSchema;
+export default MethodInfo;

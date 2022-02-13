@@ -1,19 +1,11 @@
 
-import RequestManagerException    from "../Exception/RequestManagerException";
 import SenderRequestClientLogic   from "./SenderRequestClientLogic";
 import SenderResponsePrepareLogic from "./SenderResponsePrepareLogic";
 
-
-const newErrorPromise = (code, message = '', details = null) => {
-  if(details && details.errorObject) {
-    console.warn(details.errorObject);
-  }
-  let promise = Promise.reject(new RequestManagerException(code, message, details));
-  promise.abort = () => {};
-  return promise;
-};
+import {createSenderErrorPromise} from "js-request-manager/src/Core/SenderHelper";
 
 
+// TODO: переписать на промис с его явным возвратом, (отсутствует abort) ???
 const Sender = async (requestClient, responsePrepare, requestClass) => {
   // Отправка данных
   try {
@@ -29,7 +21,8 @@ const Sender = async (requestClient, responsePrepare, requestClass) => {
     return data;
     
   } catch (e) {
-    return newErrorPromise('REQUEST_PROVIDER_GET', e.message, {errorObject: e});
+    // TODO не уверен в корректной работе
+    return createSenderErrorPromise('REQUEST_PROVIDER_GET', e.message, {errorObject: e});
   }
 }
 

@@ -1,12 +1,12 @@
 
-import iMethodSchemaPrepare from "./iMethodSchemaPrepare";
+import iMethodInfoPrepare from "./iMethodInfoPrepare";
 import * as RequestClientFetch from "../RequestClient/RequestClientFetch";
 import iResponsePrepare from "js-request-manager/src/Contract/iResponsePrepare";
 
 // ниже указаны типы для работы с интерфейсами.
 
-/** @type {iMethodSchemaPrepare} */
-const methodDataPrepare = new iMethodSchemaPrepare();
+/** @type {iMethodInfoPrepare} */
+const methodDataPrepare = new iMethodInfoPrepare();
 
 /** @type {iRequestClient} */
 const requestClient = Object.assign(RequestClientFetch, {});
@@ -22,7 +22,7 @@ const responsePrepare = new iResponsePrepare();
  */
 const iProvider = function () {
   /**
-   * @returns {{name: string, RequestClient: iRequestClient, MethodDataPrepare: iMethodSchemaPrepare, ResponsePrepare: iResponsePrepare}}
+   * @returns {{name: string, RequestClient: iRequestClient, MethodDataPrepare: iMethodInfoPrepare, ResponsePrepare: iResponsePrepare}}
    */
   this.getPreset = () => {
     return {

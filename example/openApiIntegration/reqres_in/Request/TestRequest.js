@@ -1,10 +1,10 @@
 
-import MethodSchema from "js-request-manager/src/Class/MethodSchema";
+import MethodInfo from "js-request-manager/src/Class/MethodInfo";
 
 export default {
   
   getTestJson: () => {
-    return new MethodSchema({
+    return new MethodInfo({
       name  : 'Test::getTestJson',
       type  : 'GET',
       url   : 'api://users',

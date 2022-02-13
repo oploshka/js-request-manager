@@ -2,21 +2,21 @@
 //
 import RequestClass     from "../Class/RequestClass";
 import RequestLinkClass from "../Class/RequestLinkClass";
-import MethodSchema from "js-request-manager/src/Class/MethodSchema";
+import MethodInfo from "js-request-manager/src/Class/MethodInfo";
 
 /**
  * подготовка данных
- * @param {iMethodSchemaPrepare} methodDataPrepare
- * @param {MethodSchema} methodSchema
+ * @param {iMethodInfoPrepare} methodDataPrepare
+ * @param {MethodInfo} methodInfo
  * @param {Object} hostSchema
  * @returns {Object}
  */
-const getRequestObject = (methodDataPrepare, methodSchema, hostSchema) => {
+const getRequestObject = (methodDataPrepare, methodInfo, hostSchema) => {
   
   // данные для запроса
-  const type      = methodSchema.getType();
-  const url       = methodSchema.getUrl();
-  const params    = methodSchema.getParams();
+  const type      = methodInfo.getType();
+  const url       = methodInfo.getUrl();
+  const params    = methodInfo.getParams();
   
   let urlClass = new RequestLinkClass(url, hostSchema);
   return {
@@ -28,37 +28,40 @@ const getRequestObject = (methodDataPrepare, methodSchema, hostSchema) => {
 }
 
 /**
- * TODO: переписать логику мержа
  *
- * @param {iMethodSchemaPrepare} methodDataPrepare
- * @param {MethodSchema} methodSchema
- * @param {String}       methodName
- * @param {Object}       hostSchema
- * @param {Object}       customSettings
- * @returns {RequestClass}
+ * @param {MethodInfo}  methodInfo
+ * @param {Object}      settings
+ * @param {String}      methodName
  */
-const requestClassCreate = (methodDataPrepare, methodSchema, methodName, hostSchema, customSettings) => {
-  
-  let fixMethodSchema = methodSchema;
+export const methodInfoSetSettings = (methodInfo, settings, methodName) => {
   
   // мержим доп настройки для запроса
-  if(customSettings) {
+  if(!methodInfo.getName() || settings) {
     // чтоб не писать много кода
-    fixMethodSchema = new MethodSchema(Object.assign({}, methodSchema.toObject(), customSettings));
+    return new MethodInfo(Object.assign({name: methodName}, methodInfo.toObject(), settings));
   }
   
-  const requestObject = getRequestObject(methodDataPrepare, fixMethodSchema, hostSchema)
-  const methodSchemaName = fixMethodSchema.getName();
+  return methodInfo;
+}
+
+/**
+ *
+ * @param {iMethodInfoPrepare}  methodDataPrepare
+ * @param {MethodInfo}          methodInfo
+ * @param {Object}              hostSchema
+ * @returns {RequestClass}
+ */
+export const methodInfoToRequestClass = (methodDataPrepare, methodInfo, hostSchema) => {
+  
+  const requestObject = getRequestObject(methodDataPrepare, methodInfo, hostSchema)
   
   return new RequestClass({
-    name    : methodSchemaName || methodName,
+    name    : methodInfo.getName(),
     //
     type    : requestObject.type,
     url     : requestObject.url,
     params  : requestObject.data, // TODO: data -> params ???
     //
-    methodSchema: fixMethodSchema
+    methodInfo: methodInfo
   });
 }
-
-export default requestClassCreate;

@@ -12,7 +12,7 @@ const RequestClass = function (option) {
     url     : '',
     params  : { get:{}, post:{} },
     //
-    methodSchema: null,
+    methodInfo: null,
   };
   
   // Это внутренний класс и ответственность за корректность данных на библиотеке
@@ -26,9 +26,9 @@ const RequestClass = function (option) {
   this.getParams          = () => { return _field.params; };
   
   /**
-   * @returns {MethodSchema}
+   * @returns {MethodInfo}
    */
-  this.getMethodSchema    = () => { return _field.methodSchema; };
+  this.getMethodInfo    = () => { return _field.methodInfo; };
   
   // TODO: дополнить геттеры???
   
