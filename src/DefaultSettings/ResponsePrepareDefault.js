@@ -3,17 +3,29 @@ export const getErrorNetworkMessage = () => {
 
 }
 
-// Ответ успешный
-export const isSuccess = (riObject) => {
-  if( !(200 <= riObject.httpStatus && riObject.httpStatus < 300) ) {
+/**
+ * Ответ успешный ?
+ * @param {ResponseClass} responseClass
+ * @param {RequestClass} requestClass
+ * @returns {boolean}
+ */
+export const isSuccess = (responseClass, requestClass) => {
+  const httpStatus = responseClass.getHttpStatus()
+  if( !(200 <= httpStatus && httpStatus < 300) ) {
     return false;
   }
   return true;
 }
 
 // TODO: упростить в 1 метод? (isSuccess + getSuccessInfo)
-export const getSuccessInfo = async (riObject, requestClass, Config) => {
-  let data = riObject.data;
+/**
+ * Ответ успешный ?
+ * @param {ResponseClass} responseClass
+ * @param {RequestClass} requestClass
+ * @returns {} Можно вернуть что угодно
+ */
+export const getSuccessInfo = async (responseClass, requestClass) => {
+  let data = responseClass.getDataObj();
   
   //
   if(data instanceof Blob) {

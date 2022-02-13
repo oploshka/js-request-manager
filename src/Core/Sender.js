@@ -22,7 +22,7 @@ const requestClientSend = async (requestClient, requestClass) => {
   
   let requestClientData;
   requestClientData = requestClient.requestToClientObject(requestClass)
-  requestClientData = requestClient.prepareClientObject(requestClientData, requestClass);
+  requestClientData = await requestClient.prepareClientObject(requestClientData, requestClass);
   
   let rcsResponse = {};
   try {
@@ -50,14 +50,15 @@ const requestClientSend = async (requestClient, requestClass) => {
 /**
  *
  * @param responsePrepare
- * @param {ResponseClass} ri
- * @param {requestSchemaMergeClass} requestSchemaMergeClass
+ * @param {iResponsePrepare} responsePrepare
+ * @param {ResponseClass} responseClass
+ * @param {RequestClass} requestClass
  * @returns {Promise<*>}
  */
-const responseProcessing = async (responsePrepare, ri, requestSchemaMergeClass) => {
+const responseProcessing = async (responsePrepare, responseClass, requestClass) => {
   
   // В ответ ошибка
-  if( !responsePrepare.isSuccess(ri, requestClass, Config) ) {
+  if( !responsePrepare.isSuccess(responseClass, requestClass/*, Config*/) ) {
     let errObj = null;
     
     // вызываем цепочку пользовательских функций по получению ошибки.
@@ -77,9 +78,9 @@ const responseProcessing = async (responsePrepare, ri, requestSchemaMergeClass) 
   }
   
   // Обрабатываем успешный ответ
-  let data = await responsePrepare.getSuccessInfo(ri, requestClass, Config);
+  let data = await responsePrepare.getSuccessInfo(responseClass, requestClass/*, Config*/);
   
-  const responsePrepareFunc = requestClass.getResponsePrepare();
+  const responsePrepareFunc = requestClass.getMethodSchema().getResponsePrepare();
   if(responsePrepareFunc) {
     data = await responsePrepareFunc(data);
   }
@@ -92,10 +93,12 @@ const Sender = async (requestClient, responsePrepare, requestClass) => {
   try {
     // Шаг 3
     // _step = 'REQUEST_OBJECT_PREPARE';
-    const riObject = await requestClientSend(requestClient, requestClass)
+    const responseClass = await requestClientSend(requestClient, requestClass)
+    
+    
     
     // Шаг 4
-    const data = await responseProcessing(responsePrepare, requestClass);
+    const data = await responseProcessing(responsePrepare, responseClass, requestClass);
     
     return data;
     

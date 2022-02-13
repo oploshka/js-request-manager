@@ -16,7 +16,7 @@ const RequestClass = function (option) {
   };
   
   // Это внутренний класс и ответственность за корректность данных на библиотеке
-  Object.assign({}, _field, option);
+  Object.assign( _field, option);
 
 
   this.getName            = () => { return _field.name;   };
@@ -25,6 +25,9 @@ const RequestClass = function (option) {
   this.getUrl             = () => { return _field.url;    };
   this.getParams          = () => { return _field.params; };
   
+  /**
+   * @returns {MethodSchema}
+   */
   this.getMethodSchema    = () => { return _field.methodSchema; };
   
   // TODO: дополнить геттеры???

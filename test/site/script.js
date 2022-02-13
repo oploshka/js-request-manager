@@ -9,7 +9,7 @@ window.RmReqres = RmReqres;
 // RmNumber.Trivia.getTriviaInfo({number:94685654654, notFactText:"not interesting fact"}).then(console.warn, console.err)
 // RmNumber.Trivia.getTriviaInfo({})
 
-RmReqres.Test.getTestJson({});
+RmReqres.Test.getTestJson({}).then(console.log, console.warn);
 
 export default {}
 

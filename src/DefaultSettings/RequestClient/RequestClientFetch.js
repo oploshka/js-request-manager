@@ -16,7 +16,6 @@ export const prepareClientObject = async(fetchObject, options) => {
 export const requestToClientObject = (requestClass) => {
   
   let fetchUrl  = requestClass.getUrl();
-  debugger;
   const params  = requestClass.getParams()
   
   // TODO: вынести в отдельную функцию
@@ -74,7 +73,7 @@ export const isNetworkError = (fetchResponse, requestClass /*, Config*/) => {
   }
 };
 
-export const getRiObject = async (axiosResponse, requestClass, Config) => {
+export const clientResponseToResponseClass = async (fetchResponse, requestClass/*, Config*/) => {
   
   const ri = {
     httpStatus  : -1,
