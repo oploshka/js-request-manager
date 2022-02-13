@@ -1,5 +1,5 @@
 
-import {isString, isFunction} from '../Helper/Helper';
+import {isString, isFunction} from 'js-request-manager/src/Helper/Helper';
 
 /**
  * Функция которая позволяет обработать requestClass - поле ошибки

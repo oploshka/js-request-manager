@@ -1,5 +1,5 @@
 
-import {isEmpty} from "../../Helper/Helper";
+import {isEmpty} from "../Helper/Helper";
 
 export const send = async(obj) => {
   return await fetch(obj.url, obj.options);
