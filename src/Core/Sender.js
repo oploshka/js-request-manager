@@ -1,6 +1,13 @@
 
-import RequestManagerException from "../Class/RequestManagerException";
+import RequestManagerException from "../Exception/RequestManagerException";
 import ResponseClass from "../Class/ResponseClass";
+
+
+const newErrorPromise = (code, message = '', details = null) => {
+  let promise = Promise.reject(new RequestManagerException(code, message, details));
+  promise.abort = () => {};
+  return promise;
+};
 
 /**
  *
@@ -81,11 +88,13 @@ const Sender = async (requestClient, responsePrepare, requestSchemaMergeClass) =
   // Отправка данных
   try {
     // Шаг 3
-    _step = 'REQUEST_OBJECT_PREPARE';
+    // _step = 'REQUEST_OBJECT_PREPARE';
     const riObject = await requestClientSend(requestClient, requestSchemaMergeClass)
     
     // Шаг 4
     const data = await responseProcessing(responsePrepare);
+    
+    return data;
     
   } catch (e) {
     return newErrorPromise('REQUEST_PROVIDER_GET', e.message, {errorObject: e});

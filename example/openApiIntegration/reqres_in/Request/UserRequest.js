@@ -1,11 +1,11 @@
 
-import RequestClass from "js-request-manager/src/Class/RequestClass";
+import MethodSchema from "js-request-manager/src/Class/MethodSchema";
 
 export default {
   
   
   getList: ({page = null}) => {
-    return new RequestClass({
+    return new MethodSchema({
       name: 'User::getList',
       type: 'GET',
       url   : 'api://users',
@@ -15,7 +15,7 @@ export default {
     });
   },
   getById: ({userId}) => { // not found 23
-    return new RequestClass({
+    return new MethodSchema({
       name: 'User::getList',
       type: 'GET',
       url   : `api://users/${userId}`,
@@ -25,7 +25,7 @@ export default {
     });
   },
   create: ({name, job}) => { // response 201
-    return new RequestClass({
+    return new MethodSchema({
       name: 'User::create',
       type: 'POST',
       url   : `api://users`,
@@ -39,14 +39,14 @@ export default {
    * @return {Promise}
    */
   update: ({userId, user }) => { // response 201
-    return new RequestClass({
+    return new MethodSchema({
       name: 'User::update',
       type: 'PUT', // or PATCH
       url   : `api://users`,
     });
   },
   delete: ({userId }) => { // response 204
-    return new RequestClass({
+    return new MethodSchema({
       name: 'User::delete',
       type: 'DELETE',
       url   : `api://users/${userId}`,

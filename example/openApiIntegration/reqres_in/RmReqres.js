@@ -1,10 +1,12 @@
 
 //
-import RequestManager from "js-request-manager/src/RequestManager";
+import RequestManager from "js-request-manager/src";
 
 //
 import TestRequest from "./Request/TestRequest";
 import UserRequest from "./Request/UserRequest";
+
+import {getPreset} from "js-request-manager/src/DefaultSettings/RequestClientProviderDefault";
 
 /**
  * @name ReqresAPIRequestSchemaObject
@@ -23,8 +25,5 @@ export default RequestManager(ReqresAPIRequestSchema,{
   },
   // TODO: add hook?
   //
-  RequestClientProvider: {
-    name: 'FETCH',
-    // async send(obj) { return await axios(obj); }
-  }
+  RequestClientProvider: {getPreset},
 });

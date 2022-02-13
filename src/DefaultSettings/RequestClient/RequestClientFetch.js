@@ -1,5 +1,5 @@
 
-import {isEmpty} from "../Helper/Helper";
+import {isEmpty} from "../../Helper/Helper";
 
 export const send = async(obj) => {
   return await fetch(obj.url, obj.options);
@@ -9,18 +9,24 @@ export const sendPrepare = async(fetchObject, options) => {
   return fetchObject;
 };
 
-export const getRequestClientObject = (requestObj, requestClass, Config) => {
+/**
+ * @param {RequestClass} requestClass
+ * @returns {Object} Произвольные данные в приемлемом формате для отправки
+ */
+export const requestToClientObject = (requestClass) => {
   
-  let fetchUrl = requestObj.url;
+  let fetchUrl  = requestClass.getUrl();
+  const params  = requestClass.getParams()
   
+  // TODO: вынести в отдельную функцию
   // get params
-  if(!isEmpty(requestObj.data.get)){
+  if(!isEmpty(params.get)){
     let params = '';
-    for(let key in requestObj.data.get){
-      if(requestObj.data.get[key] === null) {
+    for(let key in params.get){
+      if(params.get[key] === null) {
         continue;
       }
-      params += (params ? '&' : '') + encodeURIComponent(key) + '=' + encodeURIComponent(requestObj.data.get[key])
+      params += (params ? '&' : '') + encodeURIComponent(key) + '=' + encodeURIComponent(params.get[key])
     }
     
     if (fetchUrl.includes("?")){
@@ -31,7 +37,7 @@ export const getRequestClientObject = (requestObj, requestClass, Config) => {
   }
   
   const fetchOptions = {
-    method  : requestObj.type, // *GET, POST, PUT, DELETE, etc.
+    method  : requestClass.getType(), // *GET, POST, PUT, DELETE, etc.
     headers : {},
     
     // mode: 'cors', // no-cors, *cors, same-origin
@@ -41,14 +47,14 @@ export const getRequestClientObject = (requestObj, requestClass, Config) => {
     // referrerPolicy: 'no-referrer', // no-referrer, *client
   };
   
-  if(!isEmpty(requestObj.data.post)){
+  if(!isEmpty(params.post)){
     
-    if(requestObj.data.post instanceof FormData){
+    if(params.post instanceof FormData){
       fetchOptions.headers['Content-Type'] = 'multipart/form-data';
-      fetchOptions.body    = requestObj.data.post;
+      fetchOptions.body    = params.post;
     } else {
       fetchOptions.headers['Content-Type'] = 'application/json';
-      fetchOptions.body = JSON.stringify(requestObj.data.post)
+      fetchOptions.body = JSON.stringify(params.post)
     }
   }
   

@@ -2,8 +2,7 @@
 import Sender       from "./Sender";
 import RequestClass from "../Class/RequestClass";
 //
-import RequestSchemaMerge from "./RequestSchemaMerge";
-import { isFunction, isLiteralObject} from './Helper/Helper';
+import { isFunction, isLiteralObject} from '../Helper/Helper';
 import RequestCreate from "js-request-manager/src/Core/RequestCreate";
 
 
@@ -17,13 +16,14 @@ import RequestCreate from "js-request-manager/src/Core/RequestCreate";
  */
 
 /**
+ *
  * @param {RequestSchemaStr} schema
  * @param {Object} cnf
  * @param {Object} cnf.hostSchema
  * @param {Object} cnf.Hook
  * @param {Object} cnf.RequestClientProvider
  */
-const RequestManager = (schema, _stgs) => {
+const RequestManager = (schema, cnf) => {
 
   const cache = {};
 
@@ -40,8 +40,8 @@ const RequestManager = (schema, _stgs) => {
     Hook            : Object.assign({}, cnf.hook),
   };
 
-  // Создаем функцию для отправки
-  const SendRequest = new SendRequestClass(RequestClientProvider, Config);
+  // // Создаем функцию для отправки
+  // const SendRequest = new SendRequestClass(RequestClientProvider, Config);
   
   // соединяем ключи для имен методов
   const concatenateKey= (p, c) => {
@@ -98,7 +98,7 @@ const RequestManager = (schema, _stgs) => {
       // получаем финальные данные для запроса.
       // TODO: переписать на несколько функций
       // fixMethodSchema = new MethodSchema(Object.assign({name: methodName}, methodSchema.toObject(), customSettings));
-      const requestClass = RequestCreate(provider.MethodDataPrepare, methodSchemaTempData, settings, methodName, Config.hostSchema);
+      const requestClass = RequestCreate(provider.MethodDataPrepare, methodSchemaTempData, methodName, Config.hostSchema, settings);
 
       // TODO: продумать кеш
       // const cache = cacheCreate(mergeRequestClass)
@@ -107,7 +107,7 @@ const RequestManager = (schema, _stgs) => {
       // }
   
       // send request
-      const requestPromise = SendRequest.send(requestClass);
+      const requestPromise = Sender(requestClass);
   
       // TODO: продумать кеш
       // if (cache.setCache) {

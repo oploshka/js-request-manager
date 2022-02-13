@@ -1,5 +1,5 @@
 import RequestClass   from "js-request-manager/src/Class/RequestClass";
-import RequestManager from "js-request-manager/src/RequestManager";
+import RequestManager from "js-request-manager/src";
 
 // import axios from 'axios';
 

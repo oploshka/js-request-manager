@@ -1,5 +1,5 @@
 
-import RequestManagerException  from "../Class/RequestManagerException";
+import RequestManagerException  from "../Exception/RequestManagerException";
 import RequestLinkClass         from "../Class/RequestLinkClass";
 
 const newErrorPromise = (code, message = '', details = null) => {
