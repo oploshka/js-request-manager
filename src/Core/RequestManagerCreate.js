@@ -107,7 +107,7 @@ const RequestManager = (schema, cnf) => {
       // }
   
       // send request
-      const requestPromise = Sender(requestClass);
+      const requestPromise = Sender(provider.RequestClient, provider.ResponsePrepare, requestClass);
   
       // TODO: продумать кеш
       // if (cache.setCache) {

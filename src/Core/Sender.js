@@ -4,6 +4,9 @@ import ResponseClass from "../Class/ResponseClass";
 
 
 const newErrorPromise = (code, message = '', details = null) => {
+  if(details && details.errorObject) {
+    console.warn(details.errorObject);
+  }
   let promise = Promise.reject(new RequestManagerException(code, message, details));
   promise.abort = () => {};
   return promise;
@@ -12,14 +15,14 @@ const newErrorPromise = (code, message = '', details = null) => {
 /**
  *
  * @param {iRequestClient} requestClient
- * @param requestSchemaMergeClass
+ * @param {RequestClass} requestClass
  * @returns {Promise<ResponseClass>}
  */
-const requestClientSend = async (requestClient, requestSchemaMergeClass) => {
+const requestClientSend = async (requestClient, requestClass) => {
   
   let requestClientData;
-  requestClientData = requestClient.requestToClientObject(requestSchemaMergeClass)
-  requestClientData = requestClient.prepareClientObject(requestClientData, requestSchemaMergeClass);
+  requestClientData = requestClient.requestToClientObject(requestClass)
+  requestClientData = requestClient.prepareClientObject(requestClientData, requestClass);
   
   let rcsResponse = {};
   try {
@@ -29,7 +32,7 @@ const requestClientSend = async (requestClient, requestSchemaMergeClass) => {
   }
   
   // network error
-  let isNetworkError = requestClient.isNetworkError(rcsResponse, requestClass, Config)
+  let isNetworkError = requestClient.isNetworkError(rcsResponse, requestClass/* , Config */)
   if(isNetworkError) {
   
     // TODO: fix and return ResponseClass
@@ -84,15 +87,15 @@ const responseProcessing = async (responsePrepare, ri, requestSchemaMergeClass) 
   return data;
 }
 
-const Sender = async (requestClient, responsePrepare, requestSchemaMergeClass) => {
+const Sender = async (requestClient, responsePrepare, requestClass) => {
   // Отправка данных
   try {
     // Шаг 3
     // _step = 'REQUEST_OBJECT_PREPARE';
-    const riObject = await requestClientSend(requestClient, requestSchemaMergeClass)
+    const riObject = await requestClientSend(requestClient, requestClass)
     
     // Шаг 4
-    const data = await responseProcessing(responsePrepare);
+    const data = await responseProcessing(responsePrepare, requestClass);
     
     return data;
     

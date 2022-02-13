@@ -5,7 +5,7 @@ export const send = async(obj) => {
   return await fetch(obj.url, obj.options);
 };
 
-export const sendPrepare = async(fetchObject, options) => {
+export const prepareClientObject = async(fetchObject, options) => {
   return fetchObject;
 };
 
@@ -16,6 +16,7 @@ export const sendPrepare = async(fetchObject, options) => {
 export const requestToClientObject = (requestClass) => {
   
   let fetchUrl  = requestClass.getUrl();
+  debugger;
   const params  = requestClass.getParams()
   
   // TODO: вынести в отдельную функцию
@@ -67,7 +68,7 @@ export const requestToClientObject = (requestClass) => {
   return {url: fetchUrl, options: fetchOptions};
 };
 
-export const isNetworkError = (axiosResponse, requestClass, Config) => {
+export const isNetworkError = (fetchResponse, requestClass /*, Config*/) => {
   if(!fetchResponse.ok) {
     return fetchResponse.statusText ? fetchResponse.statusText : 'Неизвестная сетевая ошибка';
   }

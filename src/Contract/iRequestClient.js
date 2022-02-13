@@ -3,10 +3,10 @@
  * Конвертируем объект RequestSchemaMergeClass в объект для отправки
  * Тут пишем только конвертацию!!!
  *
- * @param {RequestSchemaMergeClass} RequestSchemaMergeClass
+ * @param {RequestClass} requestClass
  * @returns {Object} Произвольные данные в приемлемом формате для отправки
  */
-export const requestToClientObject = (RequestSchemaMergeClass) => {
+export const requestToClientObject = (requestClass) => {
   const clientObject = {}
   return clientObject;
 };
@@ -15,10 +15,10 @@ export const requestToClientObject = (RequestSchemaMergeClass) => {
  * Дополняем объект clientObject дополнительной информацией (установка токенов и тп.)
  *
  * @param clientObject объект который вернули в requestToClientObject
- * @param {RequestSchemaMergeClass} RequestSchemaMergeClass __ Параметр под вопросом
+ * @param {RequestClass} requestClass __ Параметр под вопросом
  * @returns {Object} Произвольные данные в приемлемом формате для отправки
  */
-export const prepareClientObject = async(clientObject, RequestSchemaMergeClass) => {
+export const prepareClientObject = async(clientObject, requestClass) => {
   return clientObject;
 };
 
