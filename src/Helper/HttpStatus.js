@@ -34,16 +34,6 @@ export const getStatusInfo = (status) => {
   return '';
 };
 
-export const getStatusMessage = (status) => {
-  let message = ''
-  message += getStatusInfo(status);
-  message += message ? ': ' : '';
-  message += status + ' ';
-  message += (status in HTTP_ERROR_STATUS) ?  HTTP_ERROR_STATUS[status] : 'Undefined error';
-  
-  return message;
-};
-
 export const HTTP_ERROR_STATUS = {
   //
   300 : 'Multiple Choices',                   // множество выборов;
@@ -112,18 +102,3 @@ export const HTTP_ERROR_STATUS = {
   526 : 'Invalid SSL Certificate',            //   недействительный сертификат SSL.',
 };
 
-
-
-export default async (riObject, requestClass, Config) => {
-  
-  let errMessage = getStatusMessage(riObject.httpStatus);
-  if(!errMessage) {
-    return null;
-  }
-  
-  return {
-    code:     'NETWORK_ERROR',
-    message:  errMessage,
-    data:     {},
-  };
-};
