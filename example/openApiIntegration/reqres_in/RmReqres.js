@@ -7,7 +7,7 @@ import TestRequest from "./Request/TestRequest";
 import UserRequest from "./Request/UserRequest";
 
 
-import iProvider from "js-request-manager/src/Contract/iProvider";
+import iPresetManager from "js-request-manager/src/Contract/iPresetManager";
 
 /**
  * @name ReqresAPIRequestSchemaObject
@@ -26,5 +26,5 @@ export default RequestManager(ReqresAPIRequestSchema,{
   },
   // TODO: add hook?
   //
-  RequestClientProvider: new iProvider(),
+  presetManager: new iPresetManager(),
 });

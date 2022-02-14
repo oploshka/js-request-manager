@@ -7,10 +7,11 @@ export const createSenderError = (exception, code, message = '', details = null)
   if (exception instanceof RequestManagerException) {
     return exception;
   }
+  console.warn(exception);
   
   let codeMerge     = code || 'ERROR_UNDEFINED'
   let messageMerge  = message || exception.message;
-  let detailsMerge  = details || {errorObject: e}
+  let detailsMerge  = details || {errorObject: exception}
   
   return new RequestManagerException(codeMerge, messageMerge, detailsMerge);
 };

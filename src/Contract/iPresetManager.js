@@ -17,10 +17,10 @@ const responsePrepare = new iResponsePrepare();
 //
 
 /**
- * iProvider - формально это интерфейс
+ * iPresetManager - формально это интерфейс
  * @constructor
  */
-const iProvider = function () {
+const iPresetManager = function () {
   /**
    * @returns {{name: string, RequestClient: iRequestClient, MethodDataPrepare: iMethodInfoPrepare, ResponsePrepare: iResponsePrepare}}
    */
@@ -34,4 +34,4 @@ const iProvider = function () {
   };
 };
 
-export default iProvider;
+export default iPresetManager;
