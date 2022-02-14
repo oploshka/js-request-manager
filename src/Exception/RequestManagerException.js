@@ -35,10 +35,15 @@ function RequestManagerException(code, message = '', details = null) {
   // super(fullMsg);
   this.code     = code;
   this.message  = message;
-
   this.details = details;
+  
+  // TODO: test
+  this.stack = (new Error()).stack;
 }
-RequestManagerException.prototype = Error.prototype;
+
+// RequestManagerException.prototype = Error.prototype;
+RequestManagerException.prototype = Object.create(Error.prototype);
+RequestManagerException.prototype.constructor = RequestManagerException;
 
 
 export default RequestManagerException;

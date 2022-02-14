@@ -1,9 +1,14 @@
 //
-import Sender       from "./Sender";
 import RequestClass from "../Class/RequestClass";
 //
 import { isFunction, isLiteralObject} from '../Helper/Helper';
-import { methodInfoSetSettings, methodInfoToRequestClass } from "./RequestCreate";
+//
+import { methodInfoSetSettings, methodInfoToRequestClass }  from "./SenderRequestCreate";
+import SenderRequestClientLogic                             from "./SenderRequestClientLogic";
+import SenderResponsePrepareLogic                           from "./SenderResponsePrepareLogic";
+//
+import {createSenderError}  from "./SenderHelper";
+import RmCache              from "./RmCache";
 
 
 /**
@@ -19,34 +24,22 @@ import { methodInfoSetSettings, methodInfoToRequestClass } from "./RequestCreate
  *
  * @param {RequestSchemaStr} schema
  * @param {Object} cnf
- * @param {Object} cnf.hostSchema
+ * @param {Object} cnf.hostAlias
  * @param {Object} cnf.Hook
  * @param {Object} cnf.RequestClientProvider
  */
 const RequestManager = (schema, cnf) => {
 
-  const cache = {};
-
   const RequestSchema = schema;
-  
-  /**
-   *
-   * @type iProvider
-   */
-  const RequestClientProvider = cnf.RequestClientProvider
-  // config
-  const Config = {
-    hostSchema      : Object.assign({}, cnf.hostSchema),
-    Hook            : Object.assign({}, cnf.hook),
-  };
-
-  // // Создаем функцию для отправки
-  // const SendRequest = new SendRequestClass(RequestClientProvider, Config);
+  const HostAlias     = cnf.hostAlias
+  //
+  const Cache         = cnf.rmCache || new RmCache()
+  const Hook          = cnf.hook    || {}; // TODO: emitter && listener https://www.npmjs.com/package/event-emitter
+  /** @type iProvider  */
+  const Provider      = cnf.RequestClientProvider
   
   // соединяем ключи для имен методов
-  const concatenateKey= (p, c) => {
-    return p + '::' + c;
-  }
+  const concatenateKey= (p, c) => { return p + '::' + c; }
   
   // Тут мы перебираем все элементы и генерим по ним менеджер запросов
   const requestPrepare = (requestSchema, parentKey = '') => {
@@ -63,18 +56,15 @@ const RequestManager = (schema, cnf) => {
     return req1
   };
   
-  // функция обертка для сохранения
+  /**
+   * функция обертка для сохранения пользовательской функции для создания информации запроса
+   * @param {function(Object): MethodInfo } _rsf пользовательская функция для создания схемы запроса
+   * @param {String} _mn Имя метода (генеренный)
+   * @returns {function(Object=, Object=): *} Функция вызываемая при вызове метода Request Manager(а).
+   */
   const createRequestSendFunction = (_rsf, _mn) => {
-    /**
-     * пользовательская функция для создания схемы запроса
-     * @type {function(Object): MethodInfo }
-     **/
-    const methodInfoConstructor = _rsf;
     
-    /**
-     * Имя метода (генеренный)
-     * @type String
-     **/
+    const methodInfoConstructor = _rsf;
     const methodName              = _mn;
     
     /**
@@ -85,13 +75,12 @@ const RequestManager = (schema, cnf) => {
      * @param {Object} settings - доп. настройки для отправки (по мимо тех что указаны в)
      * @returns {Promise<unknown>}
      */
-    const RequestSendFunction = (data = {}, settings = {}) => {
-      
-      let provider;
-      let requestClass;
-      
+    const RequestSendFunction = async (data = {}, settings = null) => {
+  
+      // Формируем класс запроса
+      let provider, requestClass;
+      //
       try {
-        // получаем не данные запроса
         let methodInfo = methodInfoConstructor(data);
         methodInfo = methodInfoSetSettings(methodInfo, settings, methodName);
   
@@ -99,33 +88,41 @@ const RequestManager = (schema, cnf) => {
         provider = RequestClientProvider.getPreset(methodInfo);
   
         // получаем финальные данные для запроса.
-        requestClass = methodInfoToRequestClass(provider.MethodDataPrepare, methodInfo, Config.hostSchema);
+        requestClass = methodInfoToRequestClass(provider.MethodDataPrepare, methodInfo, HostAlias);
       } catch (e) {
-        console.error(e);
-        // TODO: fix
-        return Promise.reject({})
+        // TODO: fix - add error не удалось сформировать объект запроса
+        throw createSenderError(e, 'ERROR_REQUEST_CREATE');
+      }
+      
+      // // TODO: add cache
+      // const cacheItem = Cache.getHelper(requestClass, data); // оптимизационный просчет ключей
+      // if( cacheItem && cacheItem.isset() ) {
+      //   return cacheItem.get();
+      // }
+      
+      
+      // Отправка данных
+      let responseClass;
+      //
+      try {
+        responseClass = await SenderRequestClientLogic(provider.RequestClient, requestClass)
+      } catch (e) {
+        throw createSenderError(e, 'ERROR_REQUEST_SEND');
+      }
+      
+      
+      // Обработка ответа
+      let responseData
+      try {
+        responseData = await SenderResponsePrepareLogic(provider.ResponsePrepare, responseClass, requestClass);
+      } catch (e) {
+        throw createSenderError(e, 'ERROR_RESPONSE_PREPARE');
       }
 
-      // TODO: продумать кеш
-      // const cache = cacheCreate(mergeRequestClass)
-      // if (cache.getCache) {
-      //   return cache.getCache();
-      // }
   
-      // send request
-      const requestPromise = Sender(provider.RequestClient, provider.ResponsePrepare, requestClass);
-  
-      // TODO: продумать кеш
-      // if (cache.setCache) {
-      //   requestPromise.then(
-      //     (result) => {
-      //       cache.setCache(result);
-      //     },
-      //     (error) => {
-      //       cache.rejectCache();
-      //     }
-      //   );
-      //   return
+      // TODO: add cache
+      // if( cacheItem ) {
+      //   return cacheItem.set( responseData );
       // }
   
   
@@ -136,7 +133,7 @@ const RequestManager = (schema, cnf) => {
       //   console.error(e);
       // }
   
-      return requestPromise;
+      return responseData;
     }
     return RequestSendFunction;
     

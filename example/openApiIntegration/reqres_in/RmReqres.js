@@ -21,7 +21,7 @@ const ReqresAPIRequestSchema =  {
  * @alias ReqresAPIRequestSchemaObject need fix return value {RequestClass} in {Promise}
  */
 export default RequestManager(ReqresAPIRequestSchema,{
-  hostSchema: {
+  hostAlias: {
     api: "https://reqres.in/api/"
   },
   // TODO: add hook?

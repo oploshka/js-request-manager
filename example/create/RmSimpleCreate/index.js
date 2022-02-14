@@ -25,7 +25,7 @@ const schema = {
 
 const conf = {
   // not require
-  hostSchema: {
+  hostAlias: {
     api: 'https://domain.test/api',
   },
   RequestPrepare: {

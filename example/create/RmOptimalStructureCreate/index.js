@@ -2,7 +2,7 @@ import RequestManager from 'js-request-manager/src/RequestManager';
 
 
 // Config
-import hostSchema             from "./Config/HostSchema";
+import hostAlias             from "./Config/HostSchema";
 import RequestClientProvider  from "./Preset/RequestClientProvider";
 import Hook                   from "./Config/Hook";
 
@@ -10,7 +10,7 @@ import Hook                   from "./Config/Hook";
 import RequestSchema from "./RequestSchema";
 
 const RmOptimalStructureCreate = RequestManager(RequestSchema, {
-  hostSchema            : hostSchema,
+  hostAlias            : hostAlias,
   RequestClientProvider : RequestClientProvider,
   Hook                  : Hook,
 });

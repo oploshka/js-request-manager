@@ -8,17 +8,17 @@ import MethodInfo from "js-request-manager/src/Class/MethodInfo";
  * подготовка данных
  * @param {iMethodInfoPrepare} methodDataPrepare
  * @param {MethodInfo} methodInfo
- * @param {Object} hostSchema
+ * @param {Object} hostAlias
  * @returns {Object}
  */
-const getRequestObject = (methodDataPrepare, methodInfo, hostSchema) => {
+const getRequestObject = (methodDataPrepare, methodInfo, hostAlias) => {
   
   // данные для запроса
   const type      = methodInfo.getType();
   const url       = methodInfo.getUrl();
   const params    = methodInfo.getParams();
   
-  let urlClass = new RequestLinkClass(url, hostSchema);
+  let urlClass = new RequestLinkClass(url, hostAlias);
   return {
     type      : methodDataPrepare.prepareType(type, urlClass, params),
     url       : methodDataPrepare.prepareUrl(type, urlClass, params),
@@ -48,12 +48,12 @@ export const methodInfoSetSettings = (methodInfo, settings, methodName) => {
  *
  * @param {iMethodInfoPrepare}  methodDataPrepare
  * @param {MethodInfo}          methodInfo
- * @param {Object}              hostSchema
+ * @param {Object}              hostAlias
  * @returns {RequestClass}
  */
-export const methodInfoToRequestClass = (methodDataPrepare, methodInfo, hostSchema) => {
+export const methodInfoToRequestClass = (methodDataPrepare, methodInfo, hostAlias) => {
   
-  const requestObject = getRequestObject(methodDataPrepare, methodInfo, hostSchema)
+  const requestObject = getRequestObject(methodDataPrepare, methodInfo, hostAlias)
   
   return new RequestClass({
     name    : methodInfo.getName(),
