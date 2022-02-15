@@ -1,5 +1,6 @@
 
 import {isEmpty} from "../Helper/Helper";
+import MergeUrlAndGetObj from "../Helper/MergeUrlAndGetObj";
 
 export const send = async(obj) => {
   return await fetch(obj.url, obj.options);
@@ -15,26 +16,8 @@ export const prepareClientObject = async(fetchObject, options) => {
  */
 export const requestToClientObject = (requestClass) => {
   
-  let fetchUrl  = requestClass.getUrl();
   const params  = requestClass.getParams()
-  
-  // TODO: вынести в отдельную функцию
-  // get params
-  if(!isEmpty(params.get)){
-    let params = '';
-    for(let key in params.get){
-      if(params.get[key] === null) {
-        continue;
-      }
-      params += (params ? '&' : '') + encodeURIComponent(key) + '=' + encodeURIComponent(params.get[key])
-    }
-    
-    if (fetchUrl.includes("?")){
-      fetchUrl += (params ? '&' : '') + params;
-    } else {
-      fetchUrl += (params ? '?' : '') + params;
-    }
-  }
+  let fetchUrl  = MergeUrlAndGetObj(requestClass.getUrl(), params.get );
   
   const fetchOptions = {
     method  : requestClass.getType(), // *GET, POST, PUT, DELETE, etc.
@@ -48,7 +31,6 @@ export const requestToClientObject = (requestClass) => {
   };
   
   if(!isEmpty(params.post)){
-    
     if(params.post instanceof FormData){
       fetchOptions.headers['Content-Type'] = 'multipart/form-data';
       fetchOptions.body    = params.post;
@@ -65,6 +47,25 @@ export const requestToClientObject = (requestClass) => {
   //
   
   return {url: fetchUrl, options: fetchOptions};
+};
+
+export const requestToClientObjectMultipart = (requestClass) => {
+  
+  const params  = requestClass.getParams()
+  let url  = MergeUrlAndGetObj(requestClass.getUrl(), params.get );
+  
+  const fetchOptions = {
+    method  : requestClass.getType(), // *GET, POST, PUT, DELETE, etc.
+    headers : {
+      'Content-Type': 'multipart/form-data'
+    },
+  };
+  
+  if(requestClass.getType() !== 'GET' && !isEmpty(params.post)){
+    fetchOptions.body    = params.post;
+  }
+  
+  return {url: url, options: fetchOptions};
 };
 
 export const isNetworkError = (fetchResponse, requestClass /*, Config*/) => {

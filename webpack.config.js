@@ -22,10 +22,12 @@ module.exports = {
   ],
 
   //...
+  stats: 'errors-only',
   devServer: {
     contentBase: path.join(__dirname, 'dist'),
     compress: true,
     port: 9000,
+    watchContentBase: true,
   },
 
   resolve: {

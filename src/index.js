@@ -1,3 +1,4 @@
-import RequestManager from "js-request-manager/src/Core/RequestManagerCreate";
+
+import RequestManager from "./Core/RequestManagerCreate";
 
 export default RequestManager;

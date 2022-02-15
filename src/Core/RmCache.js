@@ -1,4 +1,4 @@
-import {isFunction, isString} from "js-request-manager/src/Helper/Helper";
+import {isFunction, isString} from "../Helper/Helper";
 
 /**
  * @constructor

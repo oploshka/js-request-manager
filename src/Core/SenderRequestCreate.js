@@ -2,7 +2,7 @@
 //
 import RequestClass     from "../Class/RequestClass";
 import RequestLinkClass from "../Class/RequestLinkClass";
-import MethodInfo from "js-request-manager/src/Class/MethodInfo";
+import MethodInfo       from "../Class/MethodInfo";
 
 /**
  * подготовка данных
