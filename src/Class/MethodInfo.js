@@ -5,10 +5,12 @@ const MethodInfo = function (option) {
     name    : '',
     type    : 'GET',
     url     : '',
+    provider: '',
     params  : {
       get : {},
       post: {},
     },
+    header  : {},
     fileName: option.fileName  || '',
     settings: {
       cache           : false,
@@ -22,7 +24,9 @@ const MethodInfo = function (option) {
     _field.name     = option.name || '';
     _field.type     = option.type || '';
     _field.url      = option.url  || '';
+    _field.provider = option.provider  || '';
     _field.fileName = option.fileName || '';
+    _field.header   = option.header || {};
 
     if(option.params) {
       _field.params = Object.assign({}, _field.params, option.params);
@@ -60,8 +64,10 @@ const MethodInfo = function (option) {
   this.getUrl             = () => { return _field.url;    };
   this.getParams          = () => { return _field.params; };
   this.getFileName        = () => { return _field.fileName; };
+  this.getProviderName    = () => { return _field.provider; };
   //
   this.getSettings        = () => { return _field.settings; };
+  this.getHeader          = () => { return _field.header; };
   //
   this.getResponsePrepare = () => { return _field.settings.responsePrepare; };
   this.getCache           = () => { return _field.settings.cache;  };

@@ -46,7 +46,7 @@ export const isNetworkError = (clientResponse, requestClass, Config) => {
  * @param RequestSchemaMergeClass __ Параметр под вопросом
  * @returns {Promise<{headers: {}, data: {}, httpStatus: number, contentType: string}>}
  */
-export const clientResponseToResponseClass = async (clientResponse, RequestSchemaMergeClass) => {
+export const clientResponseToObject = async (clientResponse, RequestSchemaMergeClass) => {
   const ri = {
     httpStatus  : -1,
     contentType : '',
@@ -66,7 +66,7 @@ const iRequestClient = function () {
   this.prepareClientObject            = prepareClientObject;
   this.send                           = send;
   this.isNetworkError                 = isNetworkError;
-  this.clientResponseToResponseClass  = clientResponseToResponseClass;
+  this.clientResponseToObject  = clientResponseToObject;
 };
 
 export default iRequestClient;

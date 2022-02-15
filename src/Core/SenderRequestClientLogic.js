@@ -34,7 +34,7 @@ const requestClientSend = async (requestClient, requestClass) => {
   
   // TODO: fix
   /** @type {{headers: {}, data: {}, contentType: string, httpStatus: number}} */
-  let ri = await requestClient.clientResponseToResponseClass(rcsResponse);
+  let ri = await requestClient.clientResponseToObject(rcsResponse);
   return new ResponseClass(ri);
 }
 

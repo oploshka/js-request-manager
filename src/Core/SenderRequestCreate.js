@@ -6,12 +6,12 @@ import MethodInfo       from "../Class/MethodInfo";
 
 /**
  * подготовка данных
- * @param {iMethodInfoPrepare} methodDataPrepare
+ * @param {apiMethodInfoPrepare} methodInfoPrepare
  * @param {MethodInfo} methodInfo
  * @param {Object} hostAlias
  * @returns {Object}
  */
-const getRequestObject = (methodDataPrepare, methodInfo, hostAlias) => {
+const getRequestObject = (methodInfoPrepare, methodInfo, hostAlias) => {
   
   // данные для запроса
   const type      = methodInfo.getType();
@@ -20,9 +20,9 @@ const getRequestObject = (methodDataPrepare, methodInfo, hostAlias) => {
   
   let urlClass = new RequestLinkClass(url, hostAlias);
   return {
-    type      : methodDataPrepare.prepareType(type, urlClass, params),
-    url       : methodDataPrepare.prepareUrl(type, urlClass, params),
-    data      : methodDataPrepare.prepareData(type, urlClass, params), // TODO: rename data -> params
+    type      : methodInfoPrepare.prepareType(type, urlClass, params),
+    url       : methodInfoPrepare.prepareUrl(type, urlClass, params),
+    data      : methodInfoPrepare.prepareData(type, urlClass, params), // TODO: rename data -> params
   };
   
 }
@@ -46,14 +46,14 @@ export const methodInfoSetSettings = (methodInfo, settings, methodName) => {
 
 /**
  *
- * @param {iMethodInfoPrepare}  methodDataPrepare
+ * @param {apiMethodInfoPrepare}  methodInfoPrepare
  * @param {MethodInfo}          methodInfo
  * @param {Object}              hostAlias
  * @returns {RequestClass}
  */
-export const methodInfoToRequestClass = (methodDataPrepare, methodInfo, hostAlias) => {
+export const methodInfoToRequestClass = (methodInfoPrepare, methodInfo, hostAlias) => {
   
-  const requestObject = getRequestObject(methodDataPrepare, methodInfo, hostAlias)
+  const requestObject = getRequestObject(methodInfoPrepare, methodInfo, hostAlias)
   
   return new RequestClass({
     name    : methodInfo.getName(),

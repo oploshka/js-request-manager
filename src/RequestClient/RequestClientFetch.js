@@ -74,7 +74,7 @@ export const isNetworkError = (fetchResponse, requestClass /*, Config*/) => {
   }
 };
 
-export const clientResponseToResponseClass = async (fetchResponse, requestClass/*, Config*/) => {
+export const clientResponseToObject = async (fetchResponse, requestClass/*, Config*/) => {
   
   const ri = {
     httpStatus  : -1,

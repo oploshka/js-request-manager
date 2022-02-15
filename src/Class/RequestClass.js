@@ -18,7 +18,6 @@ const RequestClass = function (option) {
   // Это внутренний класс и ответственность за корректность данных на библиотеке
   Object.assign( _field, option);
 
-
   this.getName            = () => { return _field.name;   };
   // переопределено
   this.getType            = () => { return _field.type;   };

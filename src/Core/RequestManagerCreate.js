@@ -37,6 +37,7 @@ const RequestManager = (schema, settings) => {
   const Cache         = settings.rmCache || new RmCache()
   const Hook          = settings.hook    || {}; // TODO: emitter && listener https://www.npmjs.com/package/event-emitter
   /** @type iPresetManager  */
+  
   const PresetManager = settings.presetManager;
   
   // соединяем ключи для имен методов
@@ -89,7 +90,7 @@ const RequestManager = (schema, settings) => {
         preset = PresetManager.getPreset(methodInfo);
   
         // получаем финальные данные для запроса.
-        requestClass = methodInfoToRequestClass(preset.MethodDataPrepare, methodInfo, HostAlias);
+        requestClass = methodInfoToRequestClass(preset.methodInfoPrepare, methodInfo, HostAlias);
       } catch (e) {
         // TODO: fix - add error не удалось сформировать объект запроса
         throw createSenderError(e, 'ERROR_REQUEST_CREATE');
@@ -106,7 +107,7 @@ const RequestManager = (schema, settings) => {
       let responseClass;
       //
       try {
-        responseClass = await SenderRequestClientLogic(preset.RequestClient, requestClass)
+        responseClass = await SenderRequestClientLogic(preset.requestClient, requestClass)
       } catch (e) {
         throw createSenderError(e, 'ERROR_REQUEST_SEND');
       }
@@ -115,7 +116,7 @@ const RequestManager = (schema, settings) => {
       // Обработка ответа
       let responseData
       try {
-        responseData = await SenderResponsePrepareLogic(preset.ResponsePrepare, responseClass, requestClass);
+        responseData = await SenderResponsePrepareLogic(preset.responsePrepare, responseClass, requestClass);
       } catch (e) {
         throw createSenderError(e, 'ERROR_RESPONSE_PREPARE');
       }

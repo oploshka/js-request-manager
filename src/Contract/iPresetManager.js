@@ -6,7 +6,7 @@ import iResponsePrepare from "./iResponsePrepare";
 // ниже указаны типы для работы с интерфейсами.
 
 /** @type {iMethodInfoPrepare} */
-const methodDataPrepare = new iMethodInfoPrepare();
+const methodInfoPrepare = new iMethodInfoPrepare();
 
 /** @type {iRequestClient} */
 const requestClient = Object.assign(RequestClientFetch, {});
@@ -22,14 +22,14 @@ const responsePrepare = new iResponsePrepare();
  */
 const iPresetManager = function () {
   /**
-   * @returns {{name: string, RequestClient: iRequestClient, MethodDataPrepare: iMethodInfoPrepare, ResponsePrepare: iResponsePrepare}}
+   * @returns {{name: string, requestClient: iRequestClient, methodInfoPrepare: iMethodInfoPrepare, responsePrepare: iResponsePrepare}}
    */
   this.getPreset = () => {
     return {
       name              : 'default',
-      MethodDataPrepare : methodDataPrepare,
-      RequestClient     : requestClient,
-      ResponsePrepare   : responsePrepare,
+      methodInfoPrepare : methodInfoPrepare,
+      requestClient     : requestClient,
+      responsePrepare   : responsePrepare,
     }
   };
 };

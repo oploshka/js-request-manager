@@ -1,4 +1,6 @@
 
-import RequestManager from "./Core/RequestManagerCreate";
+import RequestManagerCreate from "./Core/RequestManagerCreate";
+import _MethodInfo           from "./Class/MethodInfo";
 
-export default RequestManager;
+export const RequestManager = RequestManagerCreate;
+export const MethodInfo     = _MethodInfo;

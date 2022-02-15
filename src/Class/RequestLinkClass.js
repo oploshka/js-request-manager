@@ -9,7 +9,7 @@ const RequestLinkClass = function(link, hostAlias = {}) {
       return _linkCache;
     }
     _linkCache = {
-      url: '',
+      url: _linkOrigin,
     };
 
     const requestUrlArray = _linkOrigin.split('://');
