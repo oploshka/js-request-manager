@@ -2,7 +2,7 @@
 // import RmNumber from "js-request-manager/example/openApiIntegration/numbersapi_com/RmNumber";
 // window.RmNumber = RmNumber;
 
-import RmReqres from "js-request-manager/example/openApiIntegration/reqres_in/RmReqres";
+import RmReqres from 'js-request-manager/example/openApiIntegration/reqres_in/RmReqres';
 window.RmReqres = RmReqres;
 
 //
@@ -11,5 +11,4 @@ window.RmReqres = RmReqres;
 
 RmReqres.Test.getTestJson({}).then(console.log, console.warn);
 
-export default {}
-
+export default {};
