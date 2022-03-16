@@ -1,12 +1,12 @@
 
-import RequestManagerException from "../Exception/RequestManagerException";
-import ResponseClass from "../Class/ResponseClass";
+import RequestManagerException from '../Exception/RequestManagerException';
+import ResponseClass from '../Class/ResponseClass';
 
 
 /**
  *
  * @param responsePrepare
- * @param {apiResponsePrepare} responsePrepare
+ * @param {testServerResponsePrepare} responsePrepare
  * @param {ResponseClass} responseClass
  * @param {RequestClass} requestClass
  * @returns {Promise<*>}
@@ -27,7 +27,7 @@ const responseProcessing = async (responsePrepare, responseClass, requestClass) 
           break;
         }
       } catch (e) {
-        console.warn('[REQUEST_MANAGER] errorHandler error', e, responseClass, requestClass)
+        console.warn('[REQUEST_MANAGER] errorHandler error', e, responseClass, requestClass);
       }
     }
     
@@ -52,6 +52,6 @@ const responseProcessing = async (responsePrepare, responseClass, requestClass) 
   }
   
   return data;
-}
+};
 
 export default responseProcessing;

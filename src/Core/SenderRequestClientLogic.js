@@ -1,6 +1,6 @@
 
-import RequestManagerException from "../Exception/RequestManagerException";
-import ResponseClass from "../Class/ResponseClass";
+import RequestManagerException from '../Exception/RequestManagerException';
+import ResponseClass from '../Class/ResponseClass';
 
 
 /**

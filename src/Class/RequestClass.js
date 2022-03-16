@@ -5,7 +5,7 @@
  */
 const RequestClass = function (option) {
 
-  let _field = {
+  const _field = {
     name    : '',
     //
     type    : 'GET',

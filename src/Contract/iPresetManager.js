@@ -1,7 +1,7 @@
 
-import iMethodInfoPrepare from "./iMethodInfoPrepare";
-import * as RequestClientFetch from "../RequestClient/RequestClientFetch";
-import iResponsePrepare from "./iResponsePrepare";
+import iMethodInfoPrepare from './iMethodInfoPrepare';
+import * as RequestClientFetch from '../RequestClient/RequestClientFetch';
+import iResponsePrepare from './iResponsePrepare';
 
 // ниже указаны типы для работы с интерфейсами.
 

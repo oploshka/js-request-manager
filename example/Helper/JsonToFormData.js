@@ -33,10 +33,10 @@ function objectToFormData(obj, rootName, ignoreList) {
         /*
           lastModified: 1517902190000
           lastModifiedDate: Tue Feb 06 2018 10:29:50 GMT+0300 (Москва, стандартное время) {}
-          name: "npm121334.png"
+          name: 'npm121334.png'
           size: 2816
-          type: "image/png"
-          webkitRelativePath: ""
+          type: 'image/png'
+          webkitRelativePath: ''
         */
         (file && file.size) && formData.append(root, file);
       } else if (Array.isArray(data)) {

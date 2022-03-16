@@ -1,10 +1,10 @@
-import {isFunction, isString} from "../Helper/Helper";
+import {isFunction, isString} from './Is';
 
 /**
  * @constructor
  */
 const RmCache = function () {
-  let store = {};
+  const store = {};
   
   /**
    * @param {RequestClass} RequestClass
@@ -17,12 +17,12 @@ const RmCache = function () {
       return undefined;
     }
     //
-    const cacheGroupName = RequestClass.getName()
+    const cacheGroupName = RequestClass.getName();
     if(!store[cacheGroupName]) {
       return undefined;
     }
-
-    let obj = cacheInfo.getKey();
+  
+    const obj = cacheInfo.getKey();
     let cacheName = '';
     if( isFunction(obj) ) {
       cacheName = obj(data);
@@ -49,12 +49,12 @@ const RmCache = function () {
       return; // не устанавливаем кеш!!! (опасный момент)
     }
     //
-    const cacheGroupName = RequestClass.getName()
+    const cacheGroupName = RequestClass.getName();
     if(!store[cacheGroupName]) {
       store[cacheGroupName] = {};
     }
 
-    let obj = cacheInfo.getKey();
+    const obj = cacheInfo.getKey();
     let cacheName = '';
     if( isFunction(obj) ) {
       cacheName = obj(data);
@@ -71,7 +71,7 @@ const RmCache = function () {
   this.getCache = getCache;
   this.setCache = setCache;
   
-}
+};
 
 // let r = new RmCache();
 // r.getCache()

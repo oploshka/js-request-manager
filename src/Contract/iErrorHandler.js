@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 
 /**
  * Это интерфейс функции
@@ -11,4 +12,4 @@ const iErrorHandler = async (responseClass, requestClass) => {
     message:  'Undefined error',
     data:     {},
   };
-}
+};

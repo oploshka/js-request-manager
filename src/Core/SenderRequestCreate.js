@@ -1,12 +1,12 @@
 
 //
-import RequestClass     from "../Class/RequestClass";
-import RequestLinkClass from "../Class/RequestLinkClass";
-import MethodInfo       from "../Class/MethodInfo";
+import RequestClass     from '../Class/RequestClass';
+import RequestLinkClass from '../Class/RequestLinkClass';
+import MethodInfo       from '../Class/MethodInfo';
 
 /**
  * подготовка данных
- * @param {apiMethodInfoPrepare} methodInfoPrepare
+ * @param {testServerMethodInfoPrepare} methodInfoPrepare
  * @param {MethodInfo} methodInfo
  * @param {Object} hostAlias
  * @returns {Object}
@@ -25,7 +25,7 @@ const getRequestObject = (methodInfoPrepare, methodInfo, hostAlias) => {
     data      : methodInfoPrepare.prepareData(type, urlClass, params), // TODO: rename data -> params
   };
   
-}
+};
 
 /**
  *
@@ -42,11 +42,11 @@ export const methodInfoSetSettings = (methodInfo, settings, methodName) => {
   }
   
   return methodInfo;
-}
+};
 
 /**
  *
- * @param {apiMethodInfoPrepare}  methodInfoPrepare
+ * @param {testServerMethodInfoPrepare}  methodInfoPrepare
  * @param {MethodInfo}          methodInfo
  * @param {Object}              hostAlias
  * @returns {RequestClass}
@@ -64,4 +64,4 @@ export const methodInfoToRequestClass = (methodInfoPrepare, methodInfo, hostAlia
     //
     methodInfo: methodInfo
   });
-}
+};

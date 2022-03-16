@@ -1,4 +1,4 @@
-import {isEmpty} from "./Helper";
+import {isEmpty} from './Helper';
 
 function MergeUrlAndGetObj(url, getObj = null) {
   
@@ -12,7 +12,7 @@ function MergeUrlAndGetObj(url, getObj = null) {
       params += (params ? '&' : '') + encodeURIComponent(key) + '=' + encodeURIComponent(params.get[key])
     }
     
-    if (fetchUrl.includes("?")){
+    if (fetchUrl.includes('?')){
       url += (params ? '&' : '') + params;
     } else {
       url += (params ? '?' : '') + params;

@@ -14,6 +14,7 @@ export function isFunction(f) {
 export function isLiteralObject(a) {
   return (!!a) && (a.constructor === Object);
 }
+
 export function isEmpty(value) {
   return Boolean(value && typeof value === 'object') && !Object.keys(value).length;
 }

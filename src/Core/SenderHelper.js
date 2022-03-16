@@ -1,5 +1,5 @@
 
-import RequestManagerException    from "../Exception/RequestManagerException";
+import RequestManagerException    from '../Exception/RequestManagerException';
 
 
 //
@@ -9,9 +9,9 @@ export const createSenderError = (exception, code, message = '', details = null)
   }
   console.warn(exception);
   
-  let codeMerge     = code || 'ERROR_UNDEFINED'
-  let messageMerge  = message || exception.message;
-  let detailsMerge  = details || {errorObject: exception}
+  const codeMerge     = code || 'ERROR_UNDEFINED';
+  const messageMerge  = message || exception.message;
+  const detailsMerge  = details || {errorObject: exception};
   
   return new RequestManagerException(codeMerge, messageMerge, detailsMerge);
 };
@@ -22,9 +22,7 @@ export const createSenderErrorPromise = (code, message = '', details = null) => 
   if(details && details.errorObject) {
     console.warn(details.errorObject);
   }
-  let promise = Promise.reject(new RequestManagerException(code, message, details));
+  const promise = Promise.reject(new RequestManagerException(code, message, details));
   promise.abort = () => {};
   return promise;
 };
-
-

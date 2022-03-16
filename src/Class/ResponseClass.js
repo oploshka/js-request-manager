@@ -10,7 +10,7 @@
  */
 const ResponseClass = function (option) {
 
-  let _field = {
+  const _field = {
     headers     : option.headers || {},
     data        : option.data,
     contentType : option.contentType || '',

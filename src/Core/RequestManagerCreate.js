@@ -1,14 +1,14 @@
 //
-import RequestClass from "../Class/RequestClass";
+import RequestClass from '../Class/RequestClass';
 //
-import { isFunction, isLiteralObject} from '../Helper/Helper';
+import { isFunction, isLiteralObject} from './Is';
 //
-import { methodInfoSetSettings, methodInfoToRequestClass }  from "./SenderRequestCreate";
-import SenderRequestClientLogic                             from "./SenderRequestClientLogic";
-import SenderResponsePrepareLogic                           from "./SenderResponsePrepareLogic";
+import { methodInfoSetSettings, methodInfoToRequestClass }  from './SenderRequestCreate';
+import SenderRequestClientLogic                             from './SenderRequestClientLogic';
+import SenderResponsePrepareLogic                           from './SenderResponsePrepareLogic';
 //
-import {createSenderError}  from "./SenderHelper";
-import RmCache              from "./RmCache";
+import {createSenderError}  from './SenderHelper';
+import RmCache              from './RmCache';
 
 
 /**
@@ -25,37 +25,36 @@ import RmCache              from "./RmCache";
  * @param {RequestSchemaStr} schema
  * @param {Object} settings
  * @param {Object} settings.hostAlias
- * @param {Object} settings.presetManager
+ * @param {iPresetManager} settings.presetManager
  *
  * @param {Object} settings.hook
  */
 const RequestManager = (schema, settings) => {
 
   const RequestSchema = schema;
-  const HostAlias     = settings.hostAlias
+  const HostAlias     = settings.hostAlias;
   //
-  const Cache         = settings.rmCache || new RmCache()
+  const Cache         = settings.rmCache || new RmCache();
   const Hook          = settings.hook    || {}; // TODO: emitter && listener https://www.npmjs.com/package/event-emitter
-  /** @type iPresetManager  */
   
   const PresetManager = settings.presetManager;
   
   // соединяем ключи для имен методов
-  const concatenateKey= (p, c) => { return p + '::' + c; }
+  const concatenateKey= (p, c) => { return p + '::' + c; };
   
   // Тут мы перебираем все элементы и генерим по ним менеджер запросов
   const requestPrepare = (requestSchema, parentKey = '') => {
     const req1 = {};
-    for(let key in requestSchema) {
+    for(const key in requestSchema) {
       if ( isLiteralObject(requestSchema[key]) ) {
         req1[key] = requestPrepare(requestSchema[key], concatenateKey(parentKey, key) );
       }
       else if ( isFunction(requestSchema[key]) ) {
         // request[key] = function (data, options = { fileName: null, cache:null, errorMessage:null }) {
-        req1[key] = createRequestSendFunction(requestSchema[key], concatenateKey(parentKey, key) )
+        req1[key] = createRequestSendFunction(requestSchema[key], concatenateKey(parentKey, key) );
       }
     }
-    return req1
+    return req1;
   };
   
   /**
@@ -67,7 +66,7 @@ const RequestManager = (schema, settings) => {
   const createRequestSendFunction = (_rsf, _mn) => {
     
     const methodInfoConstructor = _rsf;
-    const methodName              = _mn;
+    const methodName            = _mn;
     
     /**
      * Формируем функцию для отправки
@@ -107,14 +106,14 @@ const RequestManager = (schema, settings) => {
       let responseClass;
       //
       try {
-        responseClass = await SenderRequestClientLogic(preset.requestClient, requestClass)
+        responseClass = await SenderRequestClientLogic(preset.requestClient, requestClass);
       } catch (e) {
         throw createSenderError(e, 'ERROR_REQUEST_SEND');
       }
       
       
       // Обработка ответа
-      let responseData
+      let responseData;
       try {
         responseData = await SenderResponsePrepareLogic(preset.responsePrepare, responseClass, requestClass);
       } catch (e) {
@@ -136,22 +135,17 @@ const RequestManager = (schema, settings) => {
       // }
   
       return responseData;
-    }
+    };
     return RequestSendFunction;
     
-  }
+  };
   
-  ///////////////////////////////////////////////////////////
-  
-  
-  
-  
-  
-  
-  
-  
+  ////////////////////////////////////////////////////////////
+  // init
   const request = requestPrepare(RequestSchema);
-
+                                                            //
+  ////////////////////////////////////////////////////////////
+  
   /**
    * for send custom user request
    * @param {String} type
@@ -161,11 +155,12 @@ const RequestManager = (schema, settings) => {
    * @return {Promise<*>}
    */
   request.send = async function (type, url, params, options = {}) {
-    return SendRequest.send(
-      new RequestClass(
-        Object.assign({type, url, params}, options)
-      )
-    );
+    // TODO: fix
+    const rsf = () => {
+      return new RequestClass( Object.assign({type, url, params}, options) );
+    };
+    const sendRequestFunc = createRequestSendFunction(rsf, 'send');
+    return sendRequestFunc();
   };
 
   return request;

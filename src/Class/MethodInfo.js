@@ -1,7 +1,7 @@
 
 const MethodInfo = function (option) {
 
-  let _field = {
+  const _field = {
     name    : '',
     type    : 'GET',
     url     : '',
@@ -34,7 +34,7 @@ const MethodInfo = function (option) {
     if(option.get ) { _field.params.get   = option.get;  }
     if(option.post) { _field.params.post  = option.post; }
 
-    for(let key in option) {
+    for(const key in option) {
       if(key === 'params' || key === 'settings'){
         _field[key] = Object.assign({}, _field[key], option[key]);
         continue;
@@ -53,8 +53,8 @@ const MethodInfo = function (option) {
 
     //
     if(option.settings) {
-      _field.settings = Object.assign(_field.settings, option.settings)
-    };
+      _field.settings = Object.assign(_field.settings, option.settings);
+    }
   };
 
   init(option);

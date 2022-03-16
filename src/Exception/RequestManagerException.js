@@ -1,3 +1,23 @@
+
+function RequestManagerException(code, message = '', details = null) {
+  this.name = 'RequestManagerException';
+  // const fullMsg = `[${code}]` + (message ? `: ${message}` : '');
+  // super(fullMsg);
+  this.code     = code;
+  this.message  = message;
+  this.details  = details;
+  
+  // TODO: test
+  this.stack = (new Error()).stack;
+}
+
+// RequestManagerException.prototype = Error.prototype;
+RequestManagerException.prototype = Object.create(Error.prototype);
+RequestManagerException.prototype.constructor = RequestManagerException;
+
+
+export default RequestManagerException;
+
 /*
 class RequestManagerException extends Error {
   // constructor(message) {
@@ -28,22 +48,3 @@ class RequestManagerException extends Error {
 
 RequestManagerException.prototype.name = 'RequestManagerException';
 */
-
-function RequestManagerException(code, message = '', details = null) {
-  this.name = "RequestManagerException";
-  // const fullMsg = `[${code}]` + (message ? `: ${message}` : '');
-  // super(fullMsg);
-  this.code     = code;
-  this.message  = message;
-  this.details = details;
-  
-  // TODO: test
-  this.stack = (new Error()).stack;
-}
-
-// RequestManagerException.prototype = Error.prototype;
-RequestManagerException.prototype = Object.create(Error.prototype);
-RequestManagerException.prototype.constructor = RequestManagerException;
-
-
-export default RequestManagerException;
