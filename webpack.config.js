@@ -1,55 +1,35 @@
+// Настройки webpack
+// https://www.taniarascia.com/how-to-use-webpack/
+// https://www.youtube.com/watch?v=vHRvO4jn6Oc
 
 const path = require('path')
-const HtmlWebpackPlugin = require('html-webpack-plugin')
 
 module.exports = {
-  mode: 'development',
-  entry: './test/site/script.js',
+  mode: 'production',
+  entry: {
+    main: path.resolve(__dirname, './src/index.js'),
+  },
   output: {
-    path: path.resolve(__dirname, './dist'),
-    filename: './js-request-manager.js',
-    // library: 'requestManager',
-    // libraryTarget: "umd" // exposes and know when to use module.exports or exports.
+    path: path.resolve(__dirname, 'dist'),
+    clean: true,
+    // filename: '[name].bundle.js',
+    filename: 'webpack-numbers.js',
+    library: "webpackNumbers",
   },
-  plugins: [
-    new HtmlWebpackPlugin({
-      template: path.resolve(__dirname, './test/site/index.html'),
-      minify: {
-        removeComments: false,
-        collapseWhitespace: false,
-      },
-    }),
-  ],
-
-  //...
-  stats: 'errors-only',
-  devServer: {
-    contentBase: path.join(__dirname, 'dist'),
-    compress: true,
-    port: 9000,
-    watchContentBase: true,
-  },
-
-  resolve: {
-    alias: {
-      'js-request-manager': __dirname,
-    }
-  },
-
-  module: {
-    rules: [
-      {
-        test: /\.js$/,
-        exclude: /node_modules/,
-        use: [
-          {
-            loader: 'babel-loader',
-            options: {
-              presets: ['@babel/preset-env'],
-            },
-          },
-        ],
-      },
-    ],
-  },
-};
+  // output: {
+  //   path: path.resolve(__dirname, './dist'),
+  //   filename: 'bundle.js',
+  //   // filename: '[name].bundle.js',
+  // },
+  
+  // module: {
+  //   rules: [
+  //     {
+  //       test: /\.js$/,
+  //       exclude: /node_modules/,
+  //       use: ['babel-loader'],
+  //     },
+  //   ],
+  // },
+  
+}
