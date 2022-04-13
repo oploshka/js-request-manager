@@ -4,7 +4,7 @@ const path = require('path');
 const DIR_ROOT = path.join(__dirname, './../../');
 
 const aliasObj = {
-  'vue-dlg': DIR_ROOT,
+  'js-request-manager': DIR_ROOT,
 };
 
 
@@ -25,7 +25,7 @@ const config = {
 
 // fix github page deploy
 if(process.env.BUILD_SETTINGS === 'gh-page') {
-  config.publicPath = '/vue-dialog/';
+  config.publicPath = '/js-request-manager/';
 }
 
 module.exports = config;
