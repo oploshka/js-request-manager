@@ -1,0 +1,21 @@
+{
+  "homepage": "https://oploshka.github.io/js-request-manager/",
+  "name": "test-vue-app-js-request-manager",
+  "version": "0.1.0",
+  "scripts": {
+    "serve": "vue-cli-service serve --port 3000 src/main.js",
+    "serveBuild": "vue-cli-service serve --port 3000 srcDev/mainBuild.js",
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint",
+    "deploy": "gh-pages -d dist",
+    "predeploy": "cross-env BUILD_SETTINGS=gh-page vue-cli-service build"
+  },
+  "dependencies": {
+    "vue": "^3.2.13"
+  },
+  "devDependencies": {
+    "@vue/cli-service": "~5.0.0",
+    "cross-env": "^7.0.3",
+    "gh-pages": "^3.2.3"
+  }
+}
