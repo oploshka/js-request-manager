@@ -1,5 +1,5 @@
 
-import {getStatusInfo, HTTP_ERROR_STATUS} from "../Helper/HttpStatus";
+import {getStatusInfo, HTTP_ERROR_STATUS} from '../Helper/HttpStatus';
 
 export const getStatusMessage = (status) => {
   let message = ''

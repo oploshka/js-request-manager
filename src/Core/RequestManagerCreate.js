@@ -8,7 +8,8 @@ import SenderRequestClientLogic                             from './SenderReques
 import SenderResponsePrepareLogic                           from './SenderResponsePrepareLogic';
 //
 import {createSenderError}  from './SenderHelper';
-import RmCache              from './RmCache';
+import RequestManagerSettingsMerge from 'js-request-manager/src/Core/RequestManagerSettingsMerge';
+import RequestManagerException from 'js-request-manager/src/Exception/RequestManagerException';
 
 
 /**
@@ -29,12 +30,13 @@ import RmCache              from './RmCache';
  *
  * @param {Object} settings.hook
  */
-const RequestManager = (schema, settings) => {
+const RequestManager = (schema = {}, _settings={}) => {
 
+  const settings = RequestManagerSettingsMerge(_settings)
   const RequestSchema = schema;
   const HostAlias     = settings.hostAlias;
   //
-  const Cache         = settings.rmCache || new RmCache();
+  const Cache         = settings.cache;
   const Hook          = settings.hook    || {}; // TODO: emitter && listener https://www.npmjs.com/package/event-emitter
   
   const PresetManager = settings.presetManager;
@@ -86,7 +88,12 @@ const RequestManager = (schema, settings) => {
         methodInfo = methodInfoSetSettings(methodInfo, settings, methodName);
   
         // получаем список функций обработки
-        preset = PresetManager.getPreset(methodInfo);
+        let presetName = PresetManager.getPreset(methodInfo);
+        
+        if(!PresetManager.presets[presetName]) {
+          throw new RequestManagerException('UNDEFINED_PRESET', '', {preset: presetName, PresetManager: PresetManager });
+        }
+        preset = PresetManager.presets[presetName];
   
         // получаем финальные данные для запроса.
         requestClass = methodInfoToRequestClass(preset.methodInfoPrepare, methodInfo, HostAlias);
@@ -154,7 +161,7 @@ const RequestManager = (schema, settings) => {
    * @param {Object} options
    * @return {Promise<*>}
    */
-  request.send = async function (type, url, params, options = {}) {
+  request.send = async function (type, url, params={}, options = {}) {
     // TODO: fix
     const rsf = () => {
       return new RequestClass( Object.assign({type, url, params}, options) );

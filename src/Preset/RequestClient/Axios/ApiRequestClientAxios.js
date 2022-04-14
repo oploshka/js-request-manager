@@ -1,6 +1,6 @@
 
 import axios from 'axios';
-import {isArray, isEmpty} from '@service/RequestManagerSrc/Helper/Helper';
+import {isArray, isEmpty} from '../../../Core/Is';
 
 /**
  * @param {RequestClass} requestClass

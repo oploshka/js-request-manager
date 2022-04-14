@@ -1,5 +1,5 @@
 
-import {isEmpty} from "../Helper/Helper";
+import {isEmpty} from '../../../Core/Is';
 
 //
 export const requestToClientObject = (requestObj, requestClass, Config) => {

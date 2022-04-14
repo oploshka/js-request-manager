@@ -1,7 +1,7 @@
 
 import axios from 'axios';
-import {isEmpty} from "@service/RequestManagerSrc/Helper/Helper";
-import JsonToFormData from "@service/RequestManagerSrc/Helper/JsonToFormData";
+import {isEmpty} from '../../../Core/Is';
+import JsonToFormData from '../../../Utils/JsonToFormData';
 
 /**
  * @param {RequestClass} requestClass
@@ -12,7 +12,7 @@ export const requestToClientObject = (requestClass) => {
     method  : requestClass.getType(),
     url     : requestClass.getUrl(),
     headers : {
-      "Content-Type": "multipart/form-data"
+      'Content-Type': 'multipart/form-data'
     }
   };
   // axiosObj.responseType = 'application/json';

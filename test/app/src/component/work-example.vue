@@ -47,6 +47,8 @@
 
 <script>
 
+import {RequestManager} from 'js-request-manager';
+
 export default {
   name: 'work-example',
   // data() {
@@ -54,6 +56,12 @@ export default {
   // },
   methods: {
   },
+  
+  mounted() {
+    const rm = RequestManager({}, {});
+    console.log(rm);
+    rm.send('GET', 'https://reqres.in/api/users', {})
+  }
 };
 </script>
 

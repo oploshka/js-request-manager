@@ -1,9 +1,9 @@
-import {isFunction, isString} from './Is';
+import {isFunction, isString} from '../../Core/Is';
 
 /**
  * @constructor
  */
-const RmCache = function () {
+const RmCacheDefault = function () {
   const store = {};
   
   /**
@@ -76,4 +76,4 @@ const RmCache = function () {
 // let r = new RmCache();
 // r.getCache()
 
-export default RmCache;
+export default RmCacheDefault;

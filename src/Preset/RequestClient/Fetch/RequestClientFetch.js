@@ -1,6 +1,6 @@
 
-import {isEmpty} from "../Helper/Helper";
-import MergeUrlAndGetObj from "../Helper/MergeUrlAndGetObj";
+import {isEmpty}         from '../../../Core/Is';
+import MergeUrlAndGetObj from '../../../Utils/MergeUrlAndGetObj';
 
 export const send = async(obj) => {
   return await fetch(obj.url, obj.options);

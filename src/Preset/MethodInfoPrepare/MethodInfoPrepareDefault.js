@@ -1,20 +1,12 @@
 
-export const RequestPrepareData = (requestType, requestUrl, requestData) => {
+export const RequestPrepareDataDefault = (requestType, requestUrl, requestData) => {
   return requestData;
 };
 
-export const RequestPrepareType = (requestType, requestUrl, requestData) => {
+export const RequestPrepareTypeDefault = (requestType, requestUrl, requestData) => {
   return requestType;
 };
 
-export const RequestPrepareUrl  = (requestType, requestUrl, requestData) => {
+export const RequestPrepareUrlDefault  = (requestType, requestUrl, requestData) => {
   return requestUrl.getUrl();
 };
-
-const methodInfoPrepareDefault = function () {
-  this.prepareData  = RequestPrepareData;
-  this.prepareType  = RequestPrepareType;
-  this.prepareUrl   = RequestPrepareUrl;
-};
-
-export default methodInfoPrepareDefault;
