@@ -11,6 +11,7 @@
     "predeploy": "cross-env BUILD_SETTINGS=gh-page vue-cli-service build"
   },
   "dependencies": {
+    "axios": "^0.26.1",
     "vue": "^3.2.13"
   },
   "devDependencies": {

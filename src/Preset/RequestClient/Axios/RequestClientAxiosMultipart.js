@@ -1,5 +1,4 @@
 
-import axios from 'axios';
 import {isEmpty} from '../../../Core/Is';
 import JsonToFormData from '../../../Utils/JsonToFormData';
 
@@ -36,7 +35,12 @@ export const prepareClientObject = async(axiosObject, requestClass) => {
 };
 
 export const send = async(obj) => {
-  return await axios(obj);
+  if(global.axios) {
+    return await global.axios(obj);
+  } else {
+    // throw new RequestManagerException('AXIOS_IS_NOT_GLOBAL', '', {});
+    return Promise.reject('Undefined global.axios');
+  }
 };
 
 

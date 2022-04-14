@@ -47,7 +47,11 @@
 
 <script>
 
+import axios from 'axios';
 import {RequestManager} from 'js-request-manager';
+
+global.axios = axios;
+
 
 export default {
   name: 'work-example',
@@ -58,9 +62,10 @@ export default {
   },
   
   mounted() {
+    console.log(global.axios);
     const rm = RequestManager({}, {});
     console.log(rm);
-    rm.send('GET', 'https://reqres.in/api/users', {})
+    rm.send('GET', 'https://reqres.in/api/users', {}).then(console.warn, console.error);
   }
 };
 </script>
