@@ -19,9 +19,7 @@ const GetErrorMessage = (obj, responseClass, requestClass /*, Config*/) => {
 
 
 /**
- * @param {ResponseClass} responseClass
- * @param {RequestClass} requestClass
- * @returns {Promise<{code: string, message: string, data: {Object}}>}
+ * @type iRmErrorHandler
  */
 export default async (responseClass, requestClass) => {
   let requestClassErrorObject = requestClass.getMethodInfo().getErrorMessage();

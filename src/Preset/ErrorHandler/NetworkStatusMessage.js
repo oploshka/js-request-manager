@@ -12,6 +12,9 @@ export const getStatusMessage = (status) => {
 };
 
 
+/**
+ * @type iRmErrorHandler
+ */
 export default async (responseClass) => {
   const httpStatus = responseClass.getHttpStatus();
   let errMessage = getStatusMessage(httpStatus);
