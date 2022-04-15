@@ -17,11 +17,11 @@
  *
  * @example ```js
  * const requestClient = {
- *   requestToClientObject: null,
- *   prepareClientObject: null,
- *   send: null,
- *   isNetworkError: null,
- *   clientResponseToObject: null,
+ *   requestToClientObject: ... ,
+ *   prepareClientObject: ... ,
+ *   send: ... ,
+ *   isNetworkError: ... ,
+ *   clientResponseToObject: ... ,
  * };
  * ```
  */
@@ -35,6 +35,13 @@
  * @callback iRmRequestClient_requestToClientObject
  * @param {RequestClass} requestClass
  * @returns {iRmClientObject}
+ *
+ * @example ```js
+ * export const requestToClientObject = (requestClass) => {
+ *  // ...
+ *  return {}
+ * }
+ * ```
  */
 
 /**
@@ -45,27 +52,32 @@
  */
 
 /**
+ *
  * Дополняем объект clientObject дополнительной информацией (установка токенов и тп.)
+ * - clientObject - объект который вернули в requestToClientObject
+ * - requestClass __ Параметр под вопросом
  *
  * @callback iRmRequestClient_prepareClientObject
- * @param {iRmClientObject} clientObject объект который вернули в requestToClientObject
- * @param {RequestClass}    requestClass __ Параметр под вопросом
+ * @param {iRmClientObject} clientObject
+ * @param {RequestClass} requestClass
  * @returns {iRmClientObject}
+ *
  */
 
 /**
  *
- * Отправка данных
+ * Отправка данных RequestClient.send()
  *
- * @callback iRmRequestClient_send RequestClient.send()
- * @param {iRmClientObject}
+ * @callback iRmRequestClient_send
+ * @param {iRmClientObject} clientObject
  * @returns {Promise}
  *
- * @example
+ * @example ```js
  * export const send = async(clientObject) => {
  *   const client = (sendObject) => {}; // используем клиент для отправки (fetch, axios, xhr или др...)
  *   return client(clientObject);       // необходимо вернуть промис
  * };
+ * ```
  *
  */
 
@@ -91,14 +103,12 @@
 
 /**
  *
- * @callback iRmRequestClient_clientResponseToObject - Преобразуем ответ в единую структуру
+ * @typedef {Function} iRmRequestClient_clientResponseToObject - Преобразуем ответ в единую структуру
  * @param clientResponse
  * @param RequestSchemaMergeClass __ Параметр под вопросом
  * @returns {Promise<{headers: {}, data: {}, httpStatus: number, contentType: string}>}
  *
- * @example <caption>Say `Hello!` to the user.</caption>
- *
- * ```js
+ * @example ```js
  * export const clientResponseToObject = async (clientResponse, RequestSchemaMergeClass) => {
  *   const ri = {
  *     httpStatus  : -1,

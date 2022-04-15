@@ -2,8 +2,7 @@
 import {isArray, isEmpty} from '../../../Core/Is';
 
 /**
- * @param {RequestClass} requestClass
- * @returns {Object} Произвольные данные в приемлемом формате для отправки
+ * @type {iRmRequestClient_requestToClientObject}
  */
 export const requestToClientObject = (requestClass) => {
   const axiosObj = {
@@ -42,15 +41,23 @@ export const requestToClientObject = (requestClass) => {
   return axiosObj;
 };
 
+/**
+ * @type {iRmRequestClient_prepareClientObject}
+ */
 export const prepareClientObject = async(axiosObject, requestClass) => {
   // let token = localStorage.getItem('user-token');
   // if (token) { axiosObject.headers['Authorization'] = `Bearer ${token}`; }
   return axiosObject;
 };
 
-// import axios from 'axios';
-// async send(obj) { return await axios(obj); },
+/**
+ * @type {iRmRequestClient_send}
+ */
 export const send = async(obj) => {
+  // Рекомендуется переопределить эту функцию без использования глобального обьекта axios
+  // import axios from 'axios';
+  // async send(obj) { return await axios(obj); },
+  
   if(global.axios) {
     return await global.axios(obj);
   } else {
@@ -60,6 +67,9 @@ export const send = async(obj) => {
 };
 
 
+/**
+ * @type {iRmRequestClient_isNetworkError}
+ */
 export const isNetworkError = (axiosResponse, requestClass, Config) => {
   // if(!axiosResponse.status /* axiosResponse.isAxiosError &&  !axiosResponse.response */ ) {
   if( !(axiosResponse.request && axiosResponse.request.status) ) {
@@ -67,6 +77,10 @@ export const isNetworkError = (axiosResponse, requestClass, Config) => {
   }
 };
 
+
+/**
+ * @type {iRmRequestClient_clientResponseToObject}
+ */
 export const clientResponseToObject = async (axiosResponse, requestClass, Config) => {
   // httpStatus 204 - empty response and not content type!!!
   const ri = {

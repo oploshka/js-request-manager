@@ -1,5 +1,5 @@
 /**
- * TODO: add docs for option
+ *
  * @param option
  * @constructor
  */
