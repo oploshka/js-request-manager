@@ -1,29 +1,47 @@
 
 /**
- * @typedef iRmRequestClientObject
  *
  * Набор методов для изменения вариантов отправки запроса
+ * - requestToClientObject  - Преобразование данных в клиент запроса
+ * - prepareClientObject    - Установка дополнительных данных
+ * - send                   - Отправка данных
+ * - isNetworkError         - Является ли ошибка сетевой
+ * - clientResponseToObject - Преобразовать ответ клиента во внутренний формат
  *
- * @property {iRmRequestClient_requestToClientObject}   requestToClientObject  -
- * @property {iRmRequestClient_prepareClientObject}     prepareClientObject    -
- * @property {iRmRequestClient_send}                    send                   -
- * @property {iRmRequestClient_isNetworkError}          isNetworkError         -
- * @property {iRmRequestClient_clientResponseToObject}  clientResponseToObject -
+ * @typedef {Object} iRmRequestClientObject
+ * @property {iRmRequestClient_requestToClientObject} requestToClientObject
+ * @property {iRmRequestClient_prepareClientObject} prepareClientObject
+ * @property {iRmRequestClient_send} send
+ * @property {iRmRequestClient_isNetworkError} isNetworkError
+ * @property {iRmRequestClient_clientResponseToObject} clientResponseToObject
  *
+ * @example ```js
+ * const requestClient = {
+ *   requestToClientObject: null,
+ *   prepareClientObject: null,
+ *   send: null,
+ *   isNetworkError: null,
+ *   clientResponseToObject: null,
+ * };
+ * ```
  */
 
 /**
- * @callback iRmRequestClient_requestToClientObject
  *
+ * Преобразование данных в клиент запроса
  * Конвертируем объект RequestSchemaMergeClass в объект для отправки
  * Тут пишем только конвертацию!!!
  *
+ * @callback iRmRequestClient_requestToClientObject
  * @param {RequestClass} requestClass
  * @returns {iRmClientObject}
  */
 
 /**
- * @typedef iRmClientObject - Произвольные данные в приемлемом формате для отправки
+ *
+ * Произвольные данные в приемлемом формате для отправки
+ *
+ * @typedef {Object} iRmClientObject
  */
 
 /**
@@ -37,6 +55,8 @@
 
 /**
  *
+ * Отправка данных
+ *
  * @callback iRmRequestClient_send RequestClient.send()
  * @param {iRmClientObject}
  * @returns {Promise}
@@ -49,33 +69,36 @@
  *
  */
 
-
 /**
  *
- * @callback iRmRequestClient_isNetworkError RequestClient.isNetworkError() -  метод под вопросом
- * @param {iRmClientObject}
+ * Является ли ошибка сетевой
+ *
+ * @callback iRmRequestClient_isNetworkError
+ * @param {iRmClientObject} clientResponse
+ * @param {Object} requestClass
+ * @param {Object} Config
  * @returns {Promise}
  *
- * @example
+ * @example ```js
  * export const isNetworkError = (clientResponse, requestClass, Config) => {
  *   // ...
  *   return {};
  * };
+ * ```
  *
  */
 
+
 /**
  *
- * @callback iRmRequestClient_clientResponseToObject
- *
- * Преобразуем ответ в единую структуру
- *
+ * @callback iRmRequestClient_clientResponseToObject - Преобразуем ответ в единую структуру
  * @param clientResponse
  * @param RequestSchemaMergeClass __ Параметр под вопросом
  * @returns {Promise<{headers: {}, data: {}, httpStatus: number, contentType: string}>}
  *
- * @example
+ * @example <caption>Say `Hello!` to the user.</caption>
  *
+ * ```js
  * export const clientResponseToObject = async (clientResponse, RequestSchemaMergeClass) => {
  *   const ri = {
  *     httpStatus  : -1,
@@ -85,5 +108,6 @@
  *   }
  *   return ri;
  * };
+ * ```
  *
  */
