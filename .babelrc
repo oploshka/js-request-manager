@@ -1,7 +1,4 @@
 {
   "presets": ["@babel/preset-env"],
-  "plugins": [
-    [ "babel-plugin-webpack-aliases", { "config": "./webpack.config.js" } ],
-    ["@babel/transform-runtime"]
-  ]
+  "plugins": ["@babel/plugin-proposal-class-properties"]
 }

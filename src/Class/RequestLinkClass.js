@@ -1,6 +1,6 @@
 
-const RequestLinkClass = function(link, hostSchema = {}) {
-  let _hostSchema = {};
+const RequestLinkClass = function(link, hostAlias = {}) {
+  let _hostAlias = {};
   let _linkOrigin = null;
   let _linkCache  = null;
 
@@ -9,7 +9,7 @@ const RequestLinkClass = function(link, hostSchema = {}) {
       return _linkCache;
     }
     _linkCache = {
-      url: '',
+      url: _linkOrigin,
     };
 
     const requestUrlArray = _linkOrigin.split('://');
@@ -20,11 +20,11 @@ const RequestLinkClass = function(link, hostSchema = {}) {
     }
     else if(requestUrlArray.length === 2) {
       const host = requestUrlArray[0].toLowerCase();
-      if(host in _hostSchema) {
-        _linkCache.url = _hostSchema[ host ] + requestUrlArray[1];
+      if(host in _hostAlias) {
+        _linkCache.url = _hostAlias[ host ] + requestUrlArray[1];
       } else {
         // eslint-disable-next-line no-console
-        console.warn('[REQUEST MANAGER] prepareUrl not correct hostSchema', _linkOrigin);
+        console.warn('[REQUEST MANAGER] prepareUrl not correct hostAlias', _linkOrigin);
       }
     }
 
@@ -36,12 +36,11 @@ const RequestLinkClass = function(link, hostSchema = {}) {
     return this.getLinkCache().url;
   };
 
-  const init = (link, hostSchema) => {
-    _hostSchema    = hostSchema;
-    _linkOrigin    = link;
+  const init = (link, hostAlias) => {
+    _hostAlias    = hostAlias;
     _linkOrigin    = link;
   };
-  init(link, hostSchema);
+  init(link, hostAlias);
 };
 
 

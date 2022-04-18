@@ -1,24 +1,25 @@
-import RequestManager from 'js-request-manager/src/RequestManager';
 
-import axios from 'axios';
-
-// Config
-import hostSchema      from "./Config/HostSchema";
-import RequestPrepare  from "./Config/RequestPrepare";
-import ResponsePrepare from "./Config/ResponsePrepare";
-import Hook            from "./Config/Hook";
+// TODO: fix
+// import RequestManager from 'js-request-manager';
+import {RequestManager} from '@service/RequestManagerSrc';
 
 // RequestSchema
-import RequestSchema from "./RequestSchema";
+import RequestSchema  from './RequestSchema';
 
-const RmOptimalStructureCreate = RequestManager(RequestSchema, {
-  hostSchema      : hostSchema,
-  RequestPrepare  : RequestPrepare,
-  ResponsePrepare : ResponsePrepare,
-  Hook            : Hook,
-  RequestClient   : {
-    async send(obj) { return await axios(obj); }
-  }
-});
 
-export default RmOptimalStructureCreate;
+// Settings
+// // import Settings       from './Settings';
+import hostAlias      from './HostAlias';
+import Hook           from './Hook';
+import PresetManager  from './PresetManager';
+
+const Settings = {
+  hostAlias       : hostAlias,
+  hook            : Hook,
+  presetManager   : new PresetManager(),
+}
+
+
+const rm = RequestManager(RequestSchema,Settings);
+
+export default rm;

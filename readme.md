@@ -108,7 +108,7 @@ yarn add js-request-manager
 > }
 > 
 > const Config = {
->   hostSchema: {
+>   hostAlias: {
 >     api: 'https://domain.test/api',
 >   },
 >   Hook: {
@@ -136,7 +136,7 @@ const RequestSchema = {/* ... request schema */ };
 
 // Config - all parameters are optional
 const Config = {
-  hostSchema: {},
+  hostAlias: {},
   RequestPrepare: {
     data(requestType, requestUrl, requestData) {
       return requestData;
@@ -279,13 +279,13 @@ Config will be described in the form Config.[Type].[Sub type] = [Settings]
 ------------------------------------------------------
 
 <details>
-<summary><b style="font-size: 1.3em;">Config.hostSchema</b></summary>
+<summary><b style="font-size: 1.3em;">Config.hostAlias</b></summary>
 
 Setting an alias for the url.
 We do this in order not to write full domain names in all requests.
 Example:
 ```js
-const hostSchema = {
+const hostAlias = {
    auth   : 'https://auth.domain.test/api',
    apiV1  : 'https://domain.test/api/v1',
    apiV2  : 'https://v2.domain.test/api',

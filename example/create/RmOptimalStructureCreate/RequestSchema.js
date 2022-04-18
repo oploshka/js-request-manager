@@ -1,7 +1,7 @@
 
 import AuthRequest              from './Request/AuthRequest';
 import ReferenceRequest         from './Request/ReferenceRequest';
-import NewsRequest              from "./Request/NewsRequest";
+import NewsRequest              from './Request/NewsRequest';
 
 const RequestSchema = {
   Auth            : AuthRequest,
