@@ -20,5 +20,14 @@ export const getSuccessInfo = async (responseClass, requestClass) => {
 };
 
 
-// TODO: rename
-export const errorHandlerList = [];
+
+// TODO: fix
+export const errorHandlerList = [
+  async (responseClass) => {
+    return {
+      code:     'ERROR_DEFAULT',
+      message:  'Undefined error',
+      data:     {},
+    };
+  }
+];

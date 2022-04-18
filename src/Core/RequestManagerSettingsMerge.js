@@ -14,8 +14,8 @@ const mergePresetManager = (obj) => {
     };
   }
   
-  if(obj.presets    ) { throw new Error('PresetManager require field "presets" '); }
-  if(obj.getPreset  ) { throw new Error('PresetManager require field "getPreset"   '); }
+  if(!obj.presets    ) { throw new Error('PresetManager require field "presets" '); }
+  if(!obj.getPreset  ) { throw new Error('PresetManager require field "getPreset"   '); }
   
   return {
     presets:    mergePreset(obj.presets),
@@ -80,11 +80,11 @@ const mergeRequestClient = (obj) => {
     return RequestClientAxios;
   }
   
-  if(obj.requestToClientObject ) { throw new Error('RequestClient require field "requestToClientObject" '); }
-  if(obj.prepareClientObject   ) { throw new Error('RequestClient require field "prepareClientObject"   '); }
-  if(obj.send                  ) { throw new Error('RequestClient require field "send"                  '); }
-  if(obj.isNetworkError        ) { throw new Error('RequestClient require field "isNetworkError"        '); }
-  if(obj.clientResponseToObject) { throw new Error('RequestClient require field "clientResponseToObject"'); }
+  if(!obj.requestToClientObject ) { throw new Error('RequestClient require field "requestToClientObject" '); }
+  if(!obj.prepareClientObject   ) { throw new Error('RequestClient require field "prepareClientObject"   '); }
+  if(!obj.send                  ) { throw new Error('RequestClient require field "send"                  '); }
+  if(!obj.isNetworkError        ) { throw new Error('RequestClient require field "isNetworkError"        '); }
+  if(!obj.clientResponseToObject) { throw new Error('RequestClient require field "clientResponseToObject"'); }
   
   return obj;
 };

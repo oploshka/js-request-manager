@@ -1,6 +1,7 @@
 
 import RequestManagerException from '../Exception/RequestManagerException';
 import ResponseClass from '../Class/ResponseClass';
+import {errorHandlerList} from 'js-request-manager/src/Preset/ResponsePrepare/ResponsePrepareDefault';
 
 
 /**
@@ -18,7 +19,7 @@ const responseProcessing = async (responsePrepare, responseClass, requestClass) 
     let errObj = null;
     
     // вызываем цепочку пользовательских функций по получению ошибки.
-    const errorHandlerList = responsePrepare.getErrorHandlerList();
+    const errorHandlerList = responsePrepare.errorHandlerList;
     for(let i = 0; i < errorHandlerList.length; i++) {
       try {
         errObj = await errorHandlerList[i](responseClass, requestClass);
