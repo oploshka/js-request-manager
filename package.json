@@ -1,6 +1,6 @@
 {
   "name": "js-request-manager",
-  "version": "2.0.0-alpha.5",
+  "version": "2.0.0-alpha.6",
   "description": "JS Request Manager is a library for creating an sdk library for your server (API). The API type doesn't matter, whether it's REST or RPC",
   "author": "Andrey Tyurin <ectb08@mail.ru>",
   "scripts": {

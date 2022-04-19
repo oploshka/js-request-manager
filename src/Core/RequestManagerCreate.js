@@ -8,8 +8,8 @@ import SenderRequestClientLogic                             from './SenderReques
 import SenderResponsePrepareLogic                           from './SenderResponsePrepareLogic';
 //
 import {createSenderError}  from './SenderHelper';
-import RequestManagerSettingsMerge from 'js-request-manager/src/Core/RequestManagerSettingsMerge';
-import RequestManagerException from 'js-request-manager/src/Exception/RequestManagerException';
+import RequestManagerSettingsMerge from './RequestManagerSettingsMerge';
+import RequestManagerException from '../Exception/RequestManagerException';
 
 
 /**
@@ -135,11 +135,11 @@ const RequestManager = (schema = {}, _settings={}) => {
   
   
       // TODO: продумать
-      // try {
-      //   Config.Hook.RequestPromise(requestPromise, mergeRequestClass);
-      // } catch (e) {
-      //   console.error(e);
-      // }
+      try {
+        Hook.requestPromise && Hook.requestPromise(requestPromise, mergeRequestClass);
+      } catch (e) {
+        console.error(e);
+      }
   
       return responseData;
     };

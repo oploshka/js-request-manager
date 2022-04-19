@@ -1,4 +1,4 @@
 
 export default {
-  RequestPromise(requestPromise, settings) {}
+  requestPromise(requestPromise, settings) {}
 };

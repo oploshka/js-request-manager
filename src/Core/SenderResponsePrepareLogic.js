@@ -1,8 +1,5 @@
 
 import RequestManagerException from '../Exception/RequestManagerException';
-import ResponseClass from '../Class/ResponseClass';
-import {errorHandlerList} from 'js-request-manager/src/Preset/ResponsePrepare/ResponsePrepareDefault';
-
 
 /**
  *
