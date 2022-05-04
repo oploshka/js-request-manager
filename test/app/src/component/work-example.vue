@@ -62,10 +62,19 @@ export default {
   },
   
   mounted() {
-    console.log(global.axios);
     const rm = RequestManager({}, {});
+    rm.getListener().on('REQUEST_PROMISE', (promise) => {
+      console.warn('REQUEST_PROMISE_CALLBACK', promise)
+    })
+    rm.getListener().on('REQUEST_SUCCESS', (promise) => {
+      console.warn('REQUEST_SUCCESS_CALLBACK', promise)
+    })
+    rm.getListener().on('REQUEST_ERROR', (promise) => {
+      console.warn('REQUEST_ERROR_CALLBACK', promise)
+    })
     console.log(rm);
-    rm.send('GET', 'https://reqres.in/api/users', {}).then(console.warn, console.error);
+    rm.send('GET', 'https://reqres.in/api/users', {})
+        // .then(console.warn, console.error);
   }
 };
 </script>

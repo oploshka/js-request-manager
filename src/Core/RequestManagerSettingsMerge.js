@@ -90,16 +90,16 @@ const mergeRequestClient = (obj) => {
 };
 
 
-import RmCache from '../Preset/RmCache/RmCacheDefault';
-import HostAliasDefault from '../Preset/HostAlias/HostAliasDefault';
-import HookDefault from '../Preset/Hook/HookDefault';
+import RmCache            from '../Preset/RmCache/RmCacheDefault';
+import RmListenerDefault  from '../Preset/RmListener/RmListenerDefault';
+import HostAliasDefault   from '../Preset/HostAlias/HostAliasDefault';
 //
 export default (rmSettings) => {
   
   return {
     cache:      rmSettings.rmCache    || new RmCache(),
+    listener:   rmSettings.rmListener || new RmListenerDefault(),
     hostAlias:  rmSettings.hostAlias  || HostAliasDefault,
-    hook:       rmSettings.hook       || HookDefault,
   
     /*
     {

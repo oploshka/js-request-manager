@@ -37,7 +37,7 @@ const RequestManager = (schema = {}, _settings={}) => {
   const HostAlias     = settings.hostAlias;
   //
   const Cache         = settings.cache;
-  const Hook          = settings.hook    || {}; // TODO: emitter && listener https://www.npmjs.com/package/event-emitter
+  const Listener      = settings.listener;
   
   const PresetManager = settings.presetManager;
   
@@ -99,7 +99,11 @@ const RequestManager = (schema = {}, _settings={}) => {
         requestClass = methodInfoToRequestClass(preset.methodInfoPrepare, methodInfo, HostAlias);
       } catch (e) {
         // TODO: fix - add error не удалось сформировать объект запроса
-        throw createSenderError(e, 'ERROR_REQUEST_CREATE');
+        const exception = createSenderError(e, 'ERROR_REQUEST_CREATE');
+        setTimeout(() => {
+          Listener.emit('REQUEST_ERROR', exception);
+        });
+        throw exception;
       }
       
       // // TODO: add cache
@@ -115,7 +119,11 @@ const RequestManager = (schema = {}, _settings={}) => {
       try {
         responseClass = await SenderRequestClientLogic(preset.requestClient, requestClass);
       } catch (e) {
-        throw createSenderError(e, 'ERROR_REQUEST_SEND');
+        const exception = createSenderError(e, 'ERROR_REQUEST_SEND');
+        setTimeout(() => {
+          Listener.emit('REQUEST_ERROR', exception);
+        });
+        throw exception;
       }
       
       
@@ -124,7 +132,11 @@ const RequestManager = (schema = {}, _settings={}) => {
       try {
         responseData = await SenderResponsePrepareLogic(preset.responsePrepare, responseClass, requestClass);
       } catch (e) {
-        throw createSenderError(e, 'ERROR_RESPONSE_PREPARE');
+        const exception = createSenderError(e, 'ERROR_RESPONSE_PREPARE');
+        setTimeout(() => {
+          Listener.emit('REQUEST_ERROR', exception);
+        });
+        throw exception;
       }
 
   
@@ -134,16 +146,19 @@ const RequestManager = (schema = {}, _settings={}) => {
       // }
   
   
-      // TODO: продумать
-      try {
-        Hook.requestPromise && Hook.requestPromise(requestPromise, mergeRequestClass);
-      } catch (e) {
-        console.error(e);
-      }
-  
+      setTimeout(() => {
+        Listener.emit('REQUEST_SUCCESS', responseData);
+      });
       return responseData;
     };
-    return RequestSendFunction;
+    
+    return async (data = {}, settings = null) => {
+      const promise = RequestSendFunction();
+      setTimeout(() => {
+        Listener.emit('REQUEST_PROMISE', promise);
+      });
+      return await promise;
+    };
     
   };
   
@@ -169,7 +184,11 @@ const RequestManager = (schema = {}, _settings={}) => {
     const sendRequestFunc = createRequestSendFunction(rsf, 'send');
     return sendRequestFunc();
   };
-
+  
+  request.getListener = () => {
+    return Listener;
+  };
+  
   return request;
 };
 
