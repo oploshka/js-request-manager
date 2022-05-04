@@ -63,7 +63,6 @@ const RmListenerDefault = function () {
   */
   
   const emitEvent = (eventName, data) => {
-    debugger;
     if (typeof (eventName) !== 'string' ) {
       // TODO: add exception
       return null;
