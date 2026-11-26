@@ -153,7 +153,7 @@ const RequestManager = (schema = {}, _settings={}) => {
     };
     
     return async (data = {}, settings = null) => {
-      const promise = RequestSendFunction();
+      const promise = RequestSendFunction(data, settings);
       setTimeout(() => {
         Listener.emit('REQUEST_PROMISE', promise);
       });

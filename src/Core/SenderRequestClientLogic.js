@@ -29,7 +29,7 @@ const requestClientSend = async (requestClient, requestClass) => {
     // TODO: fix and return ResponseClass
     
     // TODO: add network exception
-    throw new RequestManagerException('ERROR_NETWORK', isNetworkError, {RequestClientResponse: rcsResponse});
+    throw new RequestManagerException('ERROR_NETWORK', isNetworkError, {RequestClientResponse: rcsResponse, requestClass});
   }
   
   // TODO: fix
